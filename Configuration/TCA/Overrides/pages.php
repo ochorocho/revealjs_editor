@@ -23,6 +23,7 @@ defined('TYPO3') or die();
             'renderType' => 'selectSingle',
             'default' => 'black',
             'items' => [
+                ['label' => 'THE CÄMP', 'value' => 'the-caemp'],
                 ['label' => 'Black', 'value' => 'black'],
                 ['label' => 'White', 'value' => 'white'],
                 ['label' => 'Beige', 'value' => 'beige'],

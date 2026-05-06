@@ -1,49 +1,57 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      data-namespace-typo3-fluid="true">
+			data-namespace-typo3-fluid="true">
 
 <f:asset.css identifier="revealjs-core"
-             href="EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/reveal.css"/>
-<f:asset.css identifier="revealjs-theme"
-             href="EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/theme/{theme}.css"/>
+						 href="EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/reveal.css"/>
 
-<div class="reveal" data-revealjs-options='{"hash":true,"controls":true,"progress":true,"center":true,"transition":"slide","keyboard":false}'>
-    <div class="slides">
-        <f:comment>
-          Iterate {content.main} (a Core\Page\ContentArea, IteratorAggregate over
-          Domain\Record objects) directly with f:for instead of f:render.contentArea.
-          Reason: f:render.contentArea triggers the visual_editor listener that wraps
-          output in a ve-content-area custom element. That element's firstUpdated()
-          callback (Lit) destructively replaces its parent div.slides with itself.
-          By the time that DOM surgery runs, reveal.js has already finished init
-          against the pre-mutation DOM and registered zero slides — nav stays
-          disabled, no slide promoted to .present. f:for emits sections as direct
-          children of div.slides, so reveal.js's ".slides > section" query matches
-          immediately and the deck initialises correctly.
-          Per-slide editing is still visual_editor-aware: each slide CType is
-          wrapped in ve-content-element by tt_content.stdWrap.wrapContentElementsWithVeWrapper=1
-          (shipped from EXT:visual_editor), and each slide's child column is
-          wrapped via the slide template's f:mark.contentArea.
-        </f:comment>
-        <f:for each="{content.main}" as="slide">
-            <section data-transition="{slide.tx_revealjseditor_transition}"
-                     data-state="{slide.tx_revealjseditor_data_state}"
-                     class="{slide.tx_revealjseditor_data_state}">
-                <f:render.record record="{slide}"/>
-            </section>
-        </f:for>
-    </div>
+<f:asset.css identifier="revealjs-theme"
+						 href="EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/theme/{theme}.css"/>
+
+<f:asset.css identifier="revealjs-theme-local"
+						 href="EXT:revealjs_editor/Resources/Public/Styles/revealjs-themes/{theme}.css"/>
+
+<f:asset.css identifier="revealjs-layouts"
+						 href="EXT:revealjs_editor/Resources/Public/Css/Layouts.css"/>
+<f:comment>
+	Use custom configuration for the Visual Editor
+</f:comment>
+<f:editMode>
+	<f:then>
+		<f:variable name="config">
+			{"hash":true,"controls":true,"progress":true,"center":true,"transition":"slide","keyboard":false}
+		</f:variable>
+	</f:then>
+	<f:else>
+		<f:variable name="config">
+			{"hash":true,"controls":true,"progress":true,"center":true,"transition":"slide","keyboard":true}
+		</f:variable>
+	</f:else>
+</f:editMode>
+
+<div class="reveal" data-revealjs-options='{config}'>
+	<div class="reveal-logo">
+		<f:image src="EXT:revealjs_editor/Resources/Public/Images/the-camp.png" alt="" maxWidth="200px"/>
+	</div>
+
+	<div class="slides">
+		<f:for each="{content.main}" as="slide">
+			<section data-transition="slide"
+							 data-state="{slide.tx_revealjseditor_data_state}"
+							 class="{slide.tx_revealjseditor_data_state}">
+				<f:render.record record="{slide}"/>
+			</section>
+		</f:for>
+	</div>
 </div>
 
 <f:comment>
-  Inline ESM bootstrap. The reveal.mjs URL is resolved once by f:uri.resource;
-  init options are JSON-encoded on the .reveal root element so this script stays
-  static and can be cached by the browser.
+	Initialze RevealJS
 </f:comment>
 <f:asset.script identifier="revealjs-init" type="module">
-import Reveal from "{f:uri.resource(path: 'EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/reveal.mjs')}";
-const root = document.querySelector('.reveal');
-const opts = root ? JSON.parse(root.dataset.revealjsOptions || '{}') : {};
-Reveal.initialize(opts);
+	import Reveal from "{f:uri.resource(path: 'EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/reveal.mjs')}";
+	const root = document.querySelector('.reveal');
+	const opts = root ? JSON.parse(root.dataset.revealjsOptions || '{}') : {};
+	Reveal.initialize(opts);
 </f:asset.script>
 
 </html>

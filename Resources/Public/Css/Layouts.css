@@ -1,0 +1,61 @@
+.reveal-columns {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+}
+
+.reveal-columns > .reveal-col {
+    min-width: 0;
+}
+
+.reveal-cover h1,
+.reveal-cover h2 {
+    font-size: 3em;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.reveal-cover h3 {
+    font-size: 2.8em;
+    margin: 1em 0 1rem;
+}
+
+.reveal-cover p {
+    font-size: 1.4em;
+    margin: 0;
+}
+
+/* Cover image — sits above the heading via normal block flow. min(60%, 500px)
+   keeps it readable on both wide and narrow slide canvases. */
+.reveal-cover-image {
+    margin-bottom: 1.5rem;
+}
+
+.reveal-cover-image img {
+    max-width: 30%;
+    height: auto;
+}
+
+.reveal-cover .cover-wordmark {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 800;
+	font-size: 7em;
+	line-height: 0.95;
+	color: var(--cmp-accent);
+	text-transform: uppercase;
+}
+
+.reveal-logo {
+	z-index: 30;
+	pointer-events: none;
+	-webkit-user-select: none;
+	user-select: none;
+	width: auto;
+	height: 6vh;
+	box-shadow: none;
+	background: 0 0;
+	border: 0;
+	position: fixed;
+	top: 4vh;
+	right: 0;
+}

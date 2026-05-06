@@ -15,7 +15,6 @@
 	},
 	"require": {
 		"php": "^8.2",
-		"b13/container": "^3.1",
 		"friendsoftypo3/visual-editor": "^1.4",
 		"typo3/cms-core": "^13 || ^14",
 		"typo3/cms-fluid-styled-content": "^13 || ^14",

@@ -14,7 +14,6 @@ parameters:
   bootstrapFiles:
     - Build/vendor/autoload.php
   scanDirectories:
-    - Build/vendor/b13/container/Classes
     - Build/vendor/friendsoftypo3/visual-editor/Classes
     - Build/vendor/typo3/cms-core/Classes
     - Build/vendor/typo3/testing-framework/Classes

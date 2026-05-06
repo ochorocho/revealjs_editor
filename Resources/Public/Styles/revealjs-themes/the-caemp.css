@@ -1,0 +1,404 @@
+/* ---------- Self-hosted brand fonts (subset of Google Fonts CSS) ---------- */
+
+/* EB Garamond 400 italic */
+@font-face {
+	font-family: 'EB Garamond';
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url('./the-caemp-fonts/EBGaramond-400-italic-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'EB Garamond';
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url('./the-caemp-fonts/EBGaramond-400-italic-latin-ext.woff2') format('woff2');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* EB Garamond 400 normal */
+@font-face {
+	font-family: 'EB Garamond';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('./the-caemp-fonts/EBGaramond-400-normal-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'EB Garamond';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('./the-caemp-fonts/EBGaramond-400-normal-latin-ext.woff2') format('woff2');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* EB Garamond 700 normal — same variable woff2 as 400, browser picks the weight */
+@font-face {
+	font-family: 'EB Garamond';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('./the-caemp-fonts/EBGaramond-400-normal-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'EB Garamond';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('./the-caemp-fonts/EBGaramond-400-normal-latin-ext.woff2') format('woff2');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Montserrat 700 */
+@font-face {
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('./the-caemp-fonts/Montserrat-700-normal-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('./the-caemp-fonts/Montserrat-700-normal-latin-ext.woff2') format('woff2');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Montserrat 800 — same variable woff2 as 700, browser picks the weight */
+@font-face {
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 800;
+	font-display: swap;
+	src: url('./the-caemp-fonts/Montserrat-700-normal-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 800;
+	font-display: swap;
+	src: url('./the-caemp-fonts/Montserrat-700-normal-latin-ext.woff2') format('woff2');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ---------- Brand tokens & reveal.js variable mapping ---------- */
+
+html,
+body,
+.reveal-viewport,
+.reveal,
+.reveal .backgrounds {
+	background: #2a2623;
+	color: #ffffff;
+}
+
+:root {
+	--cmp-bg: #2a2623;
+	--cmp-text: #ffffff;
+	--cmp-muted: #d9d9d9;
+	--cmp-accent: #fffc00;
+
+	--r-background-color: var(--cmp-bg);
+	--r-main-color: var(--cmp-text);
+	--r-heading-color: var(--cmp-accent);
+	--r-link-color: var(--cmp-accent);
+	--r-link-color-hover: #fff04a;
+	--r-selection-background-color: rgba(255, 252, 0, 0.35);
+	--r-selection-color: var(--cmp-bg);
+
+	--r-main-font: 'EB Garamond', Georgia, 'Times New Roman', serif;
+	--r-main-font-size: 36px;
+	--r-heading-font: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+	--r-heading-font-weight: 800;
+	--r-heading-text-transform: uppercase;
+	--r-heading-letter-spacing: 0.01em;
+	--r-code-font: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace;
+}
+
+/* ---------- Headings ---------- */
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+	color: var(--cmp-accent);
+	font-family: var(--r-heading-font);
+	letter-spacing: 0.01em;
+}
+
+.reveal h1 {
+	font-weight: 800;
+	font-size: 3.2em;
+	margin-bottom: 0.4em;
+	padding-bottom: 0.25em;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.reveal h2 {
+	font-weight: 700;
+	font-size: 1.4em;
+	text-transform: uppercase;
+}
+
+.reveal h3 {
+	font-weight: 700;
+	font-size: 1.1em;
+	text-transform: none;
+	font-family: 'EB Garamond', serif;
+	color: var(--cmp-text);
+}
+
+/* Slide-internal alignment */
+.reveal .slides section {
+	text-align: left;
+}
+
+.reveal .slides section h1,
+.reveal .slides section h2 {
+	text-align: left;
+}
+
+/* ---------- Body text & lists ---------- */
+
+.reveal {
+	font-family: var(--r-main-font);
+	color: var(--cmp-text);
+}
+
+.reveal p {
+	line-height: 1;
+	font-size: 1.6em;
+}
+
+.reveal strong {
+	color: var(--cmp-accent);
+	font-weight: 700;
+}
+
+.reveal em {
+	color: var(--cmp-text);
+}
+
+.reveal ul {
+	list-style: none;
+	padding-left: 1.9em;
+}
+
+.reveal ul li, .reveal ol li {
+	line-height: 1.6em;
+	font-size: 1.8em;
+}
+
+/* Nested lists: keep the bullet + line-height, but stop the font-size
+   compounding so children render at the same visual size as their parent. */
+.reveal ul ul li,
+.reveal ul ol li,
+.reveal ol ul li,
+.reveal ol ol li {
+	font-size: 1em;
+}
+
+.reveal ul li::before {
+	content: '\25AA'; /* small filled square */
+	color: var(--cmp-accent);
+	font-weight: bold;
+	display: inline-block;
+	width: 1em;
+	margin-left: -0.5em;
+}
+
+.reveal ol {
+	padding-left: 1.9em;
+}
+
+.reveal ol li::marker {
+	color: var(--cmp-accent);
+	font-weight: 700;
+}
+
+/* ---------- Links ---------- */
+
+.reveal a {
+	color: var(--cmp-accent);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.15em;
+}
+
+.reveal a:hover {
+	color: #fff04a;
+}
+
+/* ---------- Code ---------- */
+
+.reveal pre {
+	width: 100%;
+	font-size: 1.1em;
+	line-height: 1.4;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+	border-radius: 6px;
+	border: 1px solid rgba(255, 252, 0, 0.25);
+}
+
+.reveal li pre {
+	font-size: unset;
+}
+
+.reveal pre code {
+	font-family: var(--r-code-font);
+	max-height: 600px;
+	border-radius: 6px;
+}
+
+.reveal p code,
+.reveal li code,
+.reveal td code {
+	background: rgba(255, 252, 0, 0.12);
+	border: 1px solid rgba(255, 252, 0, 0.25);
+	border-radius: 4px;
+	padding: 0.05em 0.4em;
+	font-size: 0.85em;
+	color: var(--cmp-text);
+}
+
+/* ---------- Blockquote ---------- */
+
+.reveal blockquote {
+	border-left: 4px solid var(--cmp-accent);
+	background: rgba(255, 252, 0, 0.06);
+	padding: 0.5em 1em;
+	border-radius: 0 6px 6px 0;
+	font-family: 'EB Garamond', serif;
+	font-style: italic;
+}
+
+/* ---------- Reveal UI chrome ---------- */
+
+.reveal .progress span {
+	background: var(--cmp-accent);
+}
+
+.reveal .controls {
+	color: var(--cmp-accent);
+}
+
+.reveal .slide-number {
+	background: rgba(0, 0, 0, 0.5);
+	color: var(--cmp-accent);
+	font-family: var(--r-heading-font);
+	font-weight: 700;
+	font-size: 0.55em;
+	letter-spacing: 0.05em;
+	padding: 0.2em 0.5em;
+	border-radius: 3px;
+}
+
+/* ---------- Persistent brand label (top-right yellow square) ---------- */
+
+.brand-label {
+	position: fixed;
+	top: 4vh;
+	right: 0;
+	height: 8vh;
+	width: auto;
+	z-index: 30;
+	pointer-events: none;
+	user-select: none;
+	background: none;
+	border: 0;
+	box-shadow: none;
+}
+
+/* ---------- Cover slide ---------- */
+
+.reveal .slides section.cover {
+	text-align: left;
+	height: 100%;
+}
+
+.reveal .slides section.cover .cover-grid {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.25em;
+	padding-left: 0.4em;
+}
+
+.reveal .slides section.cover .cover-typo3 {
+	display: block;
+	height: 10em;
+	width: auto;
+	margin: 0 0 0.1em -0.15em;
+	background: none;
+	border: 0;
+	box-shadow: none;
+}
+
+.reveal .slides section.cover .cover-wordmark {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 800;
+	font-size: 7em;
+	line-height: 0.95;
+	color: var(--cmp-accent);
+	text-transform: uppercase;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	letter-spacing: 0;
+}
+
+.reveal .slides section.cover .cover-rule {
+	width: 75%;
+	border: 0;
+	border-top: 1px solid rgba(255, 255, 255, 0.7);
+	margin: 0.4em 0;
+	padding: 0;
+	background: none;
+}
+
+.reveal .slides section.cover .cover-thema {
+	font-family: 'EB Garamond', serif;
+	font-style: normal;
+	font-weight: 400;
+	font-size: 3.2em;
+	color: var(--cmp-text);
+	margin: 0;
+}
+
+.reveal .slides section.cover .cover-autor {
+	position: absolute;
+	bottom: 1em;
+	left: 0.2em;
+	font-family: 'EB Garamond', serif;
+	font-style: normal;
+	font-weight: 400;
+	font-size: 1.4em;
+	color: var(--cmp-text);
+	margin: 0;
+}
+
+.reveal .slides section.cover .cover-b13 {
+	position: absolute;
+	bottom: 0.8em;
+	right: 1em;
+	width: 5em;
+	height: auto;
+	background: none;
+	border: 0;
+	box-shadow: none;
+	margin: 0;
+}

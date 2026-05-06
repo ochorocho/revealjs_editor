@@ -89,6 +89,7 @@ if [ ! -f "${COMPOSER_JSON}" ] || [ "${TYPO3_VERSION}" != "${CURRENT_TYPO3_VERSI
         "typo3/cms-install": "${TYPO3_VERSION}",
         "typo3/cms-seo": "${TYPO3_VERSION}",
         "typo3/cms-setup": "${TYPO3_VERSION}",
+        "typo3/cms-lowlevel": "${TYPO3_VERSION}",
         "typo3/cms-tstemplate": "${TYPO3_VERSION}"
     },
     "require-dev": {

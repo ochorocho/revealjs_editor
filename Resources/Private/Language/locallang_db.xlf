@@ -30,11 +30,13 @@
             <trans-unit id="tt_content.transition.concave" resname="tt_content.transition.concave"><source>Concave</source></trans-unit>
             <trans-unit id="tt_content.transition.zoom" resname="tt_content.transition.zoom"><source>Zoom</source></trans-unit>
 
+            <trans-unit id="ctype.revealjs_slide_cover" resname="ctype.revealjs_slide_cover"><source>Slide: Cover</source></trans-unit>
             <trans-unit id="ctype.revealjs_slide_single" resname="ctype.revealjs_slide_single"><source>Slide: Single Column</source></trans-unit>
             <trans-unit id="ctype.revealjs_slide_two_column" resname="ctype.revealjs_slide_two_column"><source>Slide: Two Columns</source></trans-unit>
             <trans-unit id="ctype.revealjs_slide_title_content" resname="ctype.revealjs_slide_title_content"><source>Slide: Title + Content</source></trans-unit>
             <trans-unit id="ctype.revealjs_slide_image_left" resname="ctype.revealjs_slide_image_left"><source>Slide: Image | Text</source></trans-unit>
 
+            <trans-unit id="ctype.revealjs_slide_cover.description" resname="ctype.revealjs_slide_cover.description"><source>Cover / title slide. Centred large typography for the deck&apos;s opening slide.</source></trans-unit>
             <trans-unit id="ctype.revealjs_slide_single.description" resname="ctype.revealjs_slide_single.description"><source>One body column.</source></trans-unit>
             <trans-unit id="ctype.revealjs_slide_two_column.description" resname="ctype.revealjs_slide_two_column.description"><source>Two body columns side by side.</source></trans-unit>
             <trans-unit id="ctype.revealjs_slide_title_content.description" resname="ctype.revealjs_slide_title_content.description"><source>Title row above body row.</source></trans-unit>

@@ -1,0 +1,24 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<div class="reveal-cover">
+    <f:if condition="{files}">
+        <div class="reveal-cover-image">
+            <f:for each="{files}" as="file">
+                <f:image image="{file}" alt="{file.alternative}"/>
+            </f:for>
+        </div>
+    </f:if>
+    <f:if condition="{data.header}">
+        <h1 class="cover-wordmark">{data.header}</h1>
+    </f:if>
+    <f:if condition="{data.subheader}">
+        <h3>{data.subheader}</h3>
+    </f:if>
+    <f:if condition="{data.bodytext}">
+        <div class="reveal-cover-body">
+            <f:format.html>{data.bodytext}</f:format.html>
+        </div>
+    </f:if>
+</div>
+</html>

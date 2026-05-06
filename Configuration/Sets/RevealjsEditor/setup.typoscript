@@ -1,12 +1,16 @@
-# reveal.js page-type rendering.
-#
-# Activated only for doktype 1731. The PAGEVIEW cObject resolves the template
-# by the page's BackendLayout name (`pagets__revealjs` -> `Pages/Revealjs.html`,
-# defined in page.tsconfig). PAGEVIEW + the BackendLayout populate
-# {content.main} as a ContentArea, which the template renders via
-# <f:render.contentArea/>. Each top-level slide is a tt_content row with
-# CType=revealjs_slide_*; the per-CType blocks below wire b13/container's
-# ContainerProcessor so each slide template can iterate {children_<colPos>}.
+tt_content.revealjs_slide_cover =< lib.contentElement
+tt_content.revealjs_slide_cover {
+    templateName = Cover
+    templateRootPaths.20 = EXT:revealjs_editor/Resources/Private/Templates/Container/
+
+    # Resolve the FAL image references on tt_content.image into {files} for
+    # Cover.html. Mirrors how core's tt_content.image / tt_content.textpic
+    # use the same processor (cms-frontend/Classes/DataProcessing/FilesProcessor.php).
+    dataProcessing.10 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
+    dataProcessing.10 {
+        references.fieldName = image
+    }
+}
 
 [traverse(page, "doktype") == 1731]
   page = PAGE
@@ -27,37 +31,5 @@
         theme.ifEmpty = black
       }
     }
-  }
-
-  # ----- Per-CType slide rendering --------------------------------------------
-  # ContainerProcessor with no colPos config exposes every grid column as
-  # {children_<colPos>}, so the slide templates iterate those keys directly.
-
-  tt_content.revealjs_slide_single =< lib.contentElement
-  tt_content.revealjs_slide_single {
-    templateName = SingleColumn
-    templateRootPaths.20 = EXT:revealjs_editor/Resources/Private/Templates/Container/
-    dataProcessing.10 = B13\Container\DataProcessing\ContainerProcessor
-  }
-
-  tt_content.revealjs_slide_two_column =< lib.contentElement
-  tt_content.revealjs_slide_two_column {
-    templateName = TwoColumn
-    templateRootPaths.20 = EXT:revealjs_editor/Resources/Private/Templates/Container/
-    dataProcessing.10 = B13\Container\DataProcessing\ContainerProcessor
-  }
-
-  tt_content.revealjs_slide_title_content =< lib.contentElement
-  tt_content.revealjs_slide_title_content {
-    templateName = TitleContent
-    templateRootPaths.20 = EXT:revealjs_editor/Resources/Private/Templates/Container/
-    dataProcessing.10 = B13\Container\DataProcessing\ContainerProcessor
-  }
-
-  tt_content.revealjs_slide_image_left =< lib.contentElement
-  tt_content.revealjs_slide_image_left {
-    templateName = ImageLeft
-    templateRootPaths.20 = EXT:revealjs_editor/Resources/Private/Templates/Container/
-    dataProcessing.10 = B13\Container\DataProcessing\ContainerProcessor
   }
 [end]
