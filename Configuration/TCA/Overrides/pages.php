@@ -73,4 +73,9 @@ defined('TYPO3') or die();
             ],
         ],
     ];
+
+    // Page tree / record-listing icon.
+    $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes'][(string)$doktype] = 'apps-pagetree-revealjs';
+    $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes'][$doktype . '-hideinmenu'] = 'apps-pagetree-revealjs';
+    $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes'][$doktype . '-root'] = 'apps-pagetree-revealjs';
 })();
