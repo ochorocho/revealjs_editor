@@ -1,0 +1,44 @@
+{
+	"name": "ochorocho/revealjs-editor",
+	"type": "typo3-cms-extension",
+	"description": "Create revealjs presentations/pages in TYPO3",
+	"license": "GPL-2.0-or-later",
+	"autoload": {
+		"psr-4": {
+			"Ochorocho\\RevealJsEditor\\": "Classes/"
+		}
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "revealjs_editor"
+		}
+	},
+	"require": {
+		"php": "^8.2",
+		"b13/container": "^3.1",
+		"friendsoftypo3/visual-editor": "^1.4",
+		"typo3/cms-core": "^13 || ^14",
+		"typo3/cms-fluid-styled-content": "^13 || ^14",
+		"typo3/cms-info": "^13 || ^14",
+		"typo3/cms-seo": "^13 || ^14"
+	},
+	"require-dev": {
+		"typo3/coding-standards": "^v0.8",
+		"phpstan/phpstan": "^1.5.7"
+	},
+	"config": {
+		"sort-packages": true,
+		"allow-plugins": {
+			"typo3/class-alias-loader": true,
+			"typo3/cms-composer-installers": true
+		}
+	},
+	"scripts": {
+		"ci:php:lint": "find Classes Configuration Tests ext_localconf.php -name '*.php' -print0 | xargs -0 -n1 -P4 php -l > /dev/null",
+		"ci:php:stan": "Build/vendor/bin/phpstan analyse --no-progress",
+		"ci:php:cs": "Build/vendor/bin/php-cs-fixer fix --config=php-cs-fixer.php --dry-run --diff",
+		"ci:php:test": "typo3DatabaseDriver=mysqli typo3DatabaseHost=db typo3DatabasePort=3306 typo3DatabaseUsername=db typo3DatabasePassword=db typo3DatabaseName=test Build/vendor/bin/phpunit -c Tests/FunctionalTests.xml",
+		"ci:composer:validate": "@composer validate --no-check-publish --working-dir=Build",
+		"fix:php:cs": "Build/vendor/bin/php-cs-fixer fix --config=php-cs-fixer.php"
+	}
+}

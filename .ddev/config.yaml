@@ -1,0 +1,32 @@
+name: revealjs-editor
+type: typo3
+docroot: Build/public
+php_version: "8.3"
+composer_root: "Build/"
+webserver_type: nginx-fpm
+xdebug_enabled: false
+additional_hostnames: []
+additional_fqdns: []
+database:
+    type: mariadb
+    version: "10.11"
+hooks:
+    post-start:
+        - exec: bash /var/www/html/.ddev/scripts/setup-typo3.sh
+working_dir:
+    web: /var/www/html/Build
+use_dns_when_possible: true
+composer_version: "2"
+web_environment:
+    - TYPO3_DB_PASSWORD=db
+    - TYPO3_SETUP_ADMIN_EMAIL=typo3@example.com
+    - TYPO3_DB_HOST=db
+    - TYPO3_DB_DBNAME=db
+    - TYPO3_SETUP_ADMIN_USERNAME=admin
+    - TYPO3_DB_DRIVER=mysqli
+    - TYPO3_DB_PORT=3306
+    - TYPO3_PROJECT_NAME=TYPO3-Dev
+    - TYPO3_CONTEXT=Development
+    - TYPO3_DB_USERNAME=db
+    - TYPO3_SETUP_ADMIN_PASSWORD=Password.1
+corepack_enable: false

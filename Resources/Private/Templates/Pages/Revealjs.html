@@ -1,0 +1,27 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:asset.css identifier="revealjs-core"
+             href="EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/reveal.css"/>
+<f:asset.css identifier="revealjs-theme"
+             href="EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/theme/{theme}.css"/>
+
+<div class="reveal" data-revealjs-options='{"hash":true,"controls":true,"progress":true,"center":true,"transition":"slide"}'>
+    <div class="slides">
+        <f:render.contentArea contentArea="{content.main}"/>
+    </div>
+</div>
+
+<f:comment>
+  Inline ESM bootstrap. The reveal.mjs URL is resolved once by f:uri.resource;
+  init options are JSON-encoded on the .reveal root element so this script stays
+  static and can be cached by the browser.
+</f:comment>
+<f:asset.script identifier="revealjs-init" type="module">
+import Reveal from "{f:uri.resource(path: 'EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/reveal.mjs')}";
+const root = document.querySelector('.reveal');
+const opts = root ? JSON.parse(root.dataset.revealjsOptions || '{}') : {};
+Reveal.initialize(opts);
+</f:asset.script>
+
+</html>

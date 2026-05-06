@@ -1,0 +1,23 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+<section data-transition="{data.tx_revealjseditor_transition}"
+         data-state="{data.tx_revealjseditor_data_state}"
+         class="{data.tx_revealjseditor_data_state}">
+    <div class="reveal-columns reveal-columns-2">
+        <div class="reveal-col reveal-col-left">
+            <f:mark.contentArea colPos="210" txContainerParent="{data.uid}">
+                <f:for each="{children_210}" as="child">
+                    <f:format.raw>{child.renderedContent}</f:format.raw>
+                </f:for>
+            </f:mark.contentArea>
+        </div>
+        <div class="reveal-col reveal-col-right">
+            <f:mark.contentArea colPos="211" txContainerParent="{data.uid}">
+                <f:for each="{children_211}" as="child">
+                    <f:format.raw>{child.renderedContent}</f:format.raw>
+                </f:for>
+            </f:mark.contentArea>
+        </div>
+    </div>
+</section>
+</html>

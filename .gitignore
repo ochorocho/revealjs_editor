@@ -1,0 +1,8 @@
+.DS_Store
+.php-cs-fixer.cache
+/vendor
+/composer.lock
+/.Build/
+.env
+/.idea
+Build/

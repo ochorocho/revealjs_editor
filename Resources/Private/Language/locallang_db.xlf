@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf" date="2026-05-06T20:22:32Z" product-name="revealjs_editor">
+        <header/>
+        <body>
+            <trans-unit id="pages.doktype.revealjs" resname="pages.doktype.revealjs">
+                <source>reveal.js Presentation</source>
+            </trans-unit>
+            <trans-unit id="pages.theme" resname="pages.theme">
+                <source>reveal.js Theme</source>
+            </trans-unit>
+
+            <trans-unit id="tt_content.tab.slide" resname="tt_content.tab.slide">
+                <source>Slide</source>
+            </trans-unit>
+            <trans-unit id="tt_content.transition" resname="tt_content.transition">
+                <source>Slide transition</source>
+            </trans-unit>
+            <trans-unit id="tt_content.data_state" resname="tt_content.data_state">
+                <source>CSS class / data-state</source>
+            </trans-unit>
+            <trans-unit id="tt_content.data_state.description" resname="tt_content.data_state.description">
+                <source>Space-separated CSS class names. Also emitted as data-state on the slide.</source>
+            </trans-unit>
+
+            <trans-unit id="tt_content.transition.none" resname="tt_content.transition.none"><source>None</source></trans-unit>
+            <trans-unit id="tt_content.transition.fade" resname="tt_content.transition.fade"><source>Fade</source></trans-unit>
+            <trans-unit id="tt_content.transition.slide" resname="tt_content.transition.slide"><source>Slide</source></trans-unit>
+            <trans-unit id="tt_content.transition.convex" resname="tt_content.transition.convex"><source>Convex</source></trans-unit>
+            <trans-unit id="tt_content.transition.concave" resname="tt_content.transition.concave"><source>Concave</source></trans-unit>
+            <trans-unit id="tt_content.transition.zoom" resname="tt_content.transition.zoom"><source>Zoom</source></trans-unit>
+
+            <trans-unit id="ctype.revealjs_slide_single" resname="ctype.revealjs_slide_single"><source>Slide: Single Column</source></trans-unit>
+            <trans-unit id="ctype.revealjs_slide_two_column" resname="ctype.revealjs_slide_two_column"><source>Slide: Two Columns</source></trans-unit>
+            <trans-unit id="ctype.revealjs_slide_title_content" resname="ctype.revealjs_slide_title_content"><source>Slide: Title + Content</source></trans-unit>
+            <trans-unit id="ctype.revealjs_slide_image_left" resname="ctype.revealjs_slide_image_left"><source>Slide: Image | Text</source></trans-unit>
+
+            <trans-unit id="ctype.revealjs_slide_single.description" resname="ctype.revealjs_slide_single.description"><source>One body column.</source></trans-unit>
+            <trans-unit id="ctype.revealjs_slide_two_column.description" resname="ctype.revealjs_slide_two_column.description"><source>Two body columns side by side.</source></trans-unit>
+            <trans-unit id="ctype.revealjs_slide_title_content.description" resname="ctype.revealjs_slide_title_content.description"><source>Title row above body row.</source></trans-unit>
+            <trans-unit id="ctype.revealjs_slide_image_left.description" resname="ctype.revealjs_slide_image_left.description"><source>Image on the left, text on the right.</source></trans-unit>
+
+            <trans-unit id="wizard.header" resname="wizard.header"><source>reveal.js Slides</source></trans-unit>
+
+            <trans-unit id="backendLayout.revealjs.title" resname="backendLayout.revealjs.title"><source>reveal.js Presentation</source></trans-unit>
+            <trans-unit id="backendLayout.column.main" resname="backendLayout.column.main"><source>Slides</source></trans-unit>
+        </body>
+    </file>
+</xliff>

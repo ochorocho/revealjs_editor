@@ -1,0 +1,4 @@
+name: ochorocho/revealjs-editor
+label: 'reveal.js Editor'
+dependencies:
+  - typo3/fluid-styled-content

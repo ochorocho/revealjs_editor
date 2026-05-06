@@ -1,0 +1,71 @@
+# Single-column BackendLayout used by all reveal.js pages. PAGEVIEW resolves
+# the FE template via the layout name (-> Pages/Revealjs.html), and the
+# {content.main} ContentArea is populated from colPos=0 of the page.
+mod.web_layout.BackendLayouts {
+  revealjs {
+    title = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:backendLayout.revealjs.title
+    config {
+      backend_layout {
+        colCount = 1
+        rowCount = 1
+        rows {
+          1 {
+            columns {
+              1 {
+                name = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:backendLayout.column.main
+                colPos = 0
+                identifier = main
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# Restrict the new-content wizard to our slide CTypes when the parent is a
+# reveal.js page (doktype 1731). This filters what shows in the "+ Content"
+# dropdown — it does not prevent post-creation CType switching, which is a
+# tolerable v1 trade-off (clean fix is a DataHandler hook in v1.1).
+[traverse(page, "doktype") == 1731]
+  mod.wizards.newContentElement.wizardItems {
+    revealjs {
+      header = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:wizard.header
+      elements {
+        revealjs_slide_single {
+          iconIdentifier = content-revealjs-slide-single
+          title = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:ctype.revealjs_slide_single
+          description = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:ctype.revealjs_slide_single.description
+          tt_content_defValues.CType = revealjs_slide_single
+        }
+        revealjs_slide_two_column {
+          iconIdentifier = content-revealjs-slide-two-column
+          title = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:ctype.revealjs_slide_two_column
+          description = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:ctype.revealjs_slide_two_column.description
+          tt_content_defValues.CType = revealjs_slide_two_column
+        }
+        revealjs_slide_title_content {
+          iconIdentifier = content-revealjs-slide-title-content
+          title = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:ctype.revealjs_slide_title_content
+          description = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:ctype.revealjs_slide_title_content.description
+          tt_content_defValues.CType = revealjs_slide_title_content
+        }
+        revealjs_slide_image_left {
+          iconIdentifier = content-revealjs-slide-image-left
+          title = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:ctype.revealjs_slide_image_left
+          description = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:ctype.revealjs_slide_image_left.description
+          tt_content_defValues.CType = revealjs_slide_image_left
+        }
+      }
+      show = revealjs_slide_single,revealjs_slide_two_column,revealjs_slide_title_content,revealjs_slide_image_left
+    }
+    # Hide every other wizard group (default core CTypes etc.)
+    common.show := removeFromList(*)
+    special.show := removeFromList(*)
+    forms.show := removeFromList(*)
+    plugins.show := removeFromList(*)
+    menu.show := removeFromList(*)
+  }
+[end]
+# DO NOT add: options.pageTree.doktypesToShowInNewPageDragArea — deprecated since v14.2.

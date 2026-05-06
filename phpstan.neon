@@ -1,0 +1,28 @@
+parameters:
+  level: 6
+
+  paths:
+    - Classes
+    - Configuration
+    - Tests
+    - ext_localconf.php
+
+  # PHPStan looks for vendor/autoload.php next to phpstan.neon by default.
+  # Our dev install autoload lives in Build/vendor; both bootstrapFiles
+  # (executes the file) and scanDirectories (walks PSR-4 paths for class
+  # discovery) are needed for class resolution to succeed.
+  bootstrapFiles:
+    - Build/vendor/autoload.php
+  scanDirectories:
+    - Build/vendor/b13/container/Classes
+    - Build/vendor/friendsoftypo3/visual-editor/Classes
+    - Build/vendor/typo3/cms-core/Classes
+    - Build/vendor/typo3/testing-framework/Classes
+
+  # Don't error on unmatched ignored errors during baseline rebuilds.
+  reportUnmatchedIgnoredErrors: false
+  ignoreErrors:
+    -
+      identifier: missingType.iterableValue
+includes:
+  - phpstan-baseline.neon
