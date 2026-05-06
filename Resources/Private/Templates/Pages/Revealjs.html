@@ -6,9 +6,31 @@
 <f:asset.css identifier="revealjs-theme"
              href="EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/theme/{theme}.css"/>
 
-<div class="reveal" data-revealjs-options='{"hash":true,"controls":true,"progress":true,"center":true,"transition":"slide"}'>
+<div class="reveal" data-revealjs-options='{"hash":true,"controls":true,"progress":true,"center":true,"transition":"slide","keyboard":false}'>
     <div class="slides">
-        <f:render.contentArea contentArea="{content.main}"/>
+        <f:comment>
+          Iterate {content.main} (a Core\Page\ContentArea, IteratorAggregate over
+          Domain\Record objects) directly with f:for instead of f:render.contentArea.
+          Reason: f:render.contentArea triggers the visual_editor listener that wraps
+          output in a ve-content-area custom element. That element's firstUpdated()
+          callback (Lit) destructively replaces its parent div.slides with itself.
+          By the time that DOM surgery runs, reveal.js has already finished init
+          against the pre-mutation DOM and registered zero slides — nav stays
+          disabled, no slide promoted to .present. f:for emits sections as direct
+          children of div.slides, so reveal.js's ".slides > section" query matches
+          immediately and the deck initialises correctly.
+          Per-slide editing is still visual_editor-aware: each slide CType is
+          wrapped in ve-content-element by tt_content.stdWrap.wrapContentElementsWithVeWrapper=1
+          (shipped from EXT:visual_editor), and each slide's child column is
+          wrapped via the slide template's f:mark.contentArea.
+        </f:comment>
+        <f:for each="{content.main}" as="slide">
+            <section data-transition="{slide.tx_revealjseditor_transition}"
+                     data-state="{slide.tx_revealjseditor_data_state}"
+                     class="{slide.tx_revealjseditor_data_state}">
+                <f:render.record record="{slide}"/>
+            </section>
+        </f:for>
     </div>
 </div>
 
