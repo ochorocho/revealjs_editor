@@ -13,10 +13,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci:
-    name: PHP CI + Playwright (DDEV)
+  # PHP CI runs the five `composer ci:*` scripts. None of them touch the
+  # seeded `db` content (PHPUnit Functional tests spin up their own
+  # `functional_*` databases via typo3/testing-framework), so this job
+  # skips the npm install + ddev restart dance the Playwright job needs.
+  php-ci:
+    name: PHP CI (DDEV)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -24,12 +28,6 @@ jobs:
 
       - name: Set up DDEV (auto-starts the project)
         uses: ddev/github-action-setup-ddev@v1
-
-      - name: Install npm dependencies (in DDEV web container)
-        run: ddev npm install --no-audit --no-fund
-
-      - name: Re-run DDEV bootstrap so CSV seeds get imported
-        run: ddev restart
 
       - name: DDEV info (debug aid for downstream failures)
         run: ddev describe
@@ -49,12 +47,40 @@ jobs:
       - name: composer ci:composer:validate
         run: ddev exec -d /var/www/html composer ci:composer:validate
 
-      # ----- Playwright (FE smoke + BE smoke + slide editor) ---------
+      - name: Stop DDEV
+        if: ${{ always() }}
+        run: ddev poweroff
+
+  # Playwright runs the FE + BE smoke specs against the dev `db` database.
+  # Two-stage bootstrap: setup-ddev auto-starts and triggers
+  # setup-typo3.sh BEFORE node_modules exists, so the bootstrap's CSV
+  # import is skipped on first run. We then `ddev npm install` to populate
+  # node_modules/, followed by `ddev restart` which re-runs the
+  # (idempotent) bootstrap — this time the CSV import branch fires and
+  # seeds `db` with the per-table fixtures the tests expect.
+  playwright:
+    name: Playwright (DDEV)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up DDEV (auto-starts the project)
+        uses: ddev/github-action-setup-ddev@v1
+
+      - name: Install npm dependencies (in DDEV web container)
+        run: ddev npm install --no-audit --no-fund
+
+      - name: Re-run DDEV bootstrap so CSV seeds get imported
+        run: ddev restart
+
+      - name: DDEV info (debug aid for downstream failures)
+        run: ddev describe
 
       - name: ddev playwright test
         run: ddev playwright test
-
-      # ----- Artefacts (only when something failed) ------------------
 
       - name: Upload Playwright HTML report
         if: ${{ failure() }}
