@@ -1,0 +1,20 @@
+{
+    "name": "ochorocho-revealjs-editor",
+    "version": "1.0.0-dev",
+    "description": "Playwright end-to-end tests for the revealjs_editor TYPO3 extension. Tests run inside DDEV via the ochorocho/ddev-playwright add-on; the host's @playwright/test version must match the addon's Docker image (.ddev/.env.playwright).",
+    "private": true,
+    "type": "module",
+    "engines": {
+        "node": ">=20"
+    },
+    "scripts": {
+        "test:e2e": "ddev playwright test",
+        "test:e2e:ui": "ddev playwright browser",
+        "test:e2e:report": "ddev playwright show-report"
+    },
+    "devDependencies": {
+        "@ochorocho/playwright-db-connector": "^0.0.2",
+        "@playwright/test": "^1.59.0",
+        "mysql2": "^3.22.3"
+    }
+}
