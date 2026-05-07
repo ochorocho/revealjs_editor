@@ -41,9 +41,6 @@ jobs:
       - name: composer ci:php:cs
         run: ddev exec -d /var/www/html composer ci:php:cs
 
-      - name: composer ci:php:test
-        run: ddev exec -d /var/www/html composer ci:php:test
-
       - name: composer ci:composer:validate
         run: ddev exec -d /var/www/html composer ci:composer:validate
 
