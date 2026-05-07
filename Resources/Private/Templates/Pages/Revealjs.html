@@ -4,40 +4,52 @@
 <f:asset.css identifier="revealjs-core"
 						 href="EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/reveal.css"/>
 
-<f:asset.css identifier="revealjs-theme"
-						 href="EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/theme/{theme}.css"/>
-
-<f:asset.css identifier="revealjs-theme-local"
-						 href="EXT:revealjs_editor/Resources/Public/Styles/revealjs-themes/{theme}.css"/>
+<f:comment>
+	{themeUrl} resolves to either dist/theme/{theme}.css (stock reveal.js
+	themes) or Styles/revealjs-themes/{theme}.css (custom themes shipped
+	with this extension), picked by RevealJsThemeProcessor based on the
+	page record's tx_revealjseditor_theme value. Single asset, no 404
+	log noise.
+</f:comment>
+<f:asset.css identifier="revealjs-theme" href="{themeUrl}"/>
 
 <f:asset.css identifier="revealjs-layouts"
 						 href="EXT:revealjs_editor/Resources/Public/Css/Layouts.css"/>
 <f:comment>
-	Use custom configuration for the Visual Editor
+	revealjsConfig is the JSON-encoded Reveal.initialize() options object,
+	produced by Ochorocho\RevealJsEditor\DataProcessing\RevealJsConfigProcessor
+	from the page record's tx_revealjseditor_* fields. Edit-mode override
+	(keyboard=false) is applied inside the processor.
 </f:comment>
-<f:editMode>
-	<f:then>
-		<f:variable name="config">
-			{"hash":true,"controls":true,"progress":true,"center":true,"transition":"slide","keyboard":false}
-		</f:variable>
-	</f:then>
-	<f:else>
-		<f:variable name="config">
-			{"hash":true,"controls":true,"progress":true,"center":true,"transition":"slide","keyboard":true}
-		</f:variable>
-	</f:else>
-</f:editMode>
-
-<div class="reveal" data-revealjs-options='{config}'>
+<div class="reveal" data-revealjs-options='{revealjsConfig -> f:format.raw()}'>
 	<div class="reveal-logo">
-		<f:image src="EXT:revealjs_editor/Resources/Public/Images/the-camp.png" alt="" maxWidth="200px"/>
+		<f:if condition="{pageLogos}">
+			<f:then>
+				<f:comment>Per-presentation logo (page TCA tx_revealjseditor_logo).</f:comment>
+				<f:for each="{pageLogos}" as="logo">
+					<f:image image="{logo}" alt="{logo.alternative}" maxWidth="200px"/>
+				</f:for>
+			</f:then>
+			<f:else>
+				<f:comment>Site-wide default (Site Set setting revealjs.defaultLogo).</f:comment>
+				<f:image src="{settings.revealjs.defaultLogo}" alt="" maxWidth="200px"/>
+			</f:else>
+		</f:if>
 	</div>
 
 	<div class="slides">
 		<f:for each="{content.main}" as="slide">
-			<section data-transition="slide"
-							 data-state="{slide.tx_revealjseditor_data_state}"
-							 class="{slide.tx_revealjseditor_data_state}">
+			<f:comment>
+				The reveal:slideAttributes ViewHelper builds the per-slide data-*
+				attribute string (data-transition, data-state, class, all data-background-*,
+				data-autoslide, data-visibility, data-prevent-swipe, data-notes, the
+				data-auto-animate-* group) from the slide row's tx_revealjseditor_*
+				fields. Empty values and values matching the column default are skipped
+				so the rendered <section> markup stays minimal — reveal.js falls
+				through to the page-level config in data-revealjs-options for any
+				attribute not present here.
+			</f:comment>
+			<section {reveal:slideAttributes(record: slide) -> f:format.raw()}>
 				<f:render.record record="{slide}"/>
 			</section>
 		</f:for>

@@ -1,6 +1,27 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
+<f:comment>
+    The cover slide template.
+
+    Editable text fields are emitted via `{record -> f:render.text(field: '...')}`
+    so EXT:visual_editor recognises them as inline-editable (clicking the
+    rendered <h1>/<h3>/<div> in the BE preview opens its inline editor).
+    `{record}` is the Record API object exposed by lib.contentElement's
+    default record-transformation data processor (TypoScript ID 1770716912).
+
+    f:render.text handles HTML escaping based on the field's TCA type:
+        - input          → htmlspecialchars
+        - text (no RTE)  → nl2br + htmlspecialchars
+        - text (RTE)     → parseFunc-style HTML pass-through (≈ f:format.html)
+
+    `bodytext` is RTE-bound for revealjs_slide_cover (richtextConfiguration =
+    'revealjs' on columnsOverrides — see Configuration/TCA/Overrides/tt_content.php),
+    so it round-trips as HTML. `header` and `subheader` are plain inputs, so
+    they get htmlspecialchars-escaped — same end-to-end semantics as the
+    previous `{data.header}` interpolation.
+</f:comment>
+
 <div class="reveal-cover">
     <f:if condition="{files}">
         <div class="reveal-cover-image">
@@ -9,16 +30,20 @@
             </f:for>
         </div>
     </f:if>
-    <f:if condition="{data.header}">
-        <h1 class="cover-wordmark">{data.header}</h1>
+
+    <f:variable name="renderedHeader" value="{record -> f:render.text(field: 'header')}"/>
+    <f:if condition="{renderedHeader}">
+        <h1 class="cover-wordmark">{renderedHeader -> f:format.raw()}</h1>
     </f:if>
-    <f:if condition="{data.subheader}">
-        <h3>{data.subheader}</h3>
+
+    <f:variable name="renderedSubheader" value="{record -> f:render.text(field: 'subheader')}"/>
+    <f:if condition="{renderedSubheader}">
+        <h3>{renderedSubheader -> f:format.raw()}</h3>
     </f:if>
-    <f:if condition="{data.bodytext}">
-        <div class="reveal-cover-body">
-            <f:format.html>{data.bodytext}</f:format.html>
-        </div>
+
+    <f:variable name="renderedBodytext" value="{record -> f:render.text(field: 'bodytext')}"/>
+    <f:if condition="{renderedBodytext}">
+        <div class="reveal-cover-body">{renderedBodytext -> f:format.raw()}</div>
     </f:if>
 </div>
 </html>

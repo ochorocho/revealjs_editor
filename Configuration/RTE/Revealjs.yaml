@@ -1,8 +1,29 @@
+# Trimmed RTE preset for revealjs_slide_cover bodytext (and any other
+# slide CType that opts in via richtextConfiguration='revealjs').
+#
+# IMPORTANT: do NOT import EXT:rte_ckeditor/Configuration/RTE/Default.yaml
+# from this file. Default.yaml already defines `editor.config.toolbar.items`
+# and `editor.config.heading.options` as YAML lists; TYPO3's YAML import
+# merger (`ArrayUtility::replaceAndAppendScalarValuesRecursive`) calls
+# `array_merge` on sequential lists — i.e. **appends** instead of replacing.
+# That means anything we re-declare here gets concatenated onto Default's
+# version: a duplicated toolbar AND a duplicated `heading2`/`heading3`
+# entry, the latter of which fires CKEditor 5's
+# `schema-cannot-register-item-twice` exception inside an unhandled
+# promise — the editor never mounts, the bodytext stays a plain textarea.
+#
+# Instead, import the same low-level pieces Default.yaml itself imports.
+# None of them define `toolbar.items` or `heading.options`, so our
+# overrides below land on a clean slate and are authoritative. This is
+# the documented pattern in
+# EXT:rte_ckeditor/Documentation/Configuration/_Examples/_MyPreset.yaml.
 imports:
-  - { resource: "EXT:rte_ckeditor/Configuration/RTE/Default.yaml" }
+  - { resource: "EXT:rte_ckeditor/Configuration/RTE/Processing.yaml" }
+  - { resource: "EXT:rte_ckeditor/Configuration/RTE/Editor/Base.yaml" }
+  - { resource: "EXT:rte_ckeditor/Configuration/RTE/Editor/Plugins.yaml" }
 
-# A trimmed RTE preset suited to slide content. Headings are limited to
-# h2/h3 because h1 is reserved for the slide-deck-level wrapper, and each
+# A trimmed RTE suited to slide content. Headings are limited to h2/h3
+# because h1 is reserved for the slide-deck-level wrapper, and each
 # <section> typically holds at most one h2.
 editor:
   config:

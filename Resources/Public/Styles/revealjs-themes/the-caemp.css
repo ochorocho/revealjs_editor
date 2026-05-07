@@ -193,39 +193,40 @@ body,
 	color: var(--cmp-text);
 }
 
-.reveal ul {
+.reveal .slides ul {
 	list-style: none;
 	padding-left: 1.9em;
 }
 
-.reveal ul li, .reveal ol li {
+.reveal .slides ul li, .reveal .slides ol li {
 	line-height: 1.6em;
 	font-size: 1.8em;
 }
 
 /* Nested lists: keep the bullet + line-height, but stop the font-size
    compounding so children render at the same visual size as their parent. */
-.reveal ul ul li,
-.reveal ul ol li,
-.reveal ol ul li,
-.reveal ol ol li {
+.reveal .slides ul ul li,
+.reveal .slides ul ol li,
+.reveal .slides ol ul li,
+.reveal .slides ol ol li {
 	font-size: 1em;
 }
 
-.reveal ul li::before {
+.reveal .slides ul li::before {
 	content: '\25AA'; /* small filled square */
 	color: var(--cmp-accent);
 	font-weight: bold;
 	display: inline-block;
 	width: 1em;
 	margin-left: -0.5em;
+	float: left;
 }
 
-.reveal ol {
+.reveal .slides ol {
 	padding-left: 1.9em;
 }
 
-.reveal ol li::marker {
+.reveal .slides ol li::marker {
 	color: var(--cmp-accent);
 	font-weight: 700;
 }

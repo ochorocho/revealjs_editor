@@ -1,0 +1,11 @@
+categories:
+  revealjs:
+    label: 'reveal.js'
+
+settings:
+  revealjs.defaultLogo:
+    default: 'EXT:revealjs_editor/Resources/Public/Images/the-camp.png'
+    type: string
+    category: revealjs
+    label: 'Default presentation logo'
+    description: 'Path or EXT:… URL to the logo shown on every reveal.js presentation. Per-page logo (page.tx_revealjseditor_logo) takes precedence; this setting is the site-wide fallback.'

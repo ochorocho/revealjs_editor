@@ -30,6 +30,29 @@ tt_content.revealjs_slide_cover {
         theme.field = tx_revealjseditor_theme
         theme.ifEmpty = black
       }
+
+      dataProcessing {
+        # Build the reveal.js JSON config object from all tx_revealjseditor_*
+        # page-record fields. Output assigned to {revealjsConfig} (default `as`).
+        10 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsConfigProcessor
+
+        # Resolve the page's logo FAL reference into {pageLogos}.
+        # Empty when the editor hasn't picked a logo — the template falls
+        # back to `{settings.revealjs.defaultLogo}` in that case.
+        20 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
+        20 {
+          references.fieldName = tx_revealjseditor_logo
+          references.table = pages
+          as = pageLogos
+        }
+
+        # Pick the correct theme CSS URL: stock reveal.js themes live in
+        # Resources/Public/Vendor/dist/theme/, custom ones in Resources/Public/Styles/revealjs-themes/.
+        # Output assigned to {themeUrl} for a single <f:asset.css> line in
+        # Pages/Revealjs.html (replaces the previous two unconditional CSS
+        # tags, one of which always 404'd).
+        30 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsThemeProcessor
+      }
     }
   }
 [end]
