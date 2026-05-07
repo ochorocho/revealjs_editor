@@ -70,8 +70,14 @@ jobs:
       - name: Install npm dependencies (in DDEV web container)
         run: ddev npm install --no-audit --no-fund
 
-      - name: Re-run DDEV bootstrap so CSV seeds get imported
-        run: ddev restart
+      - name: Import CSV fixtures into `db`
+        # Run the import script directly instead of `ddev restart`. The full
+        # bootstrap also writes additional.php + overlays site fixtures, but
+        # those already ran on the first `ddev start` and are idempotent —
+        # only the seed-import branch was skipped (because node_modules
+        # didn't exist yet). Calling import-seeds.mjs directly saves the
+        # ~30s teardown+rebuild that `ddev restart` costs.
+        run: ddev exec node /var/www/html/Tests/playwright/scripts/import-seeds.mjs
 
       - name: DDEV info (debug aid for downstream failures)
         run: ddev describe
