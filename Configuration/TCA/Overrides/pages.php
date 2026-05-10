@@ -65,7 +65,7 @@ defined('TYPO3') or die();
     //
     // Spec format:
     //   field name (without `tx_revealjseditor_` prefix)
-    //     => ['type' => 'check'|'input'|'number'|'select'|'select-decimal',
+    //     => ['type' => 'check'|'input'|'number'|'select',
     //         'default' => …,
     //         'items'   => […]    // for selects
     //        ]

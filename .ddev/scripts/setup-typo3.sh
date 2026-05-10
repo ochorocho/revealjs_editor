@@ -75,7 +75,6 @@ if [ ! -f "${COMPOSER_JSON}" ] || [ "${TYPO3_VERSION}" != "${CURRENT_TYPO3_VERSI
     "license": "GPL-2.0-or-later",
     "require": {
         "php": "^8.3",
-        "b13/container": "^3.1",
         "friendsoftypo3/visual-editor": "^1.4",
         "ochorocho/revealjs-editor": "@dev",
         "typo3/cms-backend": "${TYPO3_VERSION}",

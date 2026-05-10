@@ -1,13 +1,3 @@
-.reveal-columns {
-    display: grid;
-    gap: 2rem;
-    align-items: start;
-}
-
-.reveal-columns > .reveal-col {
-    min-width: 0;
-}
-
 .reveal-cover h1,
 .reveal-cover h2 {
     font-size: 3em;

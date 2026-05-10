@@ -1,163 +1,366 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file source-language="en" datatype="plaintext" original="EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf" date="2026-05-06T20:22:32Z" product-name="revealjs_editor">
-        <header/>
-        <body>
-            <trans-unit id="pages.doktype.revealjs" resname="pages.doktype.revealjs">
-                <source>reveal.js Presentation</source>
-            </trans-unit>
-            <trans-unit id="pages.theme" resname="pages.theme"><source>Theme</source></trans-unit>
-            <trans-unit id="pages.logo" resname="pages.logo"><source>Logo</source></trans-unit>
-            <trans-unit id="pages.logo.description" resname="pages.logo.description"><source>Logo image shown on every slide. Falls back to the site setting `revealjs.defaultLogo` when not set.</source></trans-unit>
+	<file source-language="en" datatype="plaintext"
+		  original="EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf" date="2026-05-06T20:22:32Z"
+		  product-name="revealjs_editor">
+		<header/>
+		<body>
+			<trans-unit id="pages.doktype.revealjs" resname="pages.doktype.revealjs">
+				<source>reveal.js Presentation</source>
+			</trans-unit>
+			<trans-unit id="pages.theme" resname="pages.theme">
+				<source>Theme</source>
+			</trans-unit>
+			<trans-unit id="pages.logo" resname="pages.logo">
+				<source>Logo</source>
+			</trans-unit>
+			<trans-unit id="pages.logo.description" resname="pages.logo.description">
+				<source>Logo image shown on every slide. Falls back to the site setting `revealjs.defaultLogo` when not
+					set.
+				</source>
+			</trans-unit>
 
-            <trans-unit id="tab.reveal" resname="tab.reveal"><source>Reveal Presentation</source></trans-unit>
+			<trans-unit id="tab.reveal" resname="tab.reveal">
+				<source>Reveal Presentation</source>
+			</trans-unit>
 
-            <trans-unit id="palette.reveal_appearance" resname="palette.reveal_appearance"><source>Appearance</source></trans-unit>
-            <trans-unit id="palette.reveal_navigation" resname="palette.reveal_navigation"><source>Navigation &amp; UI</source></trans-unit>
-            <trans-unit id="palette.reveal_url" resname="palette.reveal_url"><source>URL &amp; History</source></trans-unit>
-            <trans-unit id="palette.reveal_layout" resname="palette.reveal_layout"><source>Layout</source></trans-unit>
-            <trans-unit id="palette.reveal_autoadvance" resname="palette.reveal_autoadvance"><source>Auto-advance</source></trans-unit>
-            <trans-unit id="palette.reveal_transitions" resname="palette.reveal_transitions"><source>Transitions</source></trans-unit>
-            <trans-unit id="palette.reveal_fragments" resname="palette.reveal_fragments"><source>Fragments &amp; Auto-animate</source></trans-unit>
-            <trans-unit id="palette.reveal_loop" resname="palette.reveal_loop"><source>Loop &amp; Direction</source></trans-unit>
-            <trans-unit id="palette.reveal_print" resname="palette.reveal_print"><source>Speaker &amp; Print</source></trans-unit>
-            <trans-unit id="palette.reveal_media" resname="palette.reveal_media"><source>Media</source></trans-unit>
-            <trans-unit id="palette.reveal_scroll" resname="palette.reveal_scroll"><source>Scroll View</source></trans-unit>
+			<trans-unit id="palette.reveal_appearance" resname="palette.reveal_appearance">
+				<source>Appearance</source>
+			</trans-unit>
+			<trans-unit id="palette.reveal_navigation" resname="palette.reveal_navigation">
+				<source>Navigation &amp; UI</source>
+			</trans-unit>
+			<trans-unit id="palette.reveal_url" resname="palette.reveal_url">
+				<source>URL &amp; History</source>
+			</trans-unit>
+			<trans-unit id="palette.reveal_layout" resname="palette.reveal_layout">
+				<source>Layout</source>
+			</trans-unit>
+			<trans-unit id="palette.reveal_autoadvance" resname="palette.reveal_autoadvance">
+				<source>Auto-advance</source>
+			</trans-unit>
+			<trans-unit id="palette.reveal_transitions" resname="palette.reveal_transitions">
+				<source>Transitions</source>
+			</trans-unit>
+			<trans-unit id="palette.reveal_fragments" resname="palette.reveal_fragments">
+				<source>Fragments &amp; Auto-animate</source>
+			</trans-unit>
+			<trans-unit id="palette.reveal_loop" resname="palette.reveal_loop">
+				<source>Loop &amp; Direction</source>
+			</trans-unit>
+			<trans-unit id="palette.reveal_print" resname="palette.reveal_print">
+				<source>Speaker &amp; Print</source>
+			</trans-unit>
+			<trans-unit id="palette.reveal_media" resname="palette.reveal_media">
+				<source>Media</source>
+			</trans-unit>
+			<trans-unit id="palette.reveal_scroll" resname="palette.reveal_scroll">
+				<source>Scroll View</source>
+			</trans-unit>
 
-            <trans-unit id="pages.reveal.controls" resname="pages.reveal.controls"><source>Show navigation arrows</source></trans-unit>
-            <trans-unit id="pages.reveal.controlstutorial" resname="pages.reveal.controlstutorial"><source>Show navigation hints to first-time viewers</source></trans-unit>
-            <trans-unit id="pages.reveal.controlslayout" resname="pages.reveal.controlslayout"><source>Controls layout</source></trans-unit>
-            <trans-unit id="pages.reveal.controlsbackarrows" resname="pages.reveal.controlsbackarrows"><source>Back-arrow visibility</source></trans-unit>
-            <trans-unit id="pages.reveal.progress" resname="pages.reveal.progress"><source>Show progress bar</source></trans-unit>
-            <trans-unit id="pages.reveal.slidenumber" resname="pages.reveal.slidenumber"><source>Slide number</source></trans-unit>
-            <trans-unit id="pages.reveal.showslidenumber" resname="pages.reveal.showslidenumber"><source>Show slide number in</source></trans-unit>
-            <trans-unit id="pages.reveal.keyboard" resname="pages.reveal.keyboard"><source>Keyboard shortcuts</source></trans-unit>
-            <trans-unit id="pages.reveal.overview" resname="pages.reveal.overview"><source>Overview mode (Esc / O)</source></trans-unit>
-            <trans-unit id="pages.reveal.touch" resname="pages.reveal.touch"><source>Touch navigation</source></trans-unit>
-            <trans-unit id="pages.reveal.mousewheel" resname="pages.reveal.mousewheel"><source>Navigate via mouse wheel</source></trans-unit>
-            <trans-unit id="pages.reveal.navigationmode" resname="pages.reveal.navigationmode"><source>Navigation mode</source></trans-unit>
-            <trans-unit id="pages.reveal.embedded" resname="pages.reveal.embedded"><source>Embedded mode</source></trans-unit>
-            <trans-unit id="pages.reveal.help" resname="pages.reveal.help"><source>Show help on `?`</source></trans-unit>
-            <trans-unit id="pages.reveal.pause" resname="pages.reveal.pause"><source>Allow pausing (`B` / `.`)</source></trans-unit>
-            <trans-unit id="pages.reveal.previewlinks" resname="pages.reveal.previewlinks"><source>Open links in iframe overlay</source></trans-unit>
+			<trans-unit id="pages.reveal.controls" resname="pages.reveal.controls">
+				<source>Show navigation arrows</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.controlstutorial" resname="pages.reveal.controlstutorial">
+				<source>Show navigation hints to first-time viewers</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.controlslayout" resname="pages.reveal.controlslayout">
+				<source>Controls layout</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.controlsbackarrows" resname="pages.reveal.controlsbackarrows">
+				<source>Back-arrow visibility</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.progress" resname="pages.reveal.progress">
+				<source>Show progress bar</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.slidenumber" resname="pages.reveal.slidenumber">
+				<source>Slide number</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.showslidenumber" resname="pages.reveal.showslidenumber">
+				<source>Show slide number in</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.keyboard" resname="pages.reveal.keyboard">
+				<source>Keyboard shortcuts</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.overview" resname="pages.reveal.overview">
+				<source>Overview mode (Esc / O)</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.touch" resname="pages.reveal.touch">
+				<source>Touch navigation</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.mousewheel" resname="pages.reveal.mousewheel">
+				<source>Navigate via mouse wheel</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.navigationmode" resname="pages.reveal.navigationmode">
+				<source>Navigation mode</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.embedded" resname="pages.reveal.embedded">
+				<source>Embedded mode</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.help" resname="pages.reveal.help">
+				<source>Show help on `?`</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.pause" resname="pages.reveal.pause">
+				<source>Allow pausing (`B` / `.`)</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.previewlinks" resname="pages.reveal.previewlinks">
+				<source>Open links in iframe overlay</source>
+			</trans-unit>
 
-            <trans-unit id="pages.reveal.hash" resname="pages.reveal.hash"><source>Update URL hash on slide change</source></trans-unit>
-            <trans-unit id="pages.reveal.hashonebasedindex" resname="pages.reveal.hashonebasedindex"><source>Use 1-based hash indexing</source></trans-unit>
-            <trans-unit id="pages.reveal.history" resname="pages.reveal.history"><source>Push slide changes to browser history</source></trans-unit>
-            <trans-unit id="pages.reveal.fragmentinurl" resname="pages.reveal.fragmentinurl"><source>Include current fragment in URL</source></trans-unit>
+			<trans-unit id="pages.reveal.hash" resname="pages.reveal.hash">
+				<source>Update URL hash on slide change</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.hashonebasedindex" resname="pages.reveal.hashonebasedindex">
+				<source>Use 1-based hash indexing</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.history" resname="pages.reveal.history">
+				<source>Push slide changes to browser history</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.fragmentinurl" resname="pages.reveal.fragmentinurl">
+				<source>Include current fragment in URL</source>
+			</trans-unit>
 
-            <trans-unit id="pages.reveal.center" resname="pages.reveal.center"><source>Vertically centre slides</source></trans-unit>
-            <trans-unit id="pages.reveal.viewdistance" resname="pages.reveal.viewdistance"><source>View distance (slides preloaded)</source></trans-unit>
+			<trans-unit id="pages.reveal.center" resname="pages.reveal.center">
+				<source>Vertically centre slides</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.viewdistance" resname="pages.reveal.viewdistance">
+				<source>View distance (slides preloaded)</source>
+			</trans-unit>
 
-            <trans-unit id="pages.reveal.autoslide" resname="pages.reveal.autoslide"><source>Auto-advance interval (ms; 0 = manual)</source></trans-unit>
-            <trans-unit id="pages.reveal.autoslidestoppable" resname="pages.reveal.autoslidestoppable"><source>Stop auto-advance after user input</source></trans-unit>
+			<trans-unit id="pages.reveal.autoslide" resname="pages.reveal.autoslide">
+				<source>Auto-advance interval (ms; 0 = manual)</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.autoslidestoppable" resname="pages.reveal.autoslidestoppable">
+				<source>Stop auto-advance after user input</source>
+			</trans-unit>
 
-            <trans-unit id="pages.reveal.transition" resname="pages.reveal.transition"><source>Default slide transition</source></trans-unit>
-            <trans-unit id="pages.reveal.transitionspeed" resname="pages.reveal.transitionspeed"><source>Transition speed</source></trans-unit>
-            <trans-unit id="pages.reveal.backgroundtransition" resname="pages.reveal.backgroundtransition"><source>Background transition</source></trans-unit>
+			<trans-unit id="pages.reveal.transition" resname="pages.reveal.transition">
+				<source>Default slide transition</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.transitionspeed" resname="pages.reveal.transitionspeed">
+				<source>Transition speed</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.backgroundtransition" resname="pages.reveal.backgroundtransition">
+				<source>Background transition</source>
+			</trans-unit>
 
-            <trans-unit id="pages.reveal.fragments" resname="pages.reveal.fragments"><source>Enable fragments globally</source></trans-unit>
-            <trans-unit id="pages.reveal.autoanimate" resname="pages.reveal.autoanimate"><source>Enable auto-animate globally</source></trans-unit>
-            <trans-unit id="pages.reveal.autoanimateeasing" resname="pages.reveal.autoanimateeasing"><source>Auto-animate easing (CSS)</source></trans-unit>
-            <trans-unit id="pages.reveal.autoanimateduration" resname="pages.reveal.autoanimateduration"><source>Auto-animate duration (seconds)</source></trans-unit>
-            <trans-unit id="pages.reveal.autoanimateunmatched" resname="pages.reveal.autoanimateunmatched"><source>Auto-animate unmatched elements</source></trans-unit>
+			<trans-unit id="pages.reveal.fragments" resname="pages.reveal.fragments">
+				<source>Enable fragments globally</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.autoanimate" resname="pages.reveal.autoanimate">
+				<source>Enable auto-animate globally</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.autoanimateeasing" resname="pages.reveal.autoanimateeasing">
+				<source>Auto-animate easing (CSS)</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.autoanimateduration" resname="pages.reveal.autoanimateduration">
+				<source>Auto-animate duration (seconds)</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.autoanimateunmatched" resname="pages.reveal.autoanimateunmatched">
+				<source>Auto-animate unmatched elements</source>
+			</trans-unit>
 
-            <trans-unit id="pages.reveal.loop" resname="pages.reveal.loop"><source>Loop the presentation</source></trans-unit>
-            <trans-unit id="pages.reveal.rtl" resname="pages.reveal.rtl"><source>Right-to-left direction</source></trans-unit>
-            <trans-unit id="pages.reveal.shuffle" resname="pages.reveal.shuffle"><source>Shuffle slide order on load</source></trans-unit>
+			<trans-unit id="pages.reveal.loop" resname="pages.reveal.loop">
+				<source>Loop the presentation</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.rtl" resname="pages.reveal.rtl">
+				<source>Right-to-left direction</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.shuffle" resname="pages.reveal.shuffle">
+				<source>Shuffle slide order on load</source>
+			</trans-unit>
 
-            <trans-unit id="pages.reveal.shownotes" resname="pages.reveal.shownotes"><source>Make speaker notes visible</source></trans-unit>
-            <trans-unit id="pages.reveal.pdfmaxpagesperslide" resname="pages.reveal.pdfmaxpagesperslide"><source>PDF: max pages per slide (0 = unlimited)</source></trans-unit>
-            <trans-unit id="pages.reveal.pdfseparatefragments" resname="pages.reveal.pdfseparatefragments"><source>PDF: each fragment on a separate slide</source></trans-unit>
+			<trans-unit id="pages.reveal.shownotes" resname="pages.reveal.shownotes">
+				<source>Make speaker notes visible</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.pdfmaxpagesperslide" resname="pages.reveal.pdfmaxpagesperslide">
+				<source>PDF: max pages per slide (0 = unlimited)</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.pdfseparatefragments" resname="pages.reveal.pdfseparatefragments">
+				<source>PDF: each fragment on a separate slide</source>
+			</trans-unit>
 
-            <trans-unit id="pages.reveal.autoplaymedia" resname="pages.reveal.autoplaymedia"><source>Autoplay embedded media</source></trans-unit>
-            <trans-unit id="pages.reveal.preloadiframes" resname="pages.reveal.preloadiframes"><source>Preload iframes</source></trans-unit>
+			<trans-unit id="pages.reveal.autoplaymedia" resname="pages.reveal.autoplaymedia">
+				<source>Autoplay embedded media</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.preloadiframes" resname="pages.reveal.preloadiframes">
+				<source>Preload iframes</source>
+			</trans-unit>
 
-            <trans-unit id="pages.reveal.view" resname="pages.reveal.view"><source>View mode</source></trans-unit>
-            <trans-unit id="pages.reveal.scrolllayout" resname="pages.reveal.scrolllayout"><source>Scroll layout</source></trans-unit>
-            <trans-unit id="pages.reveal.scrollsnap" resname="pages.reveal.scrollsnap"><source>Scroll snap</source></trans-unit>
-            <trans-unit id="pages.reveal.scrollprogress" resname="pages.reveal.scrollprogress"><source>Scroll progress bar</source></trans-unit>
-            <trans-unit id="pages.reveal.scrollactivationwidth" resname="pages.reveal.scrollactivationwidth"><source>Scroll activation width (px; 0 disables auto-scroll)</source></trans-unit>
+			<trans-unit id="pages.reveal.view" resname="pages.reveal.view">
+				<source>View mode</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.scrolllayout" resname="pages.reveal.scrolllayout">
+				<source>Scroll layout</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.scrollsnap" resname="pages.reveal.scrollsnap">
+				<source>Scroll snap</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.scrollprogress" resname="pages.reveal.scrollprogress">
+				<source>Scroll progress bar</source>
+			</trans-unit>
+			<trans-unit id="pages.reveal.scrollactivationwidth" resname="pages.reveal.scrollactivationwidth">
+				<source>Scroll activation width (px; 0 disables auto-scroll)</source>
+			</trans-unit>
 
-            <trans-unit id="tt_content.tab.slide" resname="tt_content.tab.slide">
-                <source>Slide</source>
-            </trans-unit>
-            <trans-unit id="tt_content.transition" resname="tt_content.transition">
-                <source>Slide transition</source>
-            </trans-unit>
-            <trans-unit id="tt_content.data_state" resname="tt_content.data_state">
-                <source>CSS class / data-state</source>
-            </trans-unit>
-            <trans-unit id="tt_content.data_state.description" resname="tt_content.data_state.description">
-                <source>Reveal.js applies this value as a CSS class on the document body when the slide becomes active. Use it to swap viewport-level styling (e.g. dark background) per slide.</source>
-            </trans-unit>
+			<trans-unit id="tt_content.tab.slide" resname="tt_content.tab.slide">
+				<source>Slide</source>
+			</trans-unit>
+			<trans-unit id="tt_content.transition" resname="tt_content.transition">
+				<source>Slide transition</source>
+			</trans-unit>
+			<trans-unit id="tt_content.data_state" resname="tt_content.data_state">
+				<source>CSS class / data-state</source>
+			</trans-unit>
+			<trans-unit id="tt_content.data_state.description" resname="tt_content.data_state.description">
+				<source>Reveal.js applies this value as a CSS class on the document body when the slide becomes active.
+					Use it to swap viewport-level styling (e.g. dark background) per slide.
+				</source>
+			</trans-unit>
 
-            <trans-unit id="tt_content.section_class" resname="tt_content.section_class">
-                <source>CSS class on slide</source>
-            </trans-unit>
-            <trans-unit id="tt_content.section_class.description" resname="tt_content.section_class.description">
-                <source>Space-separated CSS class names emitted directly on the &lt;section&gt; element. Always present — independent of which slide is active. Use it for per-slide layout / theming.</source>
-            </trans-unit>
+			<trans-unit id="tt_content.section_class" resname="tt_content.section_class">
+				<source>CSS class on slide</source>
+			</trans-unit>
+			<trans-unit id="tt_content.section_class.description" resname="tt_content.section_class.description">
+				<source>Space-separated CSS class names emitted directly on the &lt;section&gt; element. Always present
+					— independent of which slide is active. Use it for per-slide layout / theming.
+				</source>
+			</trans-unit>
 
-            <trans-unit id="tt_content.transition.inherit" resname="tt_content.transition.inherit"><source>Inherit from presentation</source></trans-unit>
-            <trans-unit id="tt_content.transition.none" resname="tt_content.transition.none"><source>None</source></trans-unit>
-            <trans-unit id="tt_content.transition.fade" resname="tt_content.transition.fade"><source>Fade</source></trans-unit>
-            <trans-unit id="tt_content.transition.slide" resname="tt_content.transition.slide"><source>Slide</source></trans-unit>
-            <trans-unit id="tt_content.transition.convex" resname="tt_content.transition.convex"><source>Convex</source></trans-unit>
-            <trans-unit id="tt_content.transition.concave" resname="tt_content.transition.concave"><source>Concave</source></trans-unit>
-            <trans-unit id="tt_content.transition.zoom" resname="tt_content.transition.zoom"><source>Zoom</source></trans-unit>
+			<trans-unit id="tt_content.transition.inherit" resname="tt_content.transition.inherit">
+				<source>Inherit from presentation</source>
+			</trans-unit>
+			<trans-unit id="tt_content.transition.none" resname="tt_content.transition.none">
+				<source>None</source>
+			</trans-unit>
+			<trans-unit id="tt_content.transition.fade" resname="tt_content.transition.fade">
+				<source>Fade</source>
+			</trans-unit>
+			<trans-unit id="tt_content.transition.slide" resname="tt_content.transition.slide">
+				<source>Slide</source>
+			</trans-unit>
+			<trans-unit id="tt_content.transition.convex" resname="tt_content.transition.convex">
+				<source>Convex</source>
+			</trans-unit>
+			<trans-unit id="tt_content.transition.concave" resname="tt_content.transition.concave">
+				<source>Concave</source>
+			</trans-unit>
+			<trans-unit id="tt_content.transition.zoom" resname="tt_content.transition.zoom">
+				<source>Zoom</source>
+			</trans-unit>
 
-            <trans-unit id="tt_content.tab.background" resname="tt_content.tab.background"><source>Background</source></trans-unit>
-            <trans-unit id="tt_content.tab.animate" resname="tt_content.tab.animate"><source>Auto-animate</source></trans-unit>
+			<trans-unit id="tt_content.tab.background" resname="tt_content.tab.background">
+				<source>Background</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tab.animate" resname="tt_content.tab.animate">
+				<source>Auto-animate</source>
+			</trans-unit>
 
-            <trans-unit id="tt_content.bg.inherit" resname="tt_content.bg.inherit"><source>Inherit from presentation</source></trans-unit>
+			<trans-unit id="tt_content.bg.inherit" resname="tt_content.bg.inherit">
+				<source>Inherit from presentation</source>
+			</trans-unit>
 
-            <trans-unit id="tt_content.slide.transition_speed" resname="tt_content.slide.transition_speed"><source>Slide transition speed</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_color" resname="tt_content.slide.bg_color"><source>Background color (CSS color)</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_gradient" resname="tt_content.slide.bg_gradient"><source>Background gradient (CSS gradient)</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_image" resname="tt_content.slide.bg_image"><source>Background image</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_video" resname="tt_content.slide.bg_video"><source>Background video</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_iframe" resname="tt_content.slide.bg_iframe"><source>Background iframe URL</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_size" resname="tt_content.slide.bg_size"><source>Background size (cover / contain / 100% etc.)</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_position" resname="tt_content.slide.bg_position"><source>Background position</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_repeat" resname="tt_content.slide.bg_repeat"><source>Background repeat</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_opacity" resname="tt_content.slide.bg_opacity"><source>Background opacity (0..1)</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_transition" resname="tt_content.slide.bg_transition"><source>Background transition</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_video_loop" resname="tt_content.slide.bg_video_loop"><source>Loop background video</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_video_muted" resname="tt_content.slide.bg_video_muted"><source>Mute background video</source></trans-unit>
-            <trans-unit id="tt_content.slide.bg_interactive" resname="tt_content.slide.bg_interactive"><source>Interactive background iframe</source></trans-unit>
+			<trans-unit id="tt_content.slide.transition_speed" resname="tt_content.slide.transition_speed">
+				<source>Slide transition speed</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_color" resname="tt_content.slide.bg_color">
+				<source>Background color (CSS color)</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_gradient" resname="tt_content.slide.bg_gradient">
+				<source>Background gradient (CSS gradient)</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_image" resname="tt_content.slide.bg_image">
+				<source>Background image</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_video" resname="tt_content.slide.bg_video">
+				<source>Background video</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_iframe" resname="tt_content.slide.bg_iframe">
+				<source>Background iframe URL</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_size" resname="tt_content.slide.bg_size">
+				<source>Background size (cover / contain / 100% etc.)</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_position" resname="tt_content.slide.bg_position">
+				<source>Background position</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_repeat" resname="tt_content.slide.bg_repeat">
+				<source>Background repeat</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_opacity" resname="tt_content.slide.bg_opacity">
+				<source>Background opacity (0..1)</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_transition" resname="tt_content.slide.bg_transition">
+				<source>Background transition</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_video_loop" resname="tt_content.slide.bg_video_loop">
+				<source>Loop background video</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_video_muted" resname="tt_content.slide.bg_video_muted">
+				<source>Mute background video</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.bg_interactive" resname="tt_content.slide.bg_interactive">
+				<source>Interactive background iframe</source>
+			</trans-unit>
 
-            <trans-unit id="tt_content.slide.slide_autoslide" resname="tt_content.slide.slide_autoslide"><source>Auto-advance after (ms; 0 = off)</source></trans-unit>
-            <trans-unit id="tt_content.slide.slide_visibility" resname="tt_content.slide.slide_visibility"><source>Slide visibility</source></trans-unit>
-            <trans-unit id="tt_content.slide.visibility.visible" resname="tt_content.slide.visibility.visible"><source>Visible (default)</source></trans-unit>
-            <trans-unit id="tt_content.slide.visibility.hidden" resname="tt_content.slide.visibility.hidden"><source>Hidden (skip slide)</source></trans-unit>
-            <trans-unit id="tt_content.slide.visibility.uncounted" resname="tt_content.slide.visibility.uncounted"><source>Uncounted (visible but not in numbering)</source></trans-unit>
-            <trans-unit id="tt_content.slide.slide_prevent_swipe" resname="tt_content.slide.slide_prevent_swipe"><source>Prevent touch swipe navigation</source></trans-unit>
-            <trans-unit id="tt_content.slide.slide_notes" resname="tt_content.slide.slide_notes"><source>Speaker notes</source></trans-unit>
+			<trans-unit id="tt_content.slide.slide_autoslide" resname="tt_content.slide.slide_autoslide">
+				<source>Auto-advance after (ms; 0 = off)</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.slide_visibility" resname="tt_content.slide.slide_visibility">
+				<source>Slide visibility</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.visibility.visible" resname="tt_content.slide.visibility.visible">
+				<source>Visible (default)</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.visibility.hidden" resname="tt_content.slide.visibility.hidden">
+				<source>Hidden (skip slide)</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.visibility.uncounted" resname="tt_content.slide.visibility.uncounted">
+				<source>Uncounted (visible but not in numbering)</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.slide_prevent_swipe" resname="tt_content.slide.slide_prevent_swipe">
+				<source>Prevent touch swipe navigation</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.slide_notes" resname="tt_content.slide.slide_notes">
+				<source>Speaker notes</source>
+			</trans-unit>
 
-            <trans-unit id="tt_content.slide.anim_enabled" resname="tt_content.slide.anim_enabled"><source>Enable auto-animate from previous slide</source></trans-unit>
-            <trans-unit id="tt_content.slide.anim_id" resname="tt_content.slide.anim_id"><source>Auto-animate group ID</source></trans-unit>
-            <trans-unit id="tt_content.slide.anim_restart" resname="tt_content.slide.anim_restart"><source>Restart auto-animate on this slide</source></trans-unit>
-            <trans-unit id="tt_content.slide.anim_easing" resname="tt_content.slide.anim_easing"><source>Auto-animate easing (CSS)</source></trans-unit>
-            <trans-unit id="tt_content.slide.anim_duration" resname="tt_content.slide.anim_duration"><source>Auto-animate duration (seconds)</source></trans-unit>
-            <trans-unit id="tt_content.slide.anim_unmatched" resname="tt_content.slide.anim_unmatched"><source>Auto-animate unmatched elements</source></trans-unit>
+			<trans-unit id="tt_content.slide.anim_enabled" resname="tt_content.slide.anim_enabled">
+				<source>Enable auto-animate from previous slide</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.anim_id" resname="tt_content.slide.anim_id">
+				<source>Auto-animate group ID</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.anim_restart" resname="tt_content.slide.anim_restart">
+				<source>Restart auto-animate on this slide</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.anim_easing" resname="tt_content.slide.anim_easing">
+				<source>Auto-animate easing (CSS)</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.anim_duration" resname="tt_content.slide.anim_duration">
+				<source>Auto-animate duration (seconds)</source>
+			</trans-unit>
+			<trans-unit id="tt_content.slide.anim_unmatched" resname="tt_content.slide.anim_unmatched">
+				<source>Auto-animate unmatched elements</source>
+			</trans-unit>
 
-            <trans-unit id="ctype.revealjs_slide_cover" resname="ctype.revealjs_slide_cover"><source>Slide: Cover</source></trans-unit>
-            <trans-unit id="ctype.revealjs_slide_single" resname="ctype.revealjs_slide_single"><source>Slide: Single Column</source></trans-unit>
-            <trans-unit id="ctype.revealjs_slide_two_column" resname="ctype.revealjs_slide_two_column"><source>Slide: Two Columns</source></trans-unit>
-            <trans-unit id="ctype.revealjs_slide_title_content" resname="ctype.revealjs_slide_title_content"><source>Slide: Title + Content</source></trans-unit>
-            <trans-unit id="ctype.revealjs_slide_image_left" resname="ctype.revealjs_slide_image_left"><source>Slide: Image | Text</source></trans-unit>
+			<trans-unit id="ctype.revealjs_slide_cover" resname="ctype.revealjs_slide_cover">
+				<source>Slide: Cover</source>
+			</trans-unit>
+			<trans-unit id="ctype.revealjs_slide_cover.description" resname="ctype.revealjs_slide_cover.description">
+				<source>Cover / title slide. Centred large typography for the deck&apos;s opening slide.</source>
+			</trans-unit>
 
-            <trans-unit id="ctype.revealjs_slide_cover.description" resname="ctype.revealjs_slide_cover.description"><source>Cover / title slide. Centred large typography for the deck&apos;s opening slide.</source></trans-unit>
-            <trans-unit id="ctype.revealjs_slide_single.description" resname="ctype.revealjs_slide_single.description"><source>One body column.</source></trans-unit>
-            <trans-unit id="ctype.revealjs_slide_two_column.description" resname="ctype.revealjs_slide_two_column.description"><source>Two body columns side by side.</source></trans-unit>
-            <trans-unit id="ctype.revealjs_slide_title_content.description" resname="ctype.revealjs_slide_title_content.description"><source>Title row above body row.</source></trans-unit>
-            <trans-unit id="ctype.revealjs_slide_image_left.description" resname="ctype.revealjs_slide_image_left.description"><source>Image on the left, text on the right.</source></trans-unit>
+			<trans-unit id="wizard.header" resname="wizard.header">
+				<source>reveal.js Slides</source>
+			</trans-unit>
 
-            <trans-unit id="wizard.header" resname="wizard.header"><source>reveal.js Slides</source></trans-unit>
-
-            <trans-unit id="backendLayout.revealjs.title" resname="backendLayout.revealjs.title"><source>reveal.js Presentation</source></trans-unit>
-            <trans-unit id="backendLayout.column.main" resname="backendLayout.column.main"><source>Slides</source></trans-unit>
-        </body>
-    </file>
+			<trans-unit id="backendLayout.revealjs.title" resname="backendLayout.revealjs.title">
+				<source>reveal.js Presentation</source>
+			</trans-unit>
+			<trans-unit id="backendLayout.column.main" resname="backendLayout.column.main">
+				<source>Slides</source>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>

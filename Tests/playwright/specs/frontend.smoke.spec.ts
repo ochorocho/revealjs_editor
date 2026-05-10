@@ -7,8 +7,8 @@ import { expect, test } from '@ochorocho/playwright-db-connector';
  * Frontend smoke tests for the revealjs_editor extension.
  *
  * Targets the seeded `Lets Present This` page (uid 11, slug
- * /subpage-germany/lets-present-this) which has 3 slides per the fixtures
- * in Tests/playwright/fixtures/seed.sql.
+ * /subpage-germany/lets-present-this) which has 3 slides per the per-table
+ * CSV fixtures in Tests/playwright/fixtures/csv/.
  */
 test.describe('reveal.js page rendering', () => {
     const PRESENTATION_URL = '/subpage-germany/lets-present-this';

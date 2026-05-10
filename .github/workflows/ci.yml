@@ -49,12 +49,15 @@ jobs:
         run: ddev poweroff
 
   # Playwright runs the FE + BE smoke specs against the dev `db` database.
-  # Two-stage bootstrap: setup-ddev auto-starts and triggers
-  # setup-typo3.sh BEFORE node_modules exists, so the bootstrap's CSV
-  # import is skipped on first run. We then `ddev npm install` to populate
-  # node_modules/, followed by `ddev restart` which re-runs the
-  # (idempotent) bootstrap — this time the CSV import branch fires and
-  # seeds `db` with the per-table fixtures the tests expect.
+  # Two-stage bootstrap: setup-ddev auto-starts and triggers setup-typo3.sh
+  # BEFORE node_modules exists, so the bootstrap's CSV import branch is
+  # skipped on first run. We then `ddev npm install` to populate
+  # node_modules/, followed by a direct `node import-seeds.mjs` call to
+  # seed `db` with the per-table fixtures the tests expect. Calling the
+  # seed script directly (rather than running a full `ddev restart` to
+  # re-trigger setup-typo3.sh) saves the ~30s teardown+rebuild — the
+  # other things setup-typo3.sh does (additional.php + site overlay) are
+  # idempotent and already happened on the first start.
   playwright:
     name: Playwright (DDEV)
     runs-on: ubuntu-latest

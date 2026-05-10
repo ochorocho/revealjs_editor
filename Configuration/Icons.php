@@ -11,9 +11,5 @@ $icon = static fn(string $file): array => [
 
 return [
     'apps-pagetree-revealjs' => $icon('doktype-revealjs.svg'),
-    'content-revealjs-slide-single' => $icon('doktype-revealjs.svg'),
-    'content-revealjs-slide-two-column' => $icon('doktype-revealjs.svg'),
-    'content-revealjs-slide-title-content' => $icon('doktype-revealjs.svg'),
-    'content-revealjs-slide-image-left' => $icon('doktype-revealjs.svg'),
     'content-revealjs-slide-cover' => $icon('doktype-revealjs.svg'),
 ];

@@ -7,7 +7,7 @@ import type { Page } from '@playwright/test';
 /**
  * Backend smoke tests for the revealjs_editor extension.
  *
- * Logs in as the seeded `admin` user (Tests/playwright/fixtures/seed.sql:11)
+ * Logs in as the seeded `admin` user (Tests/playwright/fixtures/csv/be_users.csv)
  * with the cleartext password "Password.1" — the same argon2id hash is used
  * for both the admin and editor seed users.
  *
@@ -77,7 +77,7 @@ test.describe('TYPO3 backend', () => {
         // Open the Web > Layout module focused on uid 11. The page tree
         // lazy-loads, so we don't assert on the tree DOM directly — the
         // breadcrumb of the focused page module is the stable signal that
-        // TYPO3 found the page in the seeded `test` DB and routed to it.
+        // TYPO3 found the page in the seeded `db` database and routed to it.
         await page.goto(`/typo3/module/web/layout?id=${PRESENTATION_PAGE_UID}`);
         const moduleFrame = page.frameLocator('iframe').first();
         await expect(
