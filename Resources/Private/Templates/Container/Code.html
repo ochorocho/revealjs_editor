@@ -60,10 +60,37 @@
               `--rows: 0` override in Layouts.css, the editor's min-height
               also drops to ~8px, letting short snippets render at their
               natural height instead of always reserving 18 rows.
+
+            Edit-mode vs public:
+            - When the FE is rendered inside visual_editor's BE preview
+              iframe (?editMode=1 AND an authenticated BE user), we wrap
+              each block in <reveal-editable-codemirror>. That custom
+              element (Resources/Public/JavaScript/RevealEditableCodemirror.js)
+              listens to the inner textarea's native `change` event — which
+              the BE codemirror element dispatches on every doc edit — and
+              pipes the new value into visual_editor's dataHandlerStore.
+              The BE save button then persists via TYPO3's DataHandler.
+              The codemirror itself is editable (no `readonly`) in this branch.
+            - For all other requests (anonymous viewers, public consumption)
+              the codemirror has `readonly` and no save-back bridge.
         </f:comment>
-        <typo3-t3editor-codemirror{reveal:codeMirrorAttributes(language: block.data.language) -> f:format.raw()} readonly nolazyload autoheight>
-            <textarea><f:format.raw>{block.data.code}</f:format.raw></textarea>
-        </typo3-t3editor-codemirror>
+        <f:if condition="{f:editMode()}">
+            <f:then>
+                <reveal-editable-codemirror
+                    table="tx_revealjseditor_codeblock"
+                    uid="{block.data.uid}"
+                    field="code">
+                    <typo3-t3editor-codemirror{reveal:codeMirrorAttributes(language: block.data.language) -> f:format.raw()} nolazyload autoheight>
+                        <textarea><f:format.raw>{block.data.code}</f:format.raw></textarea>
+                    </typo3-t3editor-codemirror>
+                </reveal-editable-codemirror>
+            </f:then>
+            <f:else>
+                <typo3-t3editor-codemirror{reveal:codeMirrorAttributes(language: block.data.language) -> f:format.raw()} readonly nolazyload autoheight>
+                    <textarea><f:format.raw>{block.data.code}</f:format.raw></textarea>
+                </typo3-t3editor-codemirror>
+            </f:else>
+        </f:if>
     </f:for>
 </div>
 </html>
