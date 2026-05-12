@@ -57,9 +57,13 @@ if [ ! -f "${COMPOSER_JSON}" ] || [ "${TYPO3_VERSION}" != "${CURRENT_TYPO3_VERSI
         rm -rf vendor composer.lock config/system var/cache var/log
         rm -rf public/typo3 public/_assets public/index.php 2>/dev/null || true
         # The DDEV `db` user can't DROP DATABASE; use root for the wipe.
+        # Both `db` (dev) and `test` (Playwright) are dropped so they come up
+        # on a virgin schema matching the new TYPO3 version.
         mysql -h db -u root -proot -e "
             DROP DATABASE IF EXISTS \`db\`;
             CREATE DATABASE \`db\`;
+            DROP DATABASE IF EXISTS \`test\`;
+            CREATE DATABASE \`test\`;
         " >/dev/null
     else
         echo "[revealjs-editor] Generating Build/composer.json (TYPO3 ${TYPO3_VERSION}) ..."
@@ -125,13 +129,18 @@ else
     echo "[revealjs-editor] composer dependencies already installed, skipping."
 fi
 
-# Whether typo3 setup actually ran a fresh schema build this round. When it
-# did, the CSV fixtures get imported (step 3) so the dev install boots with
-# our demo content. When typo3 setup short-circuited (existing schema, e.g.
-# a plain `ddev restart`), we leave `db` alone so editors' WIP work survives.
-DB_SETUP_RAN=0
+# Per-database flags tracking whether typo3 setup actually ran a fresh schema
+# build this round. Set by run_typo3_setup() to 1 only when it had to populate
+# a previously-empty schema; the step-3 seed loop checks them to decide which
+# DBs get their initial CSV import. A plain `ddev restart` against existing
+# schemas leaves both at 0 → no re-seed → editor's WIP and any in-progress
+# test state both survive.
+DB_SETUP_RAN_db=0
+DB_SETUP_RAN_test=0
 
 # Helper: run typo3 setup against a given database (creates it if missing).
+# Sets DB_SETUP_RAN_<name>=1 in the parent scope when it had to populate
+# the schema. The caller decides what to do with the flag.
 run_typo3_setup() {
     local db_name="$1"
     local project_label="$2"
@@ -160,7 +169,9 @@ run_typo3_setup() {
             --create-site="${SITE_BASE_URL}" \
             --force \
             --no-interaction
-        DB_SETUP_RAN=1
+        # Set the per-DB flag in the parent scope so the seed loop below knows
+        # which DB(s) just had their schema laid down.
+        eval "DB_SETUP_RAN_${db_name}=1"
     else
         echo "[revealjs-editor] Database '${db_name}' already populated, skipping typo3 setup."
     fi
@@ -169,7 +180,8 @@ run_typo3_setup() {
 # 2a. Recovery: if settings.php is gone (e.g. an interrupted ddev restart wiped
 #     `config/system/` but left the database populated) `run_typo3_setup` would
 #     short-circuit on the table-count check and never recreate the install.
-#     Drop the `db` schema so the next setup call goes through.
+#     Drop the `db` schema so the next setup call goes through. (The `test`
+#     schema can be left alone — settings.php is `db`'s settings.)
 if [ ! -f "${SETTINGS_FILE}" ]; then
     table_count=$(mysql -h db -u db -pdb db -sN -e \
         "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'db';" \
@@ -180,35 +192,70 @@ if [ ! -f "${SETTINGS_FILE}" ]; then
     fi
 fi
 
-# 2. dev database: settings.php is created here on first run.
-run_typo3_setup "db" "revealjs-editor"
+# 2. Provision both databases. additional.php (written in step 5 below)
+#    swaps the active connection to `test` per-request when the X-Test-Run
+#    header is present, so Playwright reads/writes test while the editor's
+#    browser keeps reading db.
+#
+#    Each `typo3 setup` call writes settings.php with --dbname pointing at
+#    whichever DB it just initialised. When both DBs already exist (an
+#    incremental restart), the helper short-circuits and settings.php is
+#    untouched. When only one DB is fresh, settings.php would end up
+#    pointing at THAT db — even if it's `test`. We unconditionally restore
+#    `dbname` to `db` immediately after the setup pair below so the
+#    editor's default is always `db` regardless of which one needed to be
+#    rebuilt.
+run_typo3_setup "db"   "revealjs-editor"
+run_typo3_setup "test" "revealjs-editor (test)"
 
-# 3. Import the per-table CSV seed fixtures into `db` whenever typo3 setup
-#    just laid down a fresh schema. Skipping when the schema was already
-#    populated preserves any WIP edits the developer made between restarts.
+# Force settings.php's Default connection to point at `db` (the editor's
+# primary), regardless of which run_typo3_setup call wrote it last. This
+# is the line `'dbname' => '...',` under DB.Connections.Default.
+# additional.php (step 5) will route to `test` per-request when the
+# X-Test-Run header is set.
+if [ -f "${SETTINGS_FILE}" ]; then
+    sed -i.bak -E "s/^([[:space:]]*'dbname' => )'[^']*',/\\1'db',/" "${SETTINGS_FILE}"
+    rm -f "${SETTINGS_FILE}.bak"
+fi
+
+# 3. Import the per-table CSV seed fixtures into whichever DB(s) just had
+#    their schema laid down by step 2. Skipping when the schema was already
+#    populated preserves any WIP edits the developer made between restarts;
+#    on a fresh start both DBs get seeded with the same demo content.
 #
 #    The CSVs live under Tests/playwright/fixtures/csv/{be_users,be_groups,
-#    pages,tt_content}.csv and are loaded via the Tests/playwright/scripts/
-#    import-seeds.mjs node script (uses @ochorocho/playwright-db-connector's
-#    CsvLoader.importFile).
+#    pages,tt_content}.csv and are loaded via Tests/playwright/scripts/
+#    import-seeds.mjs (uses @ochorocho/playwright-db-connector's
+#    CsvLoader.importFile). The Playwright globalSetup also seeds `test`
+#    on every `ddev playwright test` run, so this bootstrap-time import is
+#    really only the safety net for "I ran ddev restart but haven't run
+#    Playwright yet" — it makes the test DB browsable immediately.
 SEED_SCRIPT="/var/www/html/Tests/playwright/scripts/import-seeds.mjs"
-if [ "${DB_SETUP_RAN}" -eq 1 ] && [ -f "${SEED_SCRIPT}" ]; then
-    if [ -d "/var/www/html/node_modules/@ochorocho/playwright-db-connector" ]; then
-        echo "[revealjs-editor] Importing CSV seed fixtures into 'db' ..."
-        node "${SEED_SCRIPT}"
-        # The CSV import bypasses TYPO3's DataHandler so it leaves any DB-level
-        # page caches (cf_pages, cf_pages_tags, ...) pointing at whatever was
-        # rendered before the import. Force a full TYPO3 cache flush so the
-        # next FE request re-renders with the freshly imported content.
-        # Plain `rm -rf var/cache/` (step 4a) only handles file caches.
-        if [ -x vendor/bin/typo3 ]; then
-            echo "[revealjs-editor] Flushing TYPO3 caches after seed import ..."
-            vendor/bin/typo3 cache:flush --no-interaction || true
+if [ -f "${SEED_SCRIPT}" ] \
+   && [ -d "/var/www/html/node_modules/@ochorocho/playwright-db-connector" ]; then
+    seeded_any=0
+    for db_name in db test; do
+        ran_var="DB_SETUP_RAN_${db_name}"
+        if [ "${!ran_var}" -eq 1 ]; then
+            echo "[revealjs-editor] Importing CSV seed fixtures into '${db_name}' ..."
+            TYPO3_DB_NAME="${db_name}" node "${SEED_SCRIPT}"
+            seeded_any=1
         fi
-    else
-        echo "[revealjs-editor] node_modules missing — skipping CSV seed import."
-        echo "[revealjs-editor] Run 'npm install' on the host, then 'ddev restart' to seed 'db'."
+    done
+    # The CSV import bypasses TYPO3's DataHandler so it leaves any DB-level
+    # page caches (cache_pages, cache_pages_tags, ...) pointing at whatever
+    # was rendered before the import. Force a full TYPO3 cache flush so the
+    # next FE request re-renders with the freshly imported content.
+    if [ "${seeded_any}" -eq 1 ] && [ -x vendor/bin/typo3 ]; then
+        echo "[revealjs-editor] Flushing TYPO3 caches after seed import ..."
+        vendor/bin/typo3 cache:flush --no-interaction || true
     fi
+elif [ "${DB_SETUP_RAN_db}" -eq 1 ] || [ "${DB_SETUP_RAN_test}" -eq 1 ]; then
+    echo "[revealjs-editor] node_modules missing — skipping CSV seed import."
+    echo "[revealjs-editor] Run 'ddev npm install' followed by"
+    echo "[revealjs-editor]   ddev exec node ${SEED_SCRIPT}                  # seeds db"
+    echo "[revealjs-editor]   ddev exec sh -c 'TYPO3_DB_NAME=test node ${SEED_SCRIPT}'  # seeds test"
+    echo "[revealjs-editor] or just run 'ddev playwright test' which seeds test via globalSetup."
 fi
 
 # 4a. Flush TYPO3 caches so a stale DI container can't serve outdated
@@ -231,20 +278,34 @@ if [ -d "${SITES_FIXTURE_DIR}" ]; then
     done
 fi
 
-# 5. Write a minimal additional.php (idempotent overwrite). The X-Test-Run
-#    header switch is gone — Playwright now hits `db` directly, the same
-#    database editors use. The file still exists because TYPO3 v14 sets
-#    a strict default trustedHostsPattern that blocks DDEV's *.ddev.site
-#    sub-hostnames; widening it here keeps the dev install reachable.
+# 5. Write a minimal additional.php (idempotent overwrite). Two duties:
+#    (a) widen trustedHostsPattern so DDEV's *.ddev.site sub-hostnames reach
+#        TYPO3 v14's stricter default; and
+#    (b) swap the default DB connection to `test` when the request carries
+#        the `X-Test-Run: 1` header. Playwright sets that header globally
+#        via `extraHTTPHeaders` in playwright.config.ts, so every Playwright
+#        request (page navigation, XHR, the `request` API) routes to `test`.
+#        The editor's browser doesn't send the header → keeps reading `db`.
+#        The override happens at request bootstrap, BEFORE any DB connection
+#        opens, which is exactly where dbname overrides belong.
 echo "[revealjs-editor] Writing additional.php ..."
 mkdir -p "$(dirname "${ADDITIONAL_FILE}")"
 cat > "${ADDITIONAL_FILE}" <<'PHP'
 <?php
 // Allow the DDEV hostname (and any sub-hostname).
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['trustedHostsPattern'] = '.*';
+
+// Header-based DB switch for Playwright. The X-Test-Run header is set on
+// every Playwright request (playwright.config.ts → use.extraHTTPHeaders);
+// the editor's browser doesn't send it, so the editor stays on `db`.
+// Don't deploy this file to production — it trusts an arbitrary HTTP header.
+if (($_SERVER['HTTP_X_TEST_RUN'] ?? '') === '1') {
+    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'] = 'test';
+}
 PHP
 
 echo "[revealjs-editor] TYPO3 is ready."
 echo "[revealjs-editor] Backend:            ${SITE_BASE_URL}typo3"
 echo "[revealjs-editor] Login:              ${ADMIN_USER} / ${ADMIN_PASS}"
-echo "[revealjs-editor] Playwright targets the same 'db' database; CSV fixtures live in Tests/playwright/fixtures/csv/"
+echo "[revealjs-editor] Editor → 'db'   |   Playwright (X-Test-Run header) → 'test'"
+echo "[revealjs-editor] CSV fixtures: Tests/playwright/fixtures/csv/"

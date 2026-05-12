@@ -48,16 +48,21 @@ jobs:
         if: ${{ always() }}
         run: ddev poweroff
 
-  # Playwright runs the FE + BE smoke specs against the dev `db` database.
-  # Two-stage bootstrap: setup-ddev auto-starts and triggers setup-typo3.sh
-  # BEFORE node_modules exists, so the bootstrap's CSV import branch is
-  # skipped on first run. We then `ddev npm install` to populate
-  # node_modules/, followed by a direct `node import-seeds.mjs` call to
-  # seed `db` with the per-table fixtures the tests expect. Calling the
-  # seed script directly (rather than running a full `ddev restart` to
-  # re-trigger setup-typo3.sh) saves the ~30s teardown+rebuild — the
-  # other things setup-typo3.sh does (additional.php + site overlay) are
-  # idempotent and already happened on the first start.
+  # Playwright runs the FE + BE smoke specs against the `test` database.
+  # Flow:
+  #   1. setup-ddev auto-starts the project → setup-typo3.sh runs `typo3
+  #      setup` against BOTH `db` and `test`, writes additional.php with
+  #      the X-Test-Run header switch.
+  #      (The bootstrap's CSV seed import is skipped because node_modules
+  #      doesn't exist yet on first `ddev start` — that's fine, the
+  #      globalSetup in step 3 reseeds `test` anyway.)
+  #   2. `ddev npm install` populates node_modules/ so globalSetup can
+  #      invoke import-seeds.mjs.
+  #   3. `ddev playwright test` runs the suite. Its globalSetup
+  #      (Tests/playwright/scripts/global-setup.mjs) calls import-seeds.mjs
+  #      with TYPO3_DB_NAME=test before the first worker spawns — every
+  #      test session starts from a known seeded state in `test`. The dev
+  #      `db` is untouched (no editor → no need to seed it in CI).
   playwright:
     name: Playwright (DDEV)
     runs-on: ubuntu-latest
@@ -73,19 +78,12 @@ jobs:
       - name: Install npm dependencies (in DDEV web container)
         run: ddev npm install --no-audit --no-fund
 
-      - name: Import CSV fixtures into `db`
-        # Run the import script directly instead of `ddev restart`. The full
-        # bootstrap also writes additional.php + overlays site fixtures, but
-        # those already ran on the first `ddev start` and are idempotent —
-        # only the seed-import branch was skipped (because node_modules
-        # didn't exist yet). Calling import-seeds.mjs directly saves the
-        # ~30s teardown+rebuild that `ddev restart` costs.
-        run: ddev exec node /var/www/html/Tests/playwright/scripts/import-seeds.mjs
-
       - name: DDEV info (debug aid for downstream failures)
         run: ddev describe
 
       - name: ddev playwright test
+        # globalSetup (playwright.config.ts) seeds `test` via import-seeds.mjs
+        # before workers spawn, so no explicit pre-step is needed here.
         run: ddev playwright test
 
       - name: Upload Playwright HTML report
