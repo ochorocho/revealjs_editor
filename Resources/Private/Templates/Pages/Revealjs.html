@@ -37,6 +37,16 @@
 		</f:if>
 	</div>
 
+	<f:comment>
+		Per-presentation author (page TCA tx_revealjseditor_author). Surfaced
+		lower-left via the `.reveal-author` rules in Layouts.css. Element is
+		only emitted when the field is set, so unauthored decks render no
+		extra markup.
+	</f:comment>
+	<f:if condition="{revealjsAuthor}">
+		<div class="reveal-author">{revealjsAuthor}</div>
+	</f:if>
+
 	<div class="slides">
 		<f:for each="{content.main}" as="slide">
 			<f:comment>
@@ -58,6 +68,12 @@
 
 <f:comment>
 	Initialze RevealJS
+</f:comment>
+<f:comment>
+	Code blocks on revealjs_slide_code CTypes are rendered by TYPO3's own
+	`<typo3-t3editor-codemirror>` web component, registered on the FE
+	importmap by RevealJsCodeMirrorAssetsProcessor (see setup.typoscript,
+	dataProcessing.40). No reveal.js plugin needed.
 </f:comment>
 <f:asset.script identifier="revealjs-init" type="module">
 	import Reveal from "{f:uri.resource(path: 'EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/reveal.mjs')}";

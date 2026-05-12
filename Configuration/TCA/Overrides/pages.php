@@ -57,6 +57,21 @@ defined('TYPO3') or die();
         ],
     ];
 
+    // Per-presentation author. Plain string surfaced lower-left on every
+    // slide via the `.reveal-author` div in Pages/Revealjs.html. Not part
+    // of $revealOptions — author is deck metadata, not a Reveal.initialize()
+    // option, so the JSON config processor ignores it.
+    $GLOBALS['TCA']['pages']['columns']['tx_revealjseditor_author'] = [
+        'label' => $ll . ':pages.author',
+        'description' => $ll . ':pages.author.description',
+        'config' => [
+            'type' => 'input',
+            'size' => 40,
+            'eval' => 'trim',
+            'default' => '',
+        ],
+    ];
+
     // -----------------------------------------------------------------
     // Reveal.js options — single source of truth for TCA + JSON config.
     // The same key set is consumed by
@@ -239,7 +254,8 @@ defined('TYPO3') or die();
     // Palettes for grouping the reveal.js options inside the tab.
     // -----------------------------------------------------------------
     $palettes = [
-        'reveal_appearance' => 'tx_revealjseditor_theme,tx_revealjseditor_logo',
+        'reveal_appearance' => 'tx_revealjseditor_theme,tx_revealjseditor_logo,--linebreak--,'
+            . 'tx_revealjseditor_author',
         'reveal_navigation' => 'tx_revealjseditor_controls,tx_revealjseditor_controlstutorial,'
             . 'tx_revealjseditor_controlslayout,tx_revealjseditor_controlsbackarrows,--linebreak--,'
             . 'tx_revealjseditor_progress,tx_revealjseditor_slidenumber,tx_revealjseditor_showslidenumber,--linebreak--,'

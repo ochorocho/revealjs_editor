@@ -1,0 +1,69 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:reveal="http://typo3.org/ns/Ochorocho/RevealJsEditor/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    Code-slide template.
+
+    Editable text fields (header / bodytext) go through f:render.text so
+    EXT:visual_editor recognises them as inline-editable click targets —
+    same pattern as Cover.html. `{record}` is the Record API object exposed
+    by lib.contentElement's default record-transformation data processor.
+
+    Code blocks come from the DatabaseQueryProcessor wired in
+    setup.typoscript: one row per tx_revealjseditor_codeblock with the
+    headline, the language (drives the CodeMirror mode via the
+    reveal:codeMirrorAttributes ViewHelper), and the code itself.
+
+    Each block is rendered as a `<typo3-t3editor-codemirror>` element —
+    TYPO3's own CodeMirror 6 wrapper, the same component the BE form uses
+    to author the field. The RevealJsCodeMirrorAssetsProcessor registers
+    the JS module on the FE importmap; the element upgrades client-side
+    on `customElements.define('typo3-t3editor-codemirror', …)`.
+</f:comment>
+
+<div class="reveal-code">
+    <f:variable name="renderedHeader" value="{record -> f:render.text(field: 'header')}"/>
+    <f:if condition="{renderedHeader}">
+        <h1>{renderedHeader -> f:format.raw()}</h1>
+    </f:if>
+
+    <f:variable name="renderedBodytext" value="{record -> f:render.text(field: 'bodytext')}"/>
+    <f:if condition="{renderedBodytext}">
+        <div class="reveal-code-lede">{renderedBodytext -> f:format.raw()}</div>
+    </f:if>
+
+    <f:comment>
+        DatabaseQueryProcessor wraps each row as ['data' => $row] (see
+        cms-frontend/Classes/DataProcessing/DatabaseQueryProcessor.php:90),
+        so block fields live under `block.data.*` — not `block.*`.
+
+        The textarea content is emitted via f:format.raw because the
+        browser parses textarea text as literal characters; Fluid's
+        default HTML escaping would land `&lt;` / `&gt;` etc. in the
+        rendered source, which CodeMirror would then display as the
+        entity strings instead of the original code.
+    </f:comment>
+    <f:for each="{codeblocks}" as="block">
+        <f:if condition="{block.data.headline}">
+            <h3>{block.data.headline}</h3>
+        </f:if>
+        <f:comment>
+            Two attributes that look optional but aren't:
+            - `nolazyload` skips the IntersectionObserver-based lazy init in
+              `code-mirror-element.js`. Reveal.js applies `display: none` to
+              every non-active slide, so the observer reports
+              `intersectionRatio: 0` indefinitely and the spinner stays
+              visible forever. nolazyload calls `initializeEditor()` synchronously.
+            - `autoheight` removes the `.cm-scroller` `max-height` cap so the
+              editor grows to fit its content height. Combined with the
+              `--rows: 0` override in Layouts.css, the editor's min-height
+              also drops to ~8px, letting short snippets render at their
+              natural height instead of always reserving 18 rows.
+        </f:comment>
+        <typo3-t3editor-codemirror{reveal:codeMirrorAttributes(language: block.data.language) -> f:format.raw()} readonly nolazyload autoheight>
+            <textarea><f:format.raw>{block.data.code}</f:format.raw></textarea>
+        </typo3-t3editor-codemirror>
+    </f:for>
+</div>
+</html>

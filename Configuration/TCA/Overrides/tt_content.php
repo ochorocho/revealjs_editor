@@ -216,4 +216,56 @@ defined('TYPO3') or die();
     // Pattern mirrors core's sys_news.php (cms-core/Configuration/TCA/sys_news.php:40).
     $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_cover']['columnsOverrides']['bodytext']['config']['enableRichtext'] = true;
     $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_cover']['columnsOverrides']['bodytext']['config']['richtextConfiguration'] = 'revealjs';
+
+    // ----- Register the revealjs_slide_code CType ---------------------------------
+    // A slide that stacks multiple inline code blocks. Each child carries its
+    // own headline + language + code; the parent gives the slide an h1 title
+    // (inherits text's showitem). FE rendering goes through Code.html and
+    // reveal.js's bundled highlight plugin.
+
+    $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'][] = [
+        'label' => $ll . ':ctype.revealjs_slide_code',
+        'value' => 'revealjs_slide_code',
+        'icon' => 'content-revealjs-slide-code',
+        'group' => 'default',
+    ];
+
+    // The inline-collection field. Child rows live in tx_revealjseditor_codeblock
+    // (TCA file: Configuration/TCA/tx_revealjseditor_codeblock.php). The schema
+    // analyser creates that table from its TCA columns block; no SQL needed.
+    $GLOBALS['TCA']['tt_content']['columns']['tx_revealjseditor_codeblocks'] = [
+        'label' => $ll . ':tt_content.codeblocks',
+        'config' => [
+            'type' => 'inline',
+            'foreign_table' => 'tx_revealjseditor_codeblock',
+            'foreign_field' => 'parent_uid',
+            'foreign_sortby' => 'sorting',
+            'appearance' => [
+                'collapseAll' => false,
+                'levelLinksPosition' => 'top',
+                'showSynchronizationLink' => true,
+                'showAllLocalizationLink' => true,
+                'showPossibleLocalizationRecords' => true,
+                'useSortable' => true,
+                'enabledControls' => [
+                    'info' => true,
+                    'new' => true,
+                    'sort' => true,
+                    'dragdrop' => true,
+                    'hide' => true,
+                    'delete' => true,
+                    'localize' => true,
+                ],
+            ],
+        ],
+    ];
+
+    // Code-slide showitem: inherit text (gives header + bodytext for the
+    // slide title / optional lede), add the Code Blocks tab with the inline
+    // collection, then the three slide-options tabs every reveal CType shares.
+    $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_code']['showitem'] =
+        ($GLOBALS['TCA']['tt_content']['types']['text']['showitem'] ?? '')
+        . ',--div--;' . $ll . ':tt_content.tab.codeblocks,'
+        . 'tx_revealjseditor_codeblocks'
+        . $slideTabs;
 })();

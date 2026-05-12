@@ -49,3 +49,59 @@
 	top: 4vh;
 	right: 0;
 }
+
+/* Type-match reveal.js's stock `.reveal pre` rule (see e.g. theme/black.css)
+   so codemirror code blocks have the same visual weight as the highlight.js
+   blocks they replaced: 0.55× of the slide's main font size, 90% centred,
+   subtle drop shadow.
+
+   Font-size: stock reveal themes set `.reveal { font-size: var(--r-main-font-size) }`
+   so `0.55em` works out to a readable ~23px. Our custom `the-caemp` theme
+   (and any other custom theme that follows TYPO3's "set the CSS variable
+   but don't bind it to .reveal" pattern) leaves `.reveal` at the browser
+   default 16px, which makes `0.55em` an unreadable 8.8px. Sizing against
+   `--r-main-font-size` directly bypasses that inheritance trap and gives
+   the same visual size on every theme that defines the variable, with a
+   sensible 36px fallback when it doesn't.
+
+   Height: paired with `autoheight` on the element, the editor sizes to
+   fit its actual code content. The `--rows: 0` override drops the
+   element's `min-height: calc(8px + 16.8px * var(--rows, 18))` baseline
+   to ~8px so 3-line snippets don't reserve 18 rows of empty space.
+
+   Theme: the bundled `@codemirror/theme-one-dark` (imported inside
+   code-mirror-element.js) handles syntax colouring; we only set a
+   transparent backdrop on `.cm-editor` so the slide background shows
+   through. */
+.reveal typo3-t3editor-codemirror {
+	--rows: 0;
+	display: block;
+	width: 90%;
+	margin: var(--r-block-margin) auto;
+	font-size: calc(var(--r-main-font-size, 36px) * 0.55);
+	font-family: var(--r-code-font);
+	line-height: 1.2em;
+	text-align: left;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+.reveal typo3-t3editor-codemirror .cm-editor {
+	background: transparent;
+	border-radius: 4px;
+}
+
+/* Author wordmark — mirrors .reveal-logo but anchored to the opposite
+   corner. pointer-events: none keeps it from intercepting clicks on
+   slide content (e.g. reveal's overview-mode hit targets). */
+.reveal-author {
+	z-index: 30;
+	pointer-events: none;
+	-webkit-user-select: none;
+	user-select: none;
+	position: fixed;
+	bottom: 4vh;
+	left: 4vh;
+	color: var(--cmp-accent, currentColor);
+	font-size: 0.8em;
+	letter-spacing: 0.05em;
+	opacity: 0.7;
+}

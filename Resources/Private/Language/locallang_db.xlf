@@ -19,6 +19,12 @@
 					set.
 				</source>
 			</trans-unit>
+			<trans-unit id="pages.author" resname="pages.author">
+				<source>Author</source>
+			</trans-unit>
+			<trans-unit id="pages.author.description" resname="pages.author.description">
+				<source>Shown in the lower-left corner of every slide. Plain text, no markup.</source>
+			</trans-unit>
 
 			<trans-unit id="tab.reveal" resname="tab.reveal">
 				<source>Reveal Presentation</source>
@@ -349,6 +355,35 @@
 			</trans-unit>
 			<trans-unit id="ctype.revealjs_slide_cover.description" resname="ctype.revealjs_slide_cover.description">
 				<source>Cover / title slide. Centred large typography for the deck&apos;s opening slide.</source>
+			</trans-unit>
+
+			<trans-unit id="ctype.revealjs_slide_code" resname="ctype.revealjs_slide_code">
+				<source>Slide: Code</source>
+			</trans-unit>
+			<trans-unit id="ctype.revealjs_slide_code.description" resname="ctype.revealjs_slide_code.description">
+				<source>Slide with one or more headlined code blocks. Syntax highlighting via reveal.js / highlight.js.</source>
+			</trans-unit>
+
+			<trans-unit id="tt_content.tab.codeblocks" resname="tt_content.tab.codeblocks">
+				<source>Code Blocks</source>
+			</trans-unit>
+			<trans-unit id="tt_content.codeblocks" resname="tt_content.codeblocks">
+				<source>Code Blocks</source>
+			</trans-unit>
+			<trans-unit id="tx_revealjseditor_codeblock" resname="tx_revealjseditor_codeblock">
+				<source>Code Block</source>
+			</trans-unit>
+			<trans-unit id="tx_revealjseditor_codeblock.headline" resname="tx_revealjseditor_codeblock.headline">
+				<source>Headline</source>
+			</trans-unit>
+			<trans-unit id="tx_revealjseditor_codeblock.language" resname="tx_revealjseditor_codeblock.language">
+				<source>Language</source>
+			</trans-unit>
+			<trans-unit id="tx_revealjseditor_codeblock.language.plaintext" resname="tx_revealjseditor_codeblock.language.plaintext">
+				<source>Plain text (no highlighting)</source>
+			</trans-unit>
+			<trans-unit id="tx_revealjseditor_codeblock.code" resname="tx_revealjseditor_codeblock.code">
+				<source>Code</source>
 			</trans-unit>
 
 			<trans-unit id="wizard.header" resname="wizard.header">

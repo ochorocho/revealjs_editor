@@ -12,6 +12,28 @@ tt_content.revealjs_slide_cover {
     }
 }
 
+tt_content.revealjs_slide_code =< lib.contentElement
+tt_content.revealjs_slide_code {
+    templateName = Code
+    templateRootPaths.20 = EXT:revealjs_editor/Resources/Private/Templates/Container/
+
+    # Resolve the inline child rows from tx_revealjseditor_codeblock into
+    # {codeblocks} for Code.html. The TypoScript built-in processor avoids
+    # writing a dedicated PHP class for what is a one-line WHERE — and is
+    # version-independent across v14 minors (the Record API's behaviour for
+    # auto-resolving inline children has churned).
+    dataProcessing.10 = TYPO3\CMS\Frontend\DataProcessing\DatabaseQueryProcessor
+    dataProcessing.10 {
+        table = tx_revealjseditor_codeblock
+        # Children share the page with their parent — inline saves preserve pid.
+        pidInList.field = pid
+        where = parent_uid={field:uid}
+        where.insertData = 1
+        orderBy = sorting
+        as = codeblocks
+    }
+}
+
 [traverse(page, "doktype") == 1731]
   page = PAGE
   page {
@@ -29,6 +51,12 @@ tt_content.revealjs_slide_cover {
         theme = TEXT
         theme.field = tx_revealjseditor_theme
         theme.ifEmpty = black
+
+        # Per-presentation author string — surfaced lower-left in the FE via
+        # the `.reveal-author` div in Pages/Revealjs.html. Empty by default;
+        # the template skips the element when not set.
+        revealjsAuthor = TEXT
+        revealjsAuthor.field = tx_revealjseditor_author
       }
 
       dataProcessing {
@@ -52,6 +80,13 @@ tt_content.revealjs_slide_cover {
         # Pages/Revealjs.html (replaces the previous two unconditional CSS
         # tags, one of which always 404'd).
         30 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsThemeProcessor
+
+        # Register TYPO3's <typo3-t3editor-codemirror> web component module
+        # in the FE importmap. Side-effect-only processor — no template
+        # variables produced. The Container/Code.html template emits the
+        # element; this call makes sure the JS module + CodeMirror
+        # importmap entries actually reach the browser.
+        40 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsCodeMirrorAssetsProcessor
       }
     }
   }

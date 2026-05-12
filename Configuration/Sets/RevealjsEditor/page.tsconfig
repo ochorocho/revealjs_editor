@@ -23,7 +23,7 @@ mod.web_layout.BackendLayouts {
 
 [traverse(page, "doktype") == 1731]
   TCEFORM.tt_content.CType {
-    keepItems = revealjs_slide_cover,text,textmedia
+    keepItems = revealjs_slide_cover,revealjs_slide_code,text,textmedia
   }
 
   TCAdefaults.tt_content.header_layout = 1
@@ -38,8 +38,14 @@ mod.web_layout.BackendLayouts {
           description = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:ctype.revealjs_slide_cover.description
           tt_content_defValues.CType = revealjs_slide_cover
         }
+        revealjs_slide_code {
+          iconIdentifier = content-revealjs-slide-code
+          title = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:ctype.revealjs_slide_code
+          description = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:ctype.revealjs_slide_code.description
+          tt_content_defValues.CType = revealjs_slide_code
+        }
       }
-      show = revealjs_slide_cover,text,textmedia
+      show = revealjs_slide_cover,revealjs_slide_code,text,textmedia
     }
     # Hide every other wizard group (default core CTypes etc.)
     common.show := removeFromList(*)
