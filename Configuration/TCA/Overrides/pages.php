@@ -25,6 +25,7 @@ defined('TYPO3') or die();
             'type' => 'select',
             'renderType' => 'selectSingle',
             'default' => 'black',
+            'dbFieldLength' => 32,
             'items' => [
                 ['label' => 'THE CÄMP', 'value' => 'the-caemp'],
                 ['label' => 'Black', 'value' => 'black'],
@@ -230,6 +231,11 @@ defined('TYPO3') or die();
                 'size' => 20,
                 'default' => (string)$spec['default'],
                 'eval' => 'trim',
+                // Cap the underlying VARCHAR width — see the row-size note
+                // on the 'select' branch below for the why. 64 is enough
+                // headroom for the free-form values these inputs hold
+                // (e.g. `cubic-bezier(0.5,0.5,0.5,0.5)` for easing).
+                'max' => 64,
             ],
             'number' => [
                 'type' => 'number',
@@ -241,6 +247,18 @@ defined('TYPO3') or die();
                 'renderType' => 'selectSingle',
                 'default' => $spec['default'],
                 'items' => $spec['items'],
+                // Cap the underlying VARCHAR width: the schema analyser
+                // defaults type=select to VARCHAR(255), and 18 of these
+                // columns on `pages` push the row over InnoDB's 8126-byte
+                // logical-row limit on a fresh CREATE TABLE under utf8mb4
+                // (visible only in CI provisioning — local incremental
+                // ALTER TABLE bypasses the strict check). Floor at 16 for
+                // headroom; otherwise grow to fit the longest item value
+                // so future renames don't require touching this branch.
+                'dbFieldLength' => max(16, ...array_map(
+                    static fn(array $item): int => strlen((string)$item['value']),
+                    $spec['items'],
+                )),
             ],
         };
 
