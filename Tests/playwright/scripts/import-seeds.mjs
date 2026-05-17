@@ -63,6 +63,23 @@ const db = knex({
     pool: { min: 0, max: 1 },
 });
 
+/**
+ * `true` if a table with that name exists in the connected database.
+ * Used to skip TRUNCATE + import for tables that haven't been created
+ * yet (e.g. when `typo3 setup` failed earlier in the bootstrap) so
+ * the seed step doesn't fatal-error before reaching the next table.
+ * Queries information_schema so we don't depend on database-specific
+ * error codes (ER_NO_SUCH_TABLE is MySQL/MariaDB; SHOW TABLES is also
+ * MySQL-family, but used here for parity with the rest of this script).
+ */
+async function tableExists(name) {
+    const rows = await db('information_schema.tables')
+        .where({ table_schema: config.database, table_name: name })
+        .select(db.raw('1'))
+        .limit(1);
+    return rows.length > 0;
+}
+
 try {
     // FK_CHECKS=0 lets us TRUNCATE tables that participate in foreign keys
     // in any order, and lets us re-seed without worrying about transient
@@ -78,6 +95,15 @@ try {
     await db.raw("SET SESSION sql_mode = ''");
 
     for (const table of ORDER) {
+        // Tolerate missing tables — e.g. when `typo3 setup` partially
+        // failed (row-size limit, FK conflict, ...), the schema for
+        // that table may not exist yet. Warning instead of fatal lets
+        // the rest of the seed still land; the operator sees what was
+        // skipped and can re-run setup to fix the underlying issue.
+        if (!(await tableExists(table))) {
+            console.warn(`[import-seeds] Skipping ${table}: table does not exist`);
+            continue;
+        }
         const csvPath = resolve(fixturesDir, `${table}.csv`);
         console.log(`[import-seeds] Truncating ${table} ...`);
         await db.raw(`TRUNCATE TABLE \`${table}\``);
@@ -87,15 +113,11 @@ try {
 
     // Invalidate page caches that were populated against the pre-import
     // content. Skipped tables (e.g. on a fresh install where typo3 setup
-    // hasn't created them yet) are tolerated.
+    // hasn't created them yet) are tolerated via the same exists-check.
     console.log('[import-seeds] Truncating page cache tables ...');
     for (const table of CACHE_TABLES) {
-        try {
-            await db.raw(`TRUNCATE TABLE \`${table}\``);
-        } catch (err) {
-            if (err && err.code === 'ER_NO_SUCH_TABLE') continue;
-            throw err;
-        }
+        if (!(await tableExists(table))) continue;
+        await db.raw(`TRUNCATE TABLE \`${table}\``);
     }
 
     await db.raw('SET FOREIGN_KEY_CHECKS = 1');

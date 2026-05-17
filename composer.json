@@ -36,7 +36,6 @@
 		"ci:php:lint": "find Classes Configuration Tests ext_localconf.php -name '*.php' -print0 | xargs -0 -n1 -P4 php -l > /dev/null",
 		"ci:php:stan": "Build/vendor/bin/phpstan analyse --no-progress",
 		"ci:php:cs": "Build/vendor/bin/php-cs-fixer fix --config=php-cs-fixer.php --dry-run --diff",
-		"ci:php:test": "typo3DatabaseDriver=mysqli typo3DatabaseHost=db typo3DatabasePort=3306 typo3DatabaseUsername=db typo3DatabasePassword=db typo3DatabaseName=test Build/vendor/bin/phpunit -c Tests/FunctionalTests.xml",
 		"ci:composer:validate": "@composer validate --no-check-publish --working-dir=Build",
 		"fix:php:cs": "Build/vendor/bin/php-cs-fixer fix --config=php-cs-fixer.php"
 	}
