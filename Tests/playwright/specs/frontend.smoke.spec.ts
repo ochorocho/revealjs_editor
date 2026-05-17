@@ -13,13 +13,16 @@ import { expect, test } from '@ochorocho/playwright-db-connector';
 test.describe('reveal.js page rendering', () => {
     const PRESENTATION_URL = '/subpage-germany/lets-present-this';
 
-    test('the deck wrapper renders three sections inside .reveal .slides', async ({ page }) => {
+    test('the deck wrapper renders four sections inside .reveal .slides', async ({ page }) => {
         const response = await page.goto(PRESENTATION_URL);
         expect(response?.status()).toBe(200);
 
         await expect(page).toHaveTitle(/RevealJS/i);
         await expect(page.locator('div.reveal')).toHaveCount(1);
-        await expect(page.locator('.reveal .slides > section')).toHaveCount(3);
+        // Seed has 4 rows in colPos 0 on pid=11: cover (115), two text
+        // slides (112, 105), and one code slide (116) — see
+        // Tests/playwright/fixtures/csv/tt_content.csv.
+        await expect(page.locator('.reveal .slides > section')).toHaveCount(4);
     });
 
     test('reveal.js initialises in the browser (body gets reveal-viewport class)', async ({ page }) => {
@@ -75,6 +78,64 @@ test.describe('reveal.js page rendering', () => {
         expect(html).toContain('Vendor/revealjs/dist/reveal.css');
         expect(html).toContain('Vendor/revealjs/dist/reveal.mjs');
         expect(html).toContain('data-revealjs-options=');
+    });
+
+    test('code slide is rendered by Monaco (read-only) for anonymous viewers', async ({ page }) => {
+        // Architecture under test: the server emits plain
+        // `<pre data-monaco data-language="X" data-editable="0">…raw…</pre>`
+        // blocks; the page-wide RevealMonacoMount.js module loaded by
+        // RevealJsMonacoAssetsProcessor walks them on DOMContentLoaded and
+        // mounts a Monaco editor (read-only mode for anonymous viewers)
+        // inside each. The test has TWO halves:
+        //   (a) the raw HTML response carries the unhydrated `<pre data-monaco>`
+        //       markup AND the RevealMonacoMount.js module reference, but
+        //       no codemirror/@typo3-backend pollution.
+        //   (b) after page load, each block has been promoted to a
+        //       `.monaco-editor` instance with `data-monaco-mounted="1"`
+        //       on the wrapper.
+
+        // ----- (a) raw response -----
+        const response = await page.goto(PRESENTATION_URL);
+        const html = await response!.text();
+
+        // Server emits `<pre data-monaco>`; seeded code slide (tt_content
+        // uid 116) has 2 inline-IRRE children in
+        // tx_revealjseditor_codeblock.csv (uids 11, 12 → parent 116).
+        const rawBlocks = html.match(/<pre data-monaco/g) ?? [];
+        expect(rawBlocks.length).toBeGreaterThanOrEqual(2);
+
+        // RevealMonacoMount.js is loaded for the page-wide mount pass.
+        expect(html).toContain('RevealMonacoMount.js');
+
+        // No CodeMirror or Shiki/shikicode markup — Monaco is the single
+        // editor across all surfaces now.
+        expect(html).not.toContain('<typo3-t3editor-codemirror ');
+        expect(html).not.toContain('@codemirror/');
+        expect(html).not.toContain('@typo3/backend/code-editor');
+        expect(html).not.toMatch(/<reveal-editable-(shiki|codemirror|phiki) /);
+        expect(html).not.toContain('<pre class="shiki');
+        expect(html).not.toContain('ShikiHighlight.js');
+
+        // Each editable wrapper carries data-editable="0" on the public
+        // deck (anonymous viewers don't get the dataHandlerStore bridge).
+        expect(html).toMatch(/<pre data-monaco[^>]*data-editable="0"/);
+
+        // ----- (b) hydrated DOM -----
+        // Monaco mounts asynchronously after the vendored editor.mjs bundle
+        // (~1 MB gzipped) loads + the core editor worker spins up. Wait
+        // for the network to settle before asserting on the mounted DOM.
+        await page.waitForLoadState('networkidle');
+        const blocks = page.locator('.reveal pre[data-monaco][data-monaco-mounted="1"]');
+        await expect(blocks.first()).toBeAttached({ timeout: 20_000 });
+
+        // Each block contains a `.monaco-editor` div after mount — Monaco's
+        // root class name on the editor instance it builds.
+        await expect(
+            page.locator('.reveal pre[data-monaco] .monaco-editor').first(),
+        ).toBeAttached({ timeout: 20_000 });
+
+        const hydratedCount = await blocks.count();
+        expect(hydratedCount).toBeGreaterThanOrEqual(2);
     });
 
     test('keyboard ArrowRight advances reveal.js to the next slide', async ({ page }) => {

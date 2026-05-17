@@ -70,16 +70,145 @@
 	Initialze RevealJS
 </f:comment>
 <f:comment>
-	Code blocks on revealjs_slide_code CTypes are rendered by TYPO3's own
-	`<typo3-t3editor-codemirror>` web component, registered on the FE
-	importmap by RevealJsCodeMirrorAssetsProcessor (see setup.typoscript,
-	dataProcessing.40). No reveal.js plugin needed.
+	Code blocks (inline-IRRE rows on revealjs_slide_code CTypes) are
+	rendered by Monaco (the VS Code editor). The server emits `<pre
+	data-monaco data-language="X" data-editable="0|1">…raw source…</pre>`
+	blocks; RevealMonacoMount.js (loaded by RevealJsMonacoAssetsProcessor
+	on every doktype-1731 page) mounts a Monaco editor inside each on
+	DOMContentLoaded. `data-editable="0"` (anonymous viewers) = read-only;
+	`data-editable="1"` (visual_editor preview iframe) = editable + wired
+	to dataHandlerStore for save-back. Reveal.js's own highlight plugin
+	is not used.
 </f:comment>
 <f:asset.script identifier="revealjs-init" type="module">
 	import Reveal from "{f:uri.resource(path: 'EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/reveal.mjs')}";
 	const root = document.querySelector('.reveal');
 	const opts = root ? JSON.parse(root.dataset.revealjsOptions || '{}') : {};
-	Reveal.initialize(opts);
+	await Reveal.initialize(opts);
+
+	/*
+	 * Auto-fit wrapper. Reveal.js scales the whole `.reveal .slides`
+	 * container via transform: scale() to fit the viewport, but CSS
+	 * units inside slides (vh, vw) resolve against the browser viewport,
+	 * not the visible slide canvas. When the viewport is width-limited
+	 * (narrow window), the visible canvas shrinks vertically below the
+	 * viewport height, and elements sized in `vh` overflow the visible
+	 * slide.
+	 *
+	 * Fix: wrap each section's children in a `.reveal-fit-wrapper` and,
+	 * on each layout settle, shrink the wrapper with a scale transform
+	 * if its scrollHeight exceeds the canvas height. The two transforms
+	 * compose multiplicatively (reveal's scales canvas → viewport; ours
+	 * scales content → canvas) so no conflict.
+	 *
+	 * Active in edit mode too — Monaco's onDidChangeModelContent bridge in
+	 * the inline-IRRE edit branch listens to the textarea's `input` event
+	 * (coordinate-independent), so the dataHandlerStore save path is
+	 * unaffected by the scale. Keep auto-fit on so editors see the same
+	 * overflow-clamping behaviour viewers will see on narrow viewports.
+	 */
+	{
+		const slides = document.querySelectorAll('.reveal .slides > section');
+		// Wrap each section's existing children in a fit-wrapper exactly once.
+		slides.forEach(section => {
+			if (section.querySelector(':scope > .reveal-fit-wrapper')) return;
+			// Don't disturb r-stretch / r-fit-text layouts if a future
+			// slide template ever opts in to reveal's own machinery.
+			if (section.querySelector(':scope > .r-stretch, :scope > .r-fit-text')) return;
+			const wrapper = document.createElement('div');
+			wrapper.className = 'reveal-fit-wrapper';
+			while (section.firstChild) {
+				wrapper.appendChild(section.firstChild);
+			}
+			section.appendChild(wrapper);
+		});
+
+		const canvasHeight = Reveal.getConfig().height || 700;
+		const fitSection = section => {
+			const wrapper = section.querySelector(':scope > .reveal-fit-wrapper');
+			if (!wrapper) return;
+			// `scrollHeight` is layout-based and unaffected by an already-
+			// applied transform, so we don't need a reset-before-measure
+			// dance. We DO need to bail when scrollHeight is 0 (transient
+			// state during reveal's slide transitions when an element is
+			// briefly display:none) — otherwise we'd clear a previously-
+			// applied scale and not re-apply it.
+			//
+			// ⚠️ This JS is embedded in a Fluid template. We use plain
+			// string concatenation instead of ES6 template literals because
+			// Fluid's parser treats `{name}` as a variable reference and
+			// silently eats `{ratio}` inside `scale(${ratio})`, leaving the
+			// invalid CSS string `scale($)` which the browser drops. Same
+			// caveat applies to any future inline JS in this file.
+			// Use the SECTION's scrollHeight (includes the wrapper plus any
+			// section-level padding reveal/themes add) so the scale ratio
+			// accounts for everything that contributes to vertical overflow.
+			// Using just wrapper.scrollHeight under-scales by the section
+			// padding amount and leaves a slim band of content overflowing.
+			const contentHeight = section.scrollHeight;
+			if (contentHeight === 0) return;
+			if (contentHeight > canvasHeight) {
+				const desired = 'scale(' + (canvasHeight / contentHeight) + ')';
+				if (wrapper.style.transform !== desired) {
+					wrapper.style.transform = desired;
+					wrapper.style.transformOrigin = 'top center';
+				}
+				// Override reveal's `center: true` positioning. Reveal sets
+				// section.style.top based on the section's scrollHeight at
+				// initialize time, which is the PRE-wrap value (before our
+				// wrapper exists). For overflowing slides we ignore reveal's
+				// centering and anchor the section at the canvas top —
+				// reveal's `Math.max((canvasH - scrollH)/2, 0)` formula
+				// would already give 0 if the measurement was accurate, so
+				// we're just enforcing what the formula would yield with
+				// up-to-date measurements.
+				if (section.style.top !== '0px') {
+					section.style.top = '0px';
+				}
+			} else {
+				if (wrapper.style.transform !== '') {
+					wrapper.style.transform = '';
+				}
+				// Let reveal's centering apply naturally for slides that fit;
+				// only clear the override if we previously set it.
+				if (section.style.top === '0px') {
+					section.style.top = '';
+				}
+			}
+		};
+		// Defer to the next animation frame so the browser has applied
+		// the .present class' display:block AND completed layout before
+		// we read scrollHeight. Without this, slidechanged fires too
+		// early — the section is still display:none from the previous
+		// frame, scrollHeight is 0, and the scale is never applied.
+		const fitAll = () => requestAnimationFrame(() => {
+			document.querySelectorAll('.reveal .slides > section').forEach(fitSection);
+		});
+
+		Reveal.on('ready', fitAll);
+		Reveal.on('slidechanged', fitAll);
+		Reveal.on('slidetransitionend', fitAll);
+		Reveal.on('resize', fitAll);
+
+		// ResizeObserver catches async content-size changes the reveal
+		// events don't fire for — e.g. images decoding, embedded iframes
+		// resizing, or the Monaco editor growing as an editor
+		// types in the visual_editor preview iframe. The observer ignores
+		// `transform` changes (transform doesn't trigger layout), so no
+		// infinite loop with fitSection's own setProperty calls.
+		const ro = new ResizeObserver(entries => {
+			entries.forEach(e => {
+				const section = e.target.closest('section');
+				if (section) fitSection(section);
+			});
+		});
+		document.querySelectorAll('.reveal .slides > section > .reveal-fit-wrapper')
+			.forEach(w => ro.observe(w));
+
+		// Also run immediately — the events above may have already fired
+		// for the initial slide by the time we get here.
+		fitAll();
+	}
 </f:asset.script>
 
 </html>

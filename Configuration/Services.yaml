@@ -1,0 +1,19 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  # Register every class under Classes/ for Symfony DI. The key effect we
+  # need is that TYPO3's NodeFactory resolves
+  # Ochorocho\RevealJsEditor\Form\Element\MonacoEditorElement through the
+  # container — that's what runs AbstractFormElement::injectNodeFactory()
+  # which our render() relies on (calls $this->nodeFactory->create() via
+  # renderFieldInformation/renderFieldControl/renderFieldWizard).
+  #
+  # Without this file, GeneralUtility::makeInstance() instantiates the
+  # element via its bare constructor and the injectNodeFactory() setter
+  # never fires — $this->nodeFactory is null and the first render call
+  # crashes inside AbstractFormElement::renderFieldInformation.
+  Ochorocho\RevealJsEditor\:
+    resource: '../Classes/*'

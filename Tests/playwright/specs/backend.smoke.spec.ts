@@ -30,6 +30,16 @@ const PRESENTATION_PAGE_TITLE = 'Lets Present This';
 const COVER_SLIDE_UID = 115;
 
 /**
+ * The seeded code slide on uid 11 (CType=revealjs_slide_code, sorting=768).
+ * Carries three inline-IRRE `tx_revealjseditor_codeblock` rows (uid 11, 12, 13)
+ * — see Tests/playwright/fixtures/csv/tx_revealjseditor_codeblock.csv. The
+ * Phiki-regression test below opens this slide's edit form and asserts the
+ * `code` field still mounts CodeMirror in the BE FormEngine (Phiki only
+ * replaced the public FE render — BE editing UX must be unchanged).
+ */
+const CODE_SLIDE_UID = 116;
+
+/**
  * Log into the TYPO3 v14 backend. The form uses three fields: `username`,
  * `p_field` (cleartext password — captured client-side and hashed into
  * `userident` before POST). Filling both fields and submitting the form is
@@ -112,16 +122,18 @@ test.describe('TYPO3 backend', () => {
         await expect(themeSelect.getByRole('option')).toHaveCount(15);
     });
 
-    test('the page module shows the three seeded tt_content slides', async ({ page }) => {
+    test('the page module shows the four seeded tt_content slides', async ({ page }) => {
         await login(page);
         await page.goto(`/typo3/module/web/layout?id=${PRESENTATION_PAGE_UID}`);
 
         // The page-content iframe renders each tt_content row as a
         // <fieldset role="group"> with an `id=<uid> - <title> - <CType>`
-        // accessible name. Seed has three rows in colPos 0 (uids 105, 112, 115).
+        // accessible name. Seed has four rows in colPos 0: cover (115),
+        // two text slides (105, 112), and one code slide (116) — see
+        // Tests/playwright/fixtures/csv/tt_content.csv.
         const moduleFrame = page.frameLocator('iframe').first();
         const slides = moduleFrame.getByRole('group', { name: /^id=\d+/ });
-        await expect(slides).toHaveCount(3, { timeout: 15_000 });
+        await expect(slides).toHaveCount(4, { timeout: 15_000 });
     });
 });
 
@@ -221,6 +233,97 @@ test.describe('TYPO3 backend — slide editor', () => {
         await expect(
             formFrame.locator('input[data-formengine-input-name*="tx_revealjseditor_anim_unmatched"]'),
         ).toBeAttached();
+    });
+
+    test('code slide inline-IRRE code field mounts Monaco in the BE FormEngine', async ({ page }) => {
+        // The `tx_revealjseditor_codeblock.code` column uses our custom
+        // `renderType=monacoEditor` (registered in ext_localconf.php +
+        // implemented in Classes/Form/Element/MonacoEditorElement.php).
+        // The BE form emits `<typo3-monaco-editor>` containing a hidden
+        // `<textarea name="data[…][…][…][code]" hidden>`; the JS module
+        // (Resources/Public/JavaScript/MonacoFormEngineElement.js) mounts
+        // Monaco inside and writes its value back into the textarea on
+        // every change so the standard form-save POST picks it up. This
+        // test pins the contract.
+        await login(page);
+
+        const editUrl = `/typo3/record/edit?edit[tt_content][${CODE_SLIDE_UID}]=edit&returnUrl=/typo3/module/web/layout`;
+        await page.goto(editUrl);
+
+        const formFrame = page.frameLocator('iframe').first();
+
+        // Wait for the edit form to be ready.
+        await expect(
+            formFrame.locator('input[data-formengine-input-name*="tx_revealjseditor_codeblock"][data-formengine-input-name$="[headline]"]').first(),
+        ).toBeAttached({ timeout: 20_000 });
+
+        // The custom element wraps the hidden form textarea.
+        await expect(
+            formFrame.locator('typo3-monaco-editor').first(),
+        ).toBeAttached({ timeout: 20_000 });
+
+        // The hidden textarea (FormEngine's POST carrier) is still present
+        // inside the custom element with the standard data[…] name.
+        await expect(
+            formFrame.locator('typo3-monaco-editor textarea[name*="tx_revealjseditor_codeblock"][name$="[code]"]').first(),
+        ).toBeAttached();
+
+        // Monaco's `.monaco-editor` root div appears inside the custom
+        // element after the bundle loads + the editor mounts. networkidle
+        // is the cheap proxy for "vendor bundles done loading".
+        await page.waitForLoadState('networkidle');
+        await expect(
+            formFrame.locator('typo3-monaco-editor .monaco-editor').first(),
+        ).toBeAttached({ timeout: 30_000 });
+
+        // CodeMirror must NOT appear (we deliberately replaced
+        // renderType=codeEditor; a regression would reintroduce it).
+        await expect(
+            formFrame.locator('typo3-t3editor-codemirror'),
+        ).toHaveCount(0);
+    });
+
+    test('visual_editor preview iframe mounts Monaco editors (editable mode) per inline-IRRE code block', async ({ page }) => {
+        // Contract pinned: the FE URL with ?editMode=1 + a logged-in admin
+        // produces visual_editor's BE module shell with a preview iframe;
+        // the same RevealMonacoMount.js that runs for anonymous viewers
+        // runs in the iframe too — the template stamps `data-editable="1"`
+        // on each `<pre data-monaco>`, which flips Monaco from read-only
+        // to editable + wires onDidChangeModelContent into
+        // visual_editor's `dataHandlerStore.setData(...)` so the BE
+        // toolbar save persists via TYPO3's DataHandler.
+        //
+        // We don't assert Tab/IME/typing behaviour here: visual_editor's
+        // preview iframe uses a selection-overlay model that blocks
+        // direct clicks on iframe content until the content element has
+        // been activated through its own UI — so simulating keyboard
+        // input via Playwright is brittle. Editor input correctness is
+        // Monaco's own well-tested concern; manual verification suffices.
+        await login(page);
+
+        await page.goto('/subpage-germany/lets-present-this?editMode=1');
+        await page.waitForLoadState('networkidle');
+
+        const previewFrame = page.frame({ url: /lets-present-this/ });
+        expect(previewFrame, 'visual_editor preview iframe should be present').toBeTruthy();
+
+        // Editable blocks rendered by Container/Code.html's single-shape
+        // branch with data-editable="1".
+        const blocks = previewFrame!.locator('.reveal pre[data-monaco][data-editable="1"]');
+        await expect(blocks.first()).toBeAttached({ timeout: 15_000 });
+
+        // Each block has Monaco mounted inside on DOMContentLoaded —
+        // `.monaco-editor` is Monaco's root class.
+        await expect(
+            previewFrame!.locator('.reveal pre[data-monaco][data-editable="1"] .monaco-editor').first(),
+        ).toBeAttached({ timeout: 30_000 });
+
+        // Wrappers carry the mount-marker after the mount script promotes
+        // them.
+        const mountedCount = await previewFrame!.locator(
+            '.reveal pre[data-monaco][data-monaco-mounted="1"]',
+        ).count();
+        expect(mountedCount).toBeGreaterThanOrEqual(1);
     });
 
     test('cover slide bodytext mounts the trimmed CKEditor 5 (no schema-cannot-register-item-twice)', async ({ page }) => {

@@ -10,3 +10,9 @@ $GLOBALS['TYPO3_CONF_VARS']['RTE']['Presets']['revealjs']
     = 'EXT:revealjs_editor/Configuration/RTE/Revealjs.yaml';
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['reveal'][] = 'Ochorocho\\RevealJsEditor\\ViewHelpers';
+
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1779100000] = [
+    'nodeName' => 'monacoEditor',
+    'priority' => 70,
+    'class' => \Ochorocho\RevealJsEditor\Form\Element\MonacoEditorElement::class,
+];

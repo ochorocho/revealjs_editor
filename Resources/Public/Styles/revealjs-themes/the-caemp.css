@@ -150,13 +150,13 @@ body,
 
 .reveal h2 {
 	font-weight: 700;
-	font-size: 1.4em;
+	font-size: 1.8em;
 	text-transform: uppercase;
 }
 
 .reveal h3 {
 	font-weight: 700;
-	font-size: 1.1em;
+	font-size: 1.6em;
 	text-transform: none;
 	font-family: 'EB Garamond', serif;
 	color: var(--cmp-text);

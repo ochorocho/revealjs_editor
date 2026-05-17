@@ -89,17 +89,23 @@ return [
         'code' => [
             'label' => $ll . ':tx_revealjseditor_codeblock.code',
             'config' => [
+                // Mounts Monaco (the VS Code editor) in the BE form via our
+                // custom renderType registered in ext_localconf.php. Same
+                // Monaco instance the FE deck uses — one editor engine for
+                // every code-display + code-edit surface this extension
+                // owns. Implementation lives in
+                // Classes/Form/Element/MonacoEditorElement.php and
+                // Resources/Public/JavaScript/MonacoFormEngineElement.js.
+                // `rows`/`cols` are ignored by Monaco itself (it owns its
+                // own dimensions via the custom element's CSS) but kept
+                // here so any future fallback rendering still has sane
+                // defaults. The sibling `language` select column drives
+                // Monaco's syntax mode — read in MonacoEditorElement::render()
+                // from `$this->data['databaseRow']['language']`.
                 'type' => 'text',
-                // codeEditor = TYPO3's CodeMirror wrapper. `format` omitted on
-                // purpose: per-row language can't be reflected in a TCA-time
-                // static `format`, so we trade BE syntax tokens for the
-                // flexibility of per-row languages. Editors still get
-                // monospace + line numbers + tabulator handling.
-                'renderType' => 'codeEditor',
+                'renderType' => 'monacoEditor',
                 'rows' => 12,
                 'cols' => 80,
-                'enableTabulator' => true,
-                'fixedFont' => true,
             ],
         ],
     ],

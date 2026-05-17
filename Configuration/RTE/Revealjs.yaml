@@ -25,6 +25,18 @@ imports:
 # A trimmed RTE suited to slide content. Headings are limited to h2/h3
 # because h1 is reserved for the slide-deck-level wrapper, and each
 # <section> typically holds at most one h2.
+#
+# `code` (inline) wraps the current selection in a `<code>` tag — useful
+# for inline tokens inside prose ("set the `theme` to `dark`"). Different
+# from the block `<pre><code>` plugin we deliberately removed: that one
+# would duplicate the dedicated revealjs_slide_code CType surface (one
+# Monaco editor per inline-IRRE row, see Container/Code.html). The
+# `<code>` tag is in TYPO3's Processing.yaml `allowTags` list already,
+# so it survives the save-side HTML filter without any custom config.
+#
+# `Code` is part of @ckeditor/ckeditor5-basic-styles (alongside Bold /
+# Italic / etc.) — the basic-styles bundle ships in rte_ckeditor's DLL
+# but the `Code` plugin specifically is opt-in via importModules.
 editor:
   config:
     toolbar:
@@ -33,6 +45,7 @@ editor:
         - '|'
         - bold
         - italic
+        - code
         - link
         - '|'
         - bulletedList
@@ -44,3 +57,5 @@ editor:
         - { model: paragraph, title: Paragraph }
         - { model: heading2, view: h2, title: Heading 2 }
         - { model: heading3, view: h3, title: Heading 3 }
+    importModules:
+      - { module: '@ckeditor/ckeditor5-basic-styles', exports: [ 'Code' ] }

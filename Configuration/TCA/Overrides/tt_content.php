@@ -268,4 +268,14 @@ defined('TYPO3') or die();
         . ',--div--;' . $ll . ':tt_content.tab.codeblocks,'
         . 'tx_revealjseditor_codeblocks'
         . $slideTabs;
+
+    // RTE on code-slide bodytext, scoped to the same trimmed `revealjs`
+    // preset the cover uses. Lets editors write prose around the inline
+    // code blocks (which live in the tx_revealjseditor_codeblocks
+    // collection) with the shared toolbar — bold/italic/links/lists/
+    // headings + the CodeBlock plugin registered in
+    // Configuration/RTE/Revealjs.yaml for inline syntax-highlighted
+    // snippets directly inside the prose.
+    $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_code']['columnsOverrides']['bodytext']['config']['enableRichtext'] = true;
+    $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_code']['columnsOverrides']['bodytext']['config']['richtextConfiguration'] = 'revealjs';
 })();

@@ -10,11 +10,14 @@
     "scripts": {
         "test:e2e": "ddev playwright test",
         "test:e2e:ui": "ddev playwright browser",
-        "test:e2e:report": "ddev playwright show-report"
+        "test:e2e:report": "ddev playwright show-report",
+        "build:monaco": "node Build/build-monaco.mjs"
     },
     "devDependencies": {
         "@ochorocho/playwright-db-connector": "^0.0.2",
-        "@playwright/test": "^1.59.0",
+        "@playwright/test": "1.59.0",
+        "esbuild": "^0.28.0",
+        "monaco-editor": "^0.54.0",
         "mysql2": "^3.22.3"
     }
 }

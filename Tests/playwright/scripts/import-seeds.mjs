@@ -26,10 +26,11 @@ import { dirname, resolve } from 'node:path';
 const here = dirname(fileURLToPath(import.meta.url));
 const fixturesDir = resolve(here, '..', 'fixtures', 'csv');
 
-// FK-dependency order. Children depend on parents being present (be_users
-// reference be_groups via usergroup; tt_content rows reference pages.uid
-// via pid).
-const ORDER = ['be_groups', 'be_users', 'pages', 'tt_content'];
+// FK-dependency order. Children depend on parents being present:
+//   - be_users reference be_groups via `usergroup`
+//   - tt_content rows reference pages.uid via `pid`
+//   - tx_revealjseditor_codeblock rows reference tt_content.uid via `parent_uid`
+const ORDER = ['be_groups', 'be_users', 'pages', 'tt_content', 'tx_revealjseditor_codeblock'];
 
 // TYPO3 v14 page-cache tables. Bypassing DataHandler to insert fixtures
 // means the cache otherwise keeps serving HTML rendered against whatever

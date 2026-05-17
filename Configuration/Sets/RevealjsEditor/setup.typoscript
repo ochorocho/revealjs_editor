@@ -34,6 +34,12 @@ tt_content.revealjs_slide_code {
     }
 }
 
+# Note: there's no server-side post-processing of bodytext code blocks any
+# more. The previous Phiki-on-PHP pass that rewrote `<pre><code class="language-X">`
+# inside parseFunc'd bodytext is gone — ShikiHighlight.js (loaded by
+# RevealJsShikiAssetsProcessor below) finds and highlights those same blocks
+# client-side, alongside the inline-IRRE rows. One engine, one pass.
+
 [traverse(page, "doktype") == 1731]
   page = PAGE
   page {
@@ -81,12 +87,14 @@ tt_content.revealjs_slide_code {
         # tags, one of which always 404'd).
         30 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsThemeProcessor
 
-        # Register TYPO3's <typo3-t3editor-codemirror> web component module
-        # in the FE importmap. Side-effect-only processor — no template
-        # variables produced. The Container/Code.html template emits the
-        # element; this call makes sure the JS module + CodeMirror
-        # importmap entries actually reach the browser.
-        40 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsCodeMirrorAssetsProcessor
+        # Loads Monaco (the VS Code editor) as the single editor for code
+        # blocks on the deck — anonymous viewers get it in read-only mode,
+        # visual_editor's preview iframe gets it editable with
+        # dataHandlerStore wiring for save-back. The template stamps
+        # `data-editable="1"` on blocks rendered in edit mode; the mount
+        # module reads that flag per-block to decide read-only vs editable.
+        # Side-effect-only processor; no template variables produced.
+        40 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsMonacoAssetsProcessor
       }
     }
   }

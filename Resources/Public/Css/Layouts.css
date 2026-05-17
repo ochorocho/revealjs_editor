@@ -35,6 +35,20 @@
 	text-transform: uppercase;
 }
 
+/* Auto-fit wrapper injected by the deck init script (Pages/Revealjs.html)
+   around each slide section's children. When the slide's content height
+   exceeds reveal's logical canvas (default 700px), the script applies a
+   transform: scale(ratio) here so the content shrinks to fit. The wrapper
+   needs an explicit block layout for the script's scrollHeight measurement
+   to work correctly. transform-origin is also set inline by the script
+   (top center) — declared here too as a sensible default in case the
+   script-set value is ever cleared mid-flight. */
+.reveal-fit-wrapper {
+	display: block;
+	width: 100%;
+	transform-origin: top center;
+}
+
 .reveal-logo {
 	z-index: 30;
 	pointer-events: none;
@@ -50,43 +64,59 @@
 	right: 0;
 }
 
-/* Type-match reveal.js's stock `.reveal pre` rule (see e.g. theme/black.css)
-   so codemirror code blocks have the same visual weight as the highlight.js
-   blocks they replaced: 0.55× of the slide's main font size, 90% centred,
-   subtle drop shadow.
+/* Code-block shell — `<pre data-monaco>` wrappers emitted by
+   Container/Code.html. RevealMonacoMount.js mounts a Monaco editor
+   (read-only for anonymous viewers, editable in visual_editor's
+   preview iframe) inside each block on DOMContentLoaded.
 
-   Font-size: stock reveal themes set `.reveal { font-size: var(--r-main-font-size) }`
-   so `0.55em` works out to a readable ~23px. Our custom `the-caemp` theme
-   (and any other custom theme that follows TYPO3's "set the CSS variable
-   but don't bind it to .reveal" pattern) leaves `.reveal` at the browser
-   default 16px, which makes `0.55em` an unreadable 8.8px. Sizing against
-   `--r-main-font-size` directly bypasses that inheritance trap and gives
-   the same visual size on every theme that defines the variable, with a
-   sensible 36px fallback when it doesn't.
+   We only own the OUTER shell here (deck-layout sizing — 90% width,
+   drop shadow, vs-dark placeholder background). Monaco brings its own
+   chrome via the vendored editor.css stylesheet (RevealMonacoMount.js
+   injects a <link> tag pointing at Vendor/monaco/editor.css on first
+   load); the resulting `.monaco-editor` div inside the `<pre>` carries
+   carets, selection, line gutter, etc.
 
-   Height: paired with `autoheight` on the element, the editor sizes to
-   fit its actual code content. The `--rows: 0` override drops the
-   element's `min-height: calc(8px + 16.8px * var(--rows, 18))` baseline
-   to ~8px so 3-line snippets don't reserve 18 rows of empty space.
+   No fixed height — RevealMonacoMount.js sets `pre.style.height` from
+   `editor.getContentHeight()` on every content change, so the block
+   auto-grows with the source. The `min-height: 3em` keeps an empty
+   editor visible before the first mount completes. Tall content is
+   handled deck-wide by the reveal-fit-wrapper transform in
+   Pages/Revealjs.html (scales the whole slide down when its scrollHeight
+   exceeds reveal's canvas) — no need for a fixed cap here.
 
-   Theme: the bundled `@codemirror/theme-one-dark` (imported inside
-   code-mirror-element.js) handles syntax colouring; we only set a
-   transparent backdrop on `.cm-editor` so the slide background shows
-   through. */
-.reveal typo3-t3editor-codemirror {
-	--rows: 0;
+   Pre-mount colouring: vs-dark's chrome (#1e1e1e) is painted on the
+   `<pre>` directly so the brief moment between page load and Monaco
+   finishing isn't a white-on-default flash. Once Monaco mounts, its
+   own theme styles paint over the placeholder. */
+.reveal pre[data-monaco] {
 	display: block;
-	width: 90%;
 	margin: var(--r-block-margin) auto;
-	font-size: calc(var(--r-main-font-size, 36px) * 0.55);
-	font-family: var(--r-code-font);
-	line-height: 1.2em;
+	padding: 0;
+	min-height: 3em;
 	text-align: left;
 	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-}
-.reveal typo3-t3editor-codemirror .cm-editor {
-	background: transparent;
+	background-color: #1e1e1e;  /* vs-dark placeholder until Monaco paints over */
+	color: #d4d4d4;
 	border-radius: 4px;
+	overflow: hidden;
+}
+
+/* Inline `<code>` emitted by CKEditor's Code plugin (Revealjs.yaml's
+   `code` toolbar button). Reveal.js stock themes mostly leave inline
+   <code> at the browser default (monospace, no chrome) which reads as
+   indistinguishable from surrounding prose. This rule gives it a
+   subtle dark token-style background so it pops out visually inside
+   slide prose — matches the vs-dark family the Monaco code blocks use
+   so prose and block code share the same visual vocabulary. */
+.reveal :not(pre) > code {
+	display: inline;
+	padding: 0.1em 0.35em;
+	background-color: rgba(30, 30, 30, 0.85);
+	color: #d4d4d4;
+	font-family: var(--r-code-font, Menlo, Monaco, "Courier New", monospace);
+	font-size: 0.85em;
+	border-radius: 3px;
+	white-space: nowrap;
 }
 
 /* Author wordmark — mirrors .reveal-logo but anchored to the opposite

@@ -12,14 +12,15 @@
 
     Code blocks come from the DatabaseQueryProcessor wired in
     setup.typoscript: one row per tx_revealjseditor_codeblock with the
-    headline, the language (drives the CodeMirror mode via the
-    reveal:codeMirrorAttributes ViewHelper), and the code itself.
+    headline, the language, and the code itself.
 
-    Each block is rendered as a `<typo3-t3editor-codemirror>` element —
-    TYPO3's own CodeMirror 6 wrapper, the same component the BE form uses
-    to author the field. The RevealJsCodeMirrorAssetsProcessor registers
-    the JS module on the FE importmap; the element upgrades client-side
-    on `customElements.define('typo3-t3editor-codemirror', …)`.
+    One template branch emits `<pre data-monaco>` carrying the raw source
+    as text content. The page-wide RevealMonacoMount.js module (loaded
+    on every doktype-1731 page by RevealJsMonacoAssetsProcessor) mounts
+    a Monaco editor in each block on DOMContentLoaded. The `data-editable`
+    attribute flips Monaco between read-only (anonymous viewers) and
+    editable (visual_editor preview iframe + dataHandlerStore wiring for
+    save-back).
 </f:comment>
 
 <div class="reveal-code">
@@ -38,59 +39,70 @@
         cms-frontend/Classes/DataProcessing/DatabaseQueryProcessor.php:90),
         so block fields live under `block.data.*` — not `block.*`.
 
-        The textarea content is emitted via f:format.raw because the
-        browser parses textarea text as literal characters; Fluid's
-        default HTML escaping would land `&lt;` / `&gt;` etc. in the
-        rendered source, which CodeMirror would then display as the
-        entity strings instead of the original code.
+        The `<pre data-monaco>` content uses Fluid's default escaping
+        (no f:format.raw) — the browser parses `<pre>` like any other
+        element, so embedded `<` / `>` MUST land as entities to survive
+        as literal text. RevealMonacoMount.js reads `pre.textContent`
+        which decodes the entities back to the original characters
+        before handing the source to Monaco.
     </f:comment>
     <f:for each="{codeblocks}" as="block">
+        <f:comment>
+            Headline editability in edit mode. visual_editor's own
+            `f:render.text` ViewHelper wraps top-level text fields in
+            `<ve-editable-text>` automatically, but it only knows about
+            the parent record's fields — inline-child fields like our
+            codeblock.headline need the wrapper emitted by hand. The
+            component (Build/vendor/friendsoftypo3/visual-editor/Resources/
+            Public/JavaScript/Frontend/components/ve-editable-text.js) is
+            loaded on the FE by visual_editor's index.js whenever edit
+            mode is active, so we just emit the tag with the right
+            attribute set:
+              - table/uid/field — the identity triple visual_editor's
+                save handler accepts, same one RevealEditableCodemirror
+                uses for the `code` field on the same row.
+              - value — the initial value the component reads on
+                firstUpdated; the rendered slot child is ignored.
+              - allownewlines="false" — headline is TCA `type=input`
+                (single-line), so block Enter from inserting newlines.
+            For public viewers (no editMode) we keep the plain
+            interpolation so the public FE markup is unchanged.
+        </f:comment>
         <f:if condition="{block.data.headline}">
-            <h3>{block.data.headline}</h3>
+            <h3>
+                <f:if condition="{f:editMode()}">
+                    <f:then>
+                        <ve-editable-text
+                            table="tx_revealjseditor_codeblock"
+                            uid="{block.data.uid}"
+                            field="headline"
+                            name="Code Block Headline"
+                            value="{block.data.headline}"
+                            allownewlines="false"></ve-editable-text>
+                    </f:then>
+                    <f:else>{block.data.headline}</f:else>
+                </f:if>
+            </h3>
         </f:if>
         <f:comment>
-            Two attributes that look optional but aren't:
-            - `nolazyload` skips the IntersectionObserver-based lazy init in
-              `code-mirror-element.js`. Reveal.js applies `display: none` to
-              every non-active slide, so the observer reports
-              `intersectionRatio: 0` indefinitely and the spinner stays
-              visible forever. nolazyload calls `initializeEditor()` synchronously.
-            - `autoheight` removes the `.cm-scroller` `max-height` cap so the
-              editor grows to fit its content height. Combined with the
-              `--rows: 0` override in Layouts.css, the editor's min-height
-              also drops to ~8px, letting short snippets render at their
-              natural height instead of always reserving 18 rows.
-
-            Edit-mode vs public:
-            - When the FE is rendered inside visual_editor's BE preview
-              iframe (?editMode=1 AND an authenticated BE user), we wrap
-              each block in <reveal-editable-codemirror>. That custom
-              element (Resources/Public/JavaScript/RevealEditableCodemirror.js)
-              listens to the inner textarea's native `change` event — which
-              the BE codemirror element dispatches on every doc edit — and
-              pipes the new value into visual_editor's dataHandlerStore.
-              The BE save button then persists via TYPO3's DataHandler.
-              The codemirror itself is editable (no `readonly`) in this branch.
-            - For all other requests (anonymous viewers, public consumption)
-              the codemirror has `readonly` and no save-back bridge.
+            Single shape for both render modes. `data-editable` flips
+            Monaco between read-only (anonymous viewers) and editable
+            (visual_editor preview iframe). When editable, the mount
+            module also wires the editor's changes into visual_editor's
+            dataHandlerStore for the BE save button. `data-language`
+            drives Monaco's syntax mode; the mount script falls back to
+            plaintext for languages Monaco doesn't ship a grammar for
+            (e.g. our `typoscript` value).
         </f:comment>
-        <f:if condition="{f:editMode()}">
-            <f:then>
-                <reveal-editable-codemirror
-                    table="tx_revealjseditor_codeblock"
-                    uid="{block.data.uid}"
-                    field="code">
-                    <typo3-t3editor-codemirror{reveal:codeMirrorAttributes(language: block.data.language) -> f:format.raw()} nolazyload autoheight>
-                        <textarea><f:format.raw>{block.data.code}</f:format.raw></textarea>
-                    </typo3-t3editor-codemirror>
-                </reveal-editable-codemirror>
-            </f:then>
-            <f:else>
-                <typo3-t3editor-codemirror{reveal:codeMirrorAttributes(language: block.data.language) -> f:format.raw()} readonly nolazyload autoheight>
-                    <textarea><f:format.raw>{block.data.code}</f:format.raw></textarea>
-                </typo3-t3editor-codemirror>
-            </f:else>
-        </f:if>
+
+			<f:if condition="{block.data.code} !== ''">
+				<pre data-monaco
+							 data-language="{block.data.language}"
+							 data-table="tx_revealjseditor_codeblock"
+							 data-uid="{block.data.uid}"
+							 data-field="code"
+							 data-editable="{f:if(condition: '{f:editMode()}', then: '1', else: '0')}">{block.data.code}</pre>
+			</f:if>
     </f:for>
 </div>
 </html>

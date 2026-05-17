@@ -28,6 +28,19 @@ mod.web_layout.BackendLayouts {
 
   TCAdefaults.tt_content.header_layout = 1
 
+  # Force the trimmed `revealjs` RTE preset on every tt_content.bodytext
+  # field for content elements LIVING ON a doktype-1731 page — even the
+  # core CTypes (text, textmedia) we keepItems'd above. PageTSconfig is
+  # the right hook for this: TCA's `columnsOverrides[bodytext][config][richtextConfiguration]`
+  # binds the preset to a CType globally (we already do that on our own
+  # revealjs_slide_* CTypes inside Configuration/TCA/Overrides/tt_content.php),
+  # but applying it via TCA on `text`/`textmedia` would override the preset
+  # for THOSE CTypes everywhere — including non-slide pages — which we
+  # don't want. PageTSconfig scoped to doktype-1731 narrows it to the
+  # deck context only; outside deck pages, text/textmedia keep using
+  # their site-default RTE preset.
+  RTE.config.tt_content.bodytext.preset = revealjs
+
   mod.wizards.newContentElement.wizardItems {
     revealjs {
       header = LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf:wizard.header
