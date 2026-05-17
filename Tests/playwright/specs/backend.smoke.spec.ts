@@ -299,29 +299,47 @@ test.describe('TYPO3 backend — slide editor', () => {
         // Monaco's own well-tested concern; manual verification suffices.
         await login(page);
 
-        await page.goto('/subpage-germany/lets-present-this?editMode=1');
-        await page.waitForLoadState('networkidle');
+        // Assert the FE URL resolves before probing frames — surfaces
+        // schema/site-config regressions as a clear 4xx instead of as a
+        // missing iframe several lines down.
+        const response = await page.goto('/subpage-germany/lets-present-this?editMode=1');
+        expect(
+            response?.ok(),
+            `FE URL must resolve, got HTTP ${response?.status()}`,
+        ).toBeTruthy();
 
-        const previewFrame = page.frame({ url: /lets-present-this/ });
-        expect(previewFrame, 'visual_editor preview iframe should be present').toBeTruthy();
+        // Wait for visual_editor's preview iframe to attach. Match by the
+        // parent's `src` attribute (Locators can't peek across frame
+        // boundaries via `has:` — Frames are separate documents — but the
+        // iframe element's own src lives on the parent and carries the
+        // slug). Using a Locator + `toBeAttached` auto-retries via
+        // Playwright's web-first assertions, replacing the brittle
+        // `waitForLoadState('networkidle')` (TYPO3 BE shell polls, so the
+        // network never goes idle) and the one-shot `page.frame({ url })`
+        // (returns null synchronously if the iframe attaches a tick later)
+        // of the previous incarnation of this test.
+        const previewIframe = page.locator('iframe[src*="lets-present-this"]');
+        await expect(previewIframe).toBeAttached({ timeout: 15_000 });
+        const previewFrame = previewIframe.contentFrame();
 
         // Editable blocks rendered by Container/Code.html's single-shape
-        // branch with data-editable="1".
-        const blocks = previewFrame!.locator('.reveal pre[data-monaco][data-editable="1"]');
-        await expect(blocks.first()).toBeAttached({ timeout: 15_000 });
+        // branch with data-editable="1". Web-first `toBeAttached` auto-waits.
+        await expect(
+            previewFrame.locator('.reveal pre[data-monaco][data-editable="1"]').first(),
+        ).toBeAttached({ timeout: 15_000 });
 
         // Each block has Monaco mounted inside on DOMContentLoaded —
         // `.monaco-editor` is Monaco's root class.
         await expect(
-            previewFrame!.locator('.reveal pre[data-monaco][data-editable="1"] .monaco-editor').first(),
+            previewFrame.locator('.reveal pre[data-monaco][data-editable="1"] .monaco-editor').first(),
         ).toBeAttached({ timeout: 30_000 });
 
         // Wrappers carry the mount-marker after the mount script promotes
-        // them.
-        const mountedCount = await previewFrame!.locator(
-            '.reveal pre[data-monaco][data-monaco-mounted="1"]',
-        ).count();
-        expect(mountedCount).toBeGreaterThanOrEqual(1);
+        // them. `not.toHaveCount(0)` auto-retries; the previous one-shot
+        // `.count()` did not.
+        await expect(
+            previewFrame.locator('.reveal pre[data-monaco][data-monaco-mounted="1"]'),
+        ).not.toHaveCount(0);
     });
 
     test('cover slide bodytext mounts the trimmed CKEditor 5 (no schema-cannot-register-item-twice)', async ({ page }) => {
