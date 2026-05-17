@@ -4,12 +4,11 @@
  * Custom element used by Classes/Form/Element/MonacoEditorElement.php
  * (TYPO3 FormEngine renderType="monacoEditor") to mount a Monaco editor
  * inside the BE form for the `tx_revealjseditor_codeblock.code` column.
- * Replaces the previous plain `<textarea>`.
  *
  * Markup contract (emitted by MonacoEditorElement::render()):
  *
- *   <typo3-monaco-editor language="X" value-target="<select.…>">
- *       <textarea name="data[…][…][…][code]" hidden>RAW</textarea>
+ *   <typo3-monaco-editor language="X">
+ *       <textarea name="data[…][…][…][code]" hidden style="display: none;">RAW</textarea>
  *   </typo3-monaco-editor>
  *
  * The inner `<textarea hidden>` is BOTH the seed (carries the initial
@@ -18,52 +17,14 @@
  * On every editor change we write the value back into the textarea so
  * the standard form save picks it up — no custom DataHandler glue.
  *
- * Architecture: this element shares the same vendored Monaco bundle
- * with the FE-side RevealMonacoMount.js (Vendor/monaco/editor.mjs).
- * Loading the BE form on a code-slide will fetch ~1.2 MB gzipped on
- * first visit; subsequent BE form opens come from the asset cache.
- *
- * MonacoEnvironment.getWorkerUrl is set the same way as the FE module
- * — workers are resolved against the vendored Vendor/monaco/ folder.
- * The browser only spins one Monaco worker process; multiple
- * `<typo3-monaco-editor>` instances on a single form (one per IRRE
- * child row) all share the same worker.
+ * The Monaco engine itself — worker-URL wiring, editor.css injection, the
+ * shared `monaco` namespace — lives in MonacoBootstrap.js so this module
+ * and the FE-side RevealMonacoMount.js stay byte-identical at the engine
+ * level. We call `ensureBootstrapped(this.ownerDocument)` (not `document`)
+ * because the BE form renders inside an iframe whose document is NOT
+ * window.document; the stylesheet needs to land in the right <head>.
  */
-
-const VENDOR_BASE = new URL('./Vendor/monaco/', import.meta.url);
-
-self.MonacoEnvironment = self.MonacoEnvironment ?? {
-    getWorkerUrl(_moduleId, label) {
-        switch (label) {
-            case 'json':
-                return new URL('json.worker.js', VENDOR_BASE).href;
-            case 'css':
-            case 'scss':
-            case 'less':
-                return new URL('css.worker.js', VENDOR_BASE).href;
-            case 'html':
-            case 'handlebars':
-            case 'razor':
-                return new URL('html.worker.js', VENDOR_BASE).href;
-            case 'typescript':
-            case 'javascript':
-                return new URL('ts.worker.js', VENDOR_BASE).href;
-            default:
-                return new URL('editor.worker.js', VENDOR_BASE).href;
-        }
-    },
-};
-
-function ensureEditorStylesheet(doc) {
-    if (doc.querySelector('link[data-monaco-styles]')) return;
-    const link = doc.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = new URL('editor.css', VENDOR_BASE).href;
-    link.dataset.monacoStyles = '1';
-    doc.head.append(link);
-}
-
-const monacoPromise = import('@ochorocho/revealjs-editor/Vendor/monaco/editor.mjs');
+import { monaco, ensureBootstrapped, isKnownLanguage, suppressFindWidget } from './MonacoBootstrap.js';
 
 class TypO3MonacoEditor extends HTMLElement {
     /** @type {import('monaco-editor').editor.IStandaloneCodeEditor | null} */
@@ -86,7 +47,7 @@ class TypO3MonacoEditor extends HTMLElement {
             return;
         }
         this.#mounted = true;
-        ensureEditorStylesheet(this.ownerDocument);
+        ensureBootstrapped(this.ownerDocument);
 
         // Build the container the editor mounts into. Monaco needs a
         // sized div; the host element provides the outer box via CSS.
@@ -95,17 +56,12 @@ class TypO3MonacoEditor extends HTMLElement {
         this.#container.style.cssText = 'width:100%;min-height:280px;height:280px;';
         this.append(this.#container);
 
-        this.#mount().catch((err) => {
-            console.error('[typo3-monaco-editor] mount failed', err);
-            this.#mounted = false;
-        });
+        this.#mount();
     }
 
-    async #mount() {
-        const monaco = await monacoPromise;
-        const rawLanguage = this.getAttribute('language') || 'plaintext';
-        const knownLanguages = new Set(monaco.languages.getLanguages().map((l) => l.id));
-        const language = knownLanguages.has(rawLanguage) ? rawLanguage : 'plaintext';
+    #mount() {
+        const requested = this.getAttribute('language') || 'plaintext';
+        const language = isKnownLanguage(requested) ? requested : 'plaintext';
 
         this.#editor = monaco.editor.create(this.#container, {
             value: this.#textarea.value,
@@ -123,14 +79,20 @@ class TypO3MonacoEditor extends HTMLElement {
             tabSize: 4,
             insertSpaces: true,
             mouseWheelZoom: false,
+            // BE form context: match Monaco's default (14px) — same size
+            // editors get in VS Code, which is the muscle memory they
+            // come in with. Bump if forms feel cramped.
+            fontSize: 14,
         });
 
-        // FormEngine reads the textarea's `value` on POST. Write through
-        // on every editor change so the save handler picks up the latest.
+        suppressFindWidget(this.#editor);
+
+        // FormEngine reads the textarea's `value` on POST. Write through on
+        // every editor change so the save handler picks up the latest.
         this.#editor.onDidChangeModelContent(() => {
             this.#textarea.value = this.#editor.getValue();
-            // Dispatch a `change` event so FormEngine's own change-tracking
-            // (the "unsaved changes" indicator etc.) notices the edit.
+            // Dispatch `change` so FormEngine's own change-tracking (the
+            // "unsaved changes" indicator etc.) notices the edit.
             this.#textarea.dispatchEvent(new Event('change', { bubbles: true }));
         });
     }

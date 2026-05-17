@@ -164,6 +164,13 @@ defined('TYPO3') or die();
         'group' => 'default',
     ];
 
+    // Register the typeicon for the page module (Web > Page list of content
+    // elements). The CType `items[].icon` above drives the new-content
+    // wizard, but the per-record icon in the layout view + record selector
+    // is resolved through `typeicon_classes` keyed by the CType value.
+    // Without this entry the page module falls back to a generic icon.
+    $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['revealjs_slide_cover'] = 'content-revealjs-slide-cover';
+
     // ----- Palettes for the per-slide tabs -----------------------------------------
     // Three tabs: Slide (transition / behaviour) / Background / Animation.
     $GLOBALS['TCA']['tt_content']['palettes']['revealjs_slide'] = [
@@ -201,21 +208,25 @@ defined('TYPO3') or die();
         . '--palette--;;gallerySettings,'
         . '--palette--;;imagelinks';
 
+    // Capture `text`'s ORIGINAL showitem ONCE here, before the loop below
+    // mutates it. Both the cover and code CType definitions inherit from
+    // text's showitem; if we re-read TCA after the mutation, the new
+    // CType's showitem ends up with `$slideTabs` appended twice (once
+    // because text inherited it, once when we explicitly append). The
+    // captured value is the single source of truth for "what does text
+    // ship with by default, pre-revealjs".
+    $textShowitem = $GLOBALS['TCA']['tt_content']['types']['text']['showitem'] ?? '';
+
     $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_cover']['showitem'] =
-        ($GLOBALS['TCA']['tt_content']['types']['text']['showitem'] ?? '')
-        . $coverMediaTab
-        . $slideTabs;
+        $textShowitem . $coverMediaTab . $slideTabs;
 
     foreach (['text', 'textmedia'] as $cType) {
         $existing = $GLOBALS['TCA']['tt_content']['types'][$cType]['showitem'] ?? '';
         $GLOBALS['TCA']['tt_content']['types'][$cType]['showitem'] = $existing . $slideTabs;
     }
 
-    // RTE on cover bodytext, scoped to the trimmed `revealjs` preset
-    // (Configuration/RTE/Revealjs.yaml — registered globally in ext_localconf.php).
-    // Pattern mirrors core's sys_news.php (cms-core/Configuration/TCA/sys_news.php:40).
-    $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_cover']['columnsOverrides']['bodytext']['config']['enableRichtext'] = true;
-    $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_cover']['columnsOverrides']['bodytext']['config']['richtextConfiguration'] = 'revealjs';
+    // (RTE binding for cover's bodytext happens in the shared loop at the
+    // bottom of this file — same `revealjs` preset for cover + code.)
 
     // ----- Register the revealjs_slide_code CType ---------------------------------
     // A slide that stacks multiple inline code blocks. Each child carries its
@@ -229,6 +240,18 @@ defined('TYPO3') or die();
         'icon' => 'content-revealjs-slide-code',
         'group' => 'default',
     ];
+
+    // Page-module typeicon — same reasoning as the cover registration above.
+    $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['revealjs_slide_code'] = 'content-revealjs-slide-code';
+
+    // Custom page-module preview renderer. Extends the standard preview
+    // (header + bodytext lede) with a `<ul>` of the slide's child
+    // code-block headlines — one per inline-IRRE row in
+    // tx_revealjseditor_codeblock, ordered by `sorting`. Empty headlines
+    // render as the TYPO3-standard "[No title]" label. Implementation:
+    // Classes/Preview/RevealJsSlideCodePreviewRenderer.php.
+    $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_code']['previewRenderer'] =
+        \Ochorocho\RevealJsEditor\Preview\RevealJsSlideCodePreviewRenderer::class;
 
     // The inline-collection field. Child rows live in tx_revealjseditor_codeblock
     // (TCA file: Configuration/TCA/tx_revealjseditor_codeblock.php). The schema
@@ -260,22 +283,30 @@ defined('TYPO3') or die();
         ],
     ];
 
-    // Code-slide showitem: inherit text (gives header + bodytext for the
-    // slide title / optional lede), add the Code Blocks tab with the inline
-    // collection, then the three slide-options tabs every reveal CType shares.
+    // Code-slide showitem: inherit text's ORIGINAL showitem (captured
+    // above before the text/textmedia loop appended $slideTabs to it),
+    // add the Code Blocks tab with the inline collection, then the three
+    // slide-options tabs every reveal CType shares. Reading
+    // `$GLOBALS['TCA']['tt_content']['types']['text']['showitem']` here
+    // would pick up the loop's mutation and we'd get $slideTabs twice.
     $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_code']['showitem'] =
-        ($GLOBALS['TCA']['tt_content']['types']['text']['showitem'] ?? '')
+        $textShowitem
         . ',--div--;' . $ll . ':tt_content.tab.codeblocks,'
         . 'tx_revealjseditor_codeblocks'
         . $slideTabs;
 
-    // RTE on code-slide bodytext, scoped to the same trimmed `revealjs`
-    // preset the cover uses. Lets editors write prose around the inline
-    // code blocks (which live in the tx_revealjseditor_codeblocks
-    // collection) with the shared toolbar — bold/italic/links/lists/
-    // headings + the CodeBlock plugin registered in
-    // Configuration/RTE/Revealjs.yaml for inline syntax-highlighted
-    // snippets directly inside the prose.
-    $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_code']['columnsOverrides']['bodytext']['config']['enableRichtext'] = true;
-    $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_code']['columnsOverrides']['bodytext']['config']['richtextConfiguration'] = 'revealjs';
+    // RTE on bodytext, scoped to the trimmed `revealjs` preset
+    // (Configuration/RTE/Revealjs.yaml — registered globally in
+    // ext_localconf.php). Pattern mirrors core's sys_news.php
+    // (cms-core/Configuration/TCA/sys_news.php:40). Both reveal-specific
+    // CTypes share the same toolbar — bold / italic / inline `<code>` /
+    // links / lists / headings — so the same preset binds to both. Core
+    // CTypes (text, textmedia) allowed on doktype-1731 pages get the
+    // same preset via PageTSconfig (Configuration/Sets/RevealjsEditor/
+    // page.tsconfig) — scoped to the page branch so non-deck contexts
+    // keep using whatever site-default preset they had.
+    foreach (['revealjs_slide_cover', 'revealjs_slide_code'] as $cType) {
+        $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides']['bodytext']['config']['enableRichtext'] = true;
+        $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides']['bodytext']['config']['richtextConfiguration'] = 'revealjs';
+    }
 })();

@@ -31,11 +31,9 @@ const COVER_SLIDE_UID = 115;
 
 /**
  * The seeded code slide on uid 11 (CType=revealjs_slide_code, sorting=768).
- * Carries three inline-IRRE `tx_revealjseditor_codeblock` rows (uid 11, 12, 13)
- * — see Tests/playwright/fixtures/csv/tx_revealjseditor_codeblock.csv. The
- * Phiki-regression test below opens this slide's edit form and asserts the
- * `code` field still mounts CodeMirror in the BE FormEngine (Phiki only
- * replaced the public FE render — BE editing UX must be unchanged).
+ * Carries inline-IRRE `tx_revealjseditor_codeblock` rows — see
+ * Tests/playwright/fixtures/csv/tx_revealjseditor_codeblock.csv. Used by
+ * the BE FormEngine + visual_editor preview Monaco mount tests below.
  */
 const CODE_SLIDE_UID = 116;
 

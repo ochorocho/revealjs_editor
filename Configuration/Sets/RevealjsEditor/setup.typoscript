@@ -34,12 +34,6 @@ tt_content.revealjs_slide_code {
     }
 }
 
-# Note: there's no server-side post-processing of bodytext code blocks any
-# more. The previous Phiki-on-PHP pass that rewrote `<pre><code class="language-X">`
-# inside parseFunc'd bodytext is gone — ShikiHighlight.js (loaded by
-# RevealJsShikiAssetsProcessor below) finds and highlights those same blocks
-# client-side, alongside the inline-IRRE rows. One engine, one pass.
-
 [traverse(page, "doktype") == 1731]
   page = PAGE
   page {
