@@ -35,6 +35,22 @@ tt_content.revealjs_slide_code {
 }
 
 [traverse(page, "doktype") == 1731]
+  # Reset templates to the expected state. Required for typo3/theme-camino,
+  # because it drops all existing template paths.
+  tt_content.text.templateRootPaths >
+  tt_content.text.templateRootPaths.0 = EXT:fluid_styled_content/Resources/Private/Templates/
+  tt_content.text.partialRootPaths >
+  tt_content.text.partialRootPaths.0 = EXT:fluid_styled_content/Resources/Private/Partials/
+  tt_content.text.layoutRootPaths >
+  tt_content.text.layoutRootPaths.0 = EXT:fluid_styled_content/Resources/Private/Layouts/
+
+  tt_content.textmedia.templateRootPaths >
+  tt_content.textmedia.templateRootPaths.0 = EXT:fluid_styled_content/Resources/Private/Templates/
+  tt_content.textmedia.partialRootPaths >
+  tt_content.textmedia.partialRootPaths.0 = EXT:fluid_styled_content/Resources/Private/Partials/
+  tt_content.textmedia.layoutRootPaths >
+  tt_content.textmedia.layoutRootPaths.0 = EXT:fluid_styled_content/Resources/Private/Layouts/
+
   page = PAGE
   page {
     typeNum = 0
