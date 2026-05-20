@@ -180,7 +180,7 @@ body,
 }
 
 .reveal p {
-	line-height: 1;
+	line-height: 1.2em;
 	font-size: 1.6em;
 }
 
@@ -194,8 +194,7 @@ body,
 }
 
 .reveal .slides ul {
-	list-style: none;
-	padding-left: 1.9em;
+	margin-left: 1em;
 }
 
 .reveal .slides ul li, .reveal .slides ol li {
@@ -212,14 +211,8 @@ body,
 	font-size: 1em;
 }
 
-.reveal .slides ul li::before {
-	content: '\25AA'; /* small filled square */
+.reveal .slides ul li::marker {
 	color: var(--cmp-accent);
-	font-weight: bold;
-	display: inline-block;
-	width: 1em;
-	margin-left: -0.5em;
-	float: left;
 }
 
 .reveal .slides ol {
@@ -269,10 +262,9 @@ body,
 .reveal li code,
 .reveal td code {
 	background: rgba(255, 252, 0, 0.12);
-	border: 1px solid rgba(255, 252, 0, 0.25);
+	border: 1px solid var(--cmp-accent);
 	border-radius: 4px;
-	padding: 0.05em 0.4em;
-	font-size: 0.85em;
+	padding: 0.05em 0.2em;
 	color: var(--cmp-text);
 }
 

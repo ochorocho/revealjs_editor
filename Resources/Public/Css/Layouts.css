@@ -114,7 +114,7 @@
 	background-color: rgba(30, 30, 30, 0.85);
 	color: #d4d4d4;
 	font-family: var(--r-code-font, Menlo, Monaco, "Courier New", monospace);
-	font-size: 0.85em;
+	font-size: 0.8em;
 	border-radius: 3px;
 	white-space: nowrap;
 }
