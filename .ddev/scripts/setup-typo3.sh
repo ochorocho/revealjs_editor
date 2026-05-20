@@ -94,7 +94,9 @@ if [ ! -f "${COMPOSER_JSON}" ] || [ "${TYPO3_VERSION}" != "${CURRENT_TYPO3_VERSI
         "typo3/cms-seo": "${TYPO3_VERSION}",
         "typo3/cms-setup": "${TYPO3_VERSION}",
         "typo3/cms-lowlevel": "${TYPO3_VERSION}",
-        "typo3/cms-tstemplate": "${TYPO3_VERSION}"
+        "typo3/cms-tstemplate": "${TYPO3_VERSION}",
+        "typo3/cms-impexp": "${TYPO3_VERSION}",
+        "typo3/theme-camino": "${TYPO3_VERSION}"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.64",
@@ -166,7 +168,6 @@ run_typo3_setup() {
             --admin-email="${ADMIN_EMAIL}" \
             --project-name="${project_label}" \
             --server-type=other \
-            --create-site="${SITE_BASE_URL}" \
             --force \
             --no-interaction
         # Set the per-DB flag in the parent scope so the seed loop below knows
