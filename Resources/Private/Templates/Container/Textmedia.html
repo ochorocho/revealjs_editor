@@ -1,0 +1,59 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    Position + alignment driven by tt_content.imageorient (TCA select),
+    surfaced as {gallery.position} by the GalleryProcessor (TS data
+    processor 20 in setup.typoscript):
+
+      vertical   = 'above' | 'below' | 'intext'
+      horizontal = 'left'  | 'center' | 'right'
+      noWrap     = true when imageorient is "Beside Text" (25/26)
+
+    Header (h2) ALWAYS sits in its own row above the content. Media +
+    body share a `.reveal-textmedia-row` container that switches layout
+    based on the modifier classes:
+
+      vertical=below    -> media after body
+      vertical=above    -> media before body (default)
+      vertical=intext   -> media floats so body wraps (in-text variants)
+      noWrap=true       -> two-column side-by-side (beside-text variants)
+
+    horizontal=left|center|right aligns the media within its column /
+    sets float direction for the intext variants / picks which side the
+    media sits on for besidetext (via row vs row-reverse).
+</f:comment>
+
+<f:variable name="renderedMedia">
+    <f:if condition="{files}">
+        <div class="reveal-textmedia-media">
+            <f:for each="{files}" as="file">
+                <f:media file="{file}" alt="{file.alternative}" title="{file.title}"/>
+            </f:for>
+        </div>
+    </f:if>
+</f:variable>
+
+<f:variable name="renderedBodytext" value="{record -> f:render.text(field: 'bodytext')}"/>
+
+<div class="reveal-textmedia reveal-textmedia-{gallery.position.horizontal} reveal-textmedia-{gallery.position.vertical}{f:if(condition: gallery.position.noWrap, then: ' reveal-textmedia-nowrap')}">
+    <f:variable name="renderedHeader" value="{record -> f:render.text(field: 'header')}"/>
+    <f:if condition="{renderedHeader}">
+        <h2>{renderedHeader -> f:format.raw()}</h2>
+    </f:if>
+
+    <div class="reveal-textmedia-row">
+        <f:if condition="{gallery.position.vertical} != 'below'">
+            {renderedMedia -> f:format.raw()}
+        </f:if>
+
+        <f:if condition="{renderedBodytext}">
+            <div class="reveal-textmedia-body">{renderedBodytext -> f:format.raw()}</div>
+        </f:if>
+
+        <f:if condition="{gallery.position.vertical} == 'below'">
+            {renderedMedia -> f:format.raw()}
+        </f:if>
+    </div>
+</div>
+</html>

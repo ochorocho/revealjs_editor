@@ -20,6 +20,7 @@
   tt_content.textmedia >
   tt_content.textmedia =< lib.contentElement
   tt_content.textmedia.templateName = Textmedia
+  tt_content.textmedia.templateRootPaths.20 = EXT:revealjs_editor/Resources/Private/Templates/Container/
   tt_content.textmedia.dataProcessing.10 = files
   tt_content.textmedia.dataProcessing.10.references.fieldName = assets
   tt_content.textmedia.dataProcessing.20 = gallery

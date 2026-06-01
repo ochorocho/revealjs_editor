@@ -13,16 +13,16 @@ import { expect, test } from '@ochorocho/playwright-db-connector';
 test.describe('reveal.js page rendering', () => {
     const PRESENTATION_URL = '/subpage-germany/lets-present-this';
 
-    test('the deck wrapper renders four sections inside .reveal .slides', async ({ page }) => {
+    test('the deck wrapper renders five sections inside .reveal .slides', async ({ page }) => {
         const response = await page.goto(PRESENTATION_URL);
         expect(response?.status()).toBe(200);
 
         await expect(page).toHaveTitle(/RevealJS/i);
         await expect(page.locator('div.reveal')).toHaveCount(1);
-        // Seed has 4 rows in colPos 0 on pid=11: cover (115), two text
-        // slides (112, 105), and one code slide (116) — see
-        // Tests/playwright/fixtures/csv/tt_content.csv.
-        await expect(page.locator('.reveal .slides > section')).toHaveCount(4);
+        // Seed has 5 rows in colPos 0 on pid=11: cover (115), two text
+        // slides (112, 105), one textmedia slide (117), and one code
+        // slide (116) — see Tests/playwright/fixtures/csv/tt_content.csv.
+        await expect(page.locator('.reveal .slides > section')).toHaveCount(5);
     });
 
     test('reveal.js initialises in the browser (body gets reveal-viewport class)', async ({ page }) => {
@@ -53,8 +53,10 @@ test.describe('reveal.js page rendering', () => {
 
         // Seed order (by tt_content.sorting ASC):
         //   nth(0) -> uid 115 (cover slide, transition=convex)
-        //   nth(1) -> uid 112 (transition=slide)
-        //   nth(2) -> uid 105 (transition=slide)
+        //   nth(1) -> uid 112 (text, transition=slide)
+        //   nth(2) -> uid 117 (textmedia, transition=slide)
+        //   nth(3) -> uid 105 (text, transition=slide)
+        //   nth(4) -> uid 116 (code slide)
         const sections = page.locator('.reveal .slides > section');
         await expect(sections.nth(0)).toHaveAttribute('data-transition', 'convex');
         await expect(sections.nth(1)).toHaveAttribute('data-transition', 'slide');
@@ -69,6 +71,22 @@ test.describe('reveal.js page rendering', () => {
         // the seed is the third one, so it isn't .present initially — but
         // its DOM should still exist regardless of active state.
         await expect(cover).toHaveCount(1);
+    });
+
+    test('textmedia slide template renders inside .reveal-textmedia with imageorient modifiers', async ({ page }) => {
+        await page.goto(PRESENTATION_URL);
+
+        const textmedia = page.locator('.reveal .slides .reveal-textmedia');
+        await expect(textmedia).toHaveCount(1);
+        await expect(textmedia.locator('h2')).toContainText('Media Slide');
+
+        // Seed has imageorient=26 ("Beside Text: Left"), which the
+        // GalleryProcessor translates into horizontal='left',
+        // vertical='intext', noWrap=true. The template must surface all
+        // three on the wrapper so Layouts.css can target the layout.
+        await expect(textmedia).toHaveClass(/reveal-textmedia-left/);
+        await expect(textmedia).toHaveClass(/reveal-textmedia-intext/);
+        await expect(textmedia).toHaveClass(/reveal-textmedia-nowrap/);
     });
 
     test('reveal.js asset chain is present in the rendered HTML', async ({ page }) => {

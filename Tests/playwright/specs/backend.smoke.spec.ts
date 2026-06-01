@@ -12,7 +12,7 @@ import type { Page } from '@playwright/test';
  * for both the admin and editor seed users.
  *
  * Targets the seeded "Lets Present This" page (uid 11) which carries the
- * doktype=1731 reveal.js subschema, the `the-caemp` theme value, and three
+ * doktype=1731 reveal.js subschema, the `the-caemp` theme value, and five
  * tt_content slide rows — so the BE assertions exercise the full
  * extension-managed surface: page subschema TCA, the Reveal Presentation
  * tab, the theme dropdown, and the slide list in the page module.
@@ -120,18 +120,19 @@ test.describe('TYPO3 backend', () => {
         await expect(themeSelect.getByRole('option')).toHaveCount(15);
     });
 
-    test('the page module shows the four seeded tt_content slides', async ({ page }) => {
+    test('the page module shows the five seeded tt_content slides', async ({ page }) => {
         await login(page);
         await page.goto(`/typo3/module/web/layout?id=${PRESENTATION_PAGE_UID}`);
 
         // The page-content iframe renders each tt_content row as a
         // <fieldset role="group"> with an `id=<uid> - <title> - <CType>`
-        // accessible name. Seed has four rows in colPos 0: cover (115),
-        // two text slides (105, 112), and one code slide (116) — see
+        // accessible name. Seed has five rows in colPos 0: cover (115),
+        // two text slides (105, 112), one textmedia slide (117), and
+        // one code slide (116) — see
         // Tests/playwright/fixtures/csv/tt_content.csv.
         const moduleFrame = page.frameLocator('iframe').first();
         const slides = moduleFrame.getByRole('group', { name: /^id=\d+/ });
-        await expect(slides).toHaveCount(4, { timeout: 15_000 });
+        await expect(slides).toHaveCount(5, { timeout: 15_000 });
     });
 });
 
