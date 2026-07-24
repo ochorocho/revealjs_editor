@@ -5,11 +5,9 @@
 						 href="EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/reveal.css"/>
 
 <f:comment>
-	{themeUrl} resolves to either dist/theme/{theme}.css (stock reveal.js
-	themes) or Styles/revealjs-themes/{theme}.css (custom themes shipped
-	with this extension), picked by RevealJsThemeProcessor based on the
-	page record's tx_revealjseditor_theme value. Single asset, no 404
-	log noise.
+	{themeUrl} resolves to Styles/revealjs-themes/{theme}.css, picked by
+	RevealJsThemeProcessor from the page record's tx_revealjseditor_theme
+	value. Only the-caemp ships today. Single asset, no 404 log noise.
 </f:comment>
 <f:asset.css identifier="revealjs-theme" href="{themeUrl}"/>
 

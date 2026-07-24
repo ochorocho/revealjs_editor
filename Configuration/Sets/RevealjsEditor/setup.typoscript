@@ -70,10 +70,10 @@
 
       variables {
         # Per-presentation theme picked on the page record. Falls back to
-        # 'black' if the field is empty.
+        # 'the-caemp' if the field is empty.
         theme = TEXT
         theme.field = tx_revealjseditor_theme
-        theme.ifEmpty = black
+        theme.ifEmpty = the-caemp
 
         # Per-presentation author string — surfaced lower-left in the FE via
         # the `.reveal-author` div in Pages/Revealjs.html. Empty by default;
@@ -97,11 +97,9 @@
           as = pageLogos
         }
 
-        # Pick the correct theme CSS URL: stock reveal.js themes live in
-        # Resources/Public/Vendor/dist/theme/, custom ones in Resources/Public/Styles/revealjs-themes/.
-        # Output assigned to {themeUrl} for a single <f:asset.css> line in
-        # Pages/Revealjs.html (replaces the previous two unconditional CSS
-        # tags, one of which always 404'd).
+        # Resolve the theme CSS URL under Resources/Public/Styles/revealjs-themes/
+        # (only the-caemp ships today). Output assigned to {themeUrl} for a
+        # single <f:asset.css> line in Pages/Revealjs.html.
         30 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsThemeProcessor
 
         # Loads Monaco (the VS Code editor) as the single editor for code

@@ -116,8 +116,8 @@ test.describe('TYPO3 backend', () => {
             name: /\[tx_revealjseditor_theme\]/,
         });
         await expect(themeSelect).toHaveValue('the-caemp');
-        // 14 stock + 1 custom (`the-caemp`) = 15 themes registered.
-        await expect(themeSelect.getByRole('option')).toHaveCount(15);
+        // the-caemp is the only shipped theme.
+        await expect(themeSelect.getByRole('option')).toHaveCount(1);
     });
 
     test('the page module shows the five seeded tt_content slides', async ({ page }) => {
