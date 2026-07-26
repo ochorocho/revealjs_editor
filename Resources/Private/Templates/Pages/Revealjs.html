@@ -35,8 +35,19 @@
 					</f:for>
 				</f:then>
 				<f:else>
-					<f:comment>Site-wide default (Site Set setting revealjs.defaultLogo).</f:comment>
-					<f:image src="{settings.revealjs.defaultLogo}" alt="" maxWidth="200px"/>
+					<f:comment>
+						No per-page logo: the revealjs.defaultLogo site setting overrides
+						the theme default only when set; otherwise fall back to the active
+						theme's own logo ({themeLogo}, from RevealJsThemeProcessor).
+					</f:comment>
+					<f:if condition="{settings.revealjs.defaultLogo}">
+						<f:then>
+							<f:image src="{settings.revealjs.defaultLogo}" alt="" maxWidth="200px"/>
+						</f:then>
+						<f:else>
+							<f:image src="{themeLogo}" alt="" maxWidth="200px"/>
+						</f:else>
+					</f:if>
 				</f:else>
 			</f:if>
 		</div>

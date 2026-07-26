@@ -4,37 +4,43 @@ categories:
 
 settings:
   revealjs.defaultLogo:
-    default: 'EXT:revealjs_editor/Resources/Public/Images/the-camp.png'
+    default: ''
     type: string
     category: revealjs
     label: 'Default presentation logo'
-    description: 'Path or EXT:… URL to the logo shown on every reveal.js presentation. Per-page logo (page.tx_revealjseditor_logo) takes precedence; this setting is the site-wide fallback.'
+    description: 'Path or EXT:… URL to a logo shown on every reveal.js presentation. Overrides the active theme''s own default logo when set. Leave empty to use the theme default (the-caemp → the-camp.png, typo3 → the TYPO3 logo). A per-page logo (page.tx_revealjseditor_logo) still takes precedence over this.'
 
-  # Brand colors. Each drives one --cmp-* custom property (pushed onto the body
-  # tag in setup.typoscript); the-caemp.css derives every shade from these
-  # tokens (accent tints via color-mix), so overriding one recolors the whole
-  # deck consistently. Defaults reproduce the shipped THE CÄMP look.
+  # Brand color OVERRIDES. Each optionally drives one --cmp-* custom property,
+  # emitted onto the body tag in setup.typoscript ONLY when non-empty. Left
+  # empty (the default), the active theme's own :root palette applies — so each
+  # theme (the-caemp, typo3, …) looks right out of the box, and a site can
+  # recolor ANY theme by filling in a hex value. Every shade in a theme derives
+  # from these four tokens (accent tints via color-mix), so overriding one
+  # recolors the whole deck consistently.
+  # NB: type is `string`, not `color`, because a color-type setting cannot have
+  # an empty default (it throws at set load) — and empty is our "use the theme
+  # default" signal. Editors enter a hex value (e.g. #ff8700) in a text field.
   revealjs.color.background:
-    default: '#2a2623'
-    type: color
+    default: ''
+    type: string
     category: revealjs
     label: 'Deck background color'
-    description: 'Slide/deck background behind all content.'
+    description: 'Hex color (e.g. #313130) for the slide/deck background. Leave empty to use the active theme''s default.'
   revealjs.color.text:
-    default: '#ffffff'
-    type: color
+    default: ''
+    type: string
     category: revealjs
     label: 'Body text color'
-    description: 'Main paragraph and list text (also the text-selection foreground).'
+    description: 'Hex color for the main paragraph/list text (also the text-selection foreground). Leave empty to use the active theme''s default.'
   revealjs.color.accent:
-    default: '#fffc00'
-    type: color
+    default: ''
+    type: string
     category: revealjs
     label: 'Accent color'
-    description: 'Headings, links, list markers, borders, progress bar, controls, slide number and the cover/author wordmark — plus the tints derived from it.'
+    description: 'Hex color for headings, links, list markers, borders, progress bar, controls, slide number and the cover/author wordmark — plus the tints derived from it. Leave empty to use the active theme''s default.'
   revealjs.color.muted:
-    default: '#d9d9d9'
-    type: color
+    default: ''
+    type: string
     category: revealjs
     label: 'Muted / secondary color'
-    description: 'Subdued secondary color used for divider rules under headings and on the cover slide.'
+    description: 'Hex color for the subdued divider rules under headings and on the cover slide. Leave empty to use the active theme''s default.'

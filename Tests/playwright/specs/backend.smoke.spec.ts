@@ -116,8 +116,11 @@ test.describe('TYPO3 backend', () => {
             name: /\[tx_revealjseditor_theme\]/,
         });
         await expect(themeSelect).toHaveValue('the-caemp');
-        // the-caemp is the only shipped theme.
-        await expect(themeSelect.getByRole('option')).toHaveCount(1);
+        // Two bundled themes ship: the-caemp (default) and typo3.
+        await expect(themeSelect.getByRole('option')).toHaveCount(2);
+        await expect(
+            themeSelect.locator('option[value="typo3"]'),
+        ).toHaveCount(1);
     });
 
     test('the page module shows the five seeded tt_content slides', async ({ page }) => {

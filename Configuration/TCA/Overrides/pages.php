@@ -28,6 +28,7 @@ defined('TYPO3') or die();
     // registry is already available at this point.
     $themeItems = [
         ['label' => 'THE CÄMP', 'value' => 'the-caemp'],
+        ['label' => 'TYPO3', 'value' => 'typo3'],
     ];
     $registeredThemes = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themes'] ?? [];
     if (is_array($registeredThemes)) {
