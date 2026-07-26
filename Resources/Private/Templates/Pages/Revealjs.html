@@ -111,6 +111,13 @@
 	import RevealNotes from "{f:uri.resource(path: 'EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/plugin/notes.mjs')}";
 	const root = document.querySelector('.reveal');
 	const opts = root ? JSON.parse(root.dataset.revealjsOptions || '{}') : {};
+	// Edit-mode keyboard safety, applied CLIENT-SIDE (not in the cached server
+	// output) so the deck HTML doesn't vary on the unsigned `?editMode` param.
+	// In visual_editor's preview iframe (URL carries editMode) reveal.js must NOT
+	// grab arrow-keys / backspace, or it steals them from CKEditor / form fields.
+	if (new URLSearchParams(location.search).has('editMode')) {
+		opts.keyboard = false;
+	}
 	// Register the Notes plugin so the speaker view (press `S`) surfaces each
 	// slide's data-notes (built from tx_revealjseditor_slide_notes by the
 	// SlideAttributesViewHelper). JSON config can't carry plugin functions, so

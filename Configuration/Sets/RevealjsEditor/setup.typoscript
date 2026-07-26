@@ -69,22 +69,45 @@
     # falls through to the active theme's own :root default. Built as a COA with
     # per-segment `if.isTrue` (no CSS braces in Fluid — the {…} parser would eat
     # them). See settings.definitions.yaml for why these are `string`, not `color`.
+    #
+    # SECURITY: each value is whitelisted to a safe CSS-color charset via
+    # preg_replace before it is wrapped into the inline style. This strips
+    # quotes / < > / ; : { } / \ so a setting value can never break out of the
+    # `style="…"` attribute (markup injection) nor inject extra CSS declarations
+    # (e.g. `red;background:url(//evil)`). Keeps hex, rgb()/rgba()/hsl(), % and
+    # named colors.
     bodyTagCObject = COA
     bodyTagCObject {
       5 = TEXT
       5.value = <body class="revealjs-page" style="
       10 = TEXT
-      10.value = --cmp-bg:{$revealjs.color.background};
+      10.value = {$revealjs.color.background}
       10.if.isTrue = {$revealjs.color.background}
+      10.replacement.10.search = /[^#0-9a-zA-Z(),.%\s-]/
+      10.replacement.10.replace =
+      10.replacement.10.useRegExp = 1
+      10.noTrimWrap = |--cmp-bg:|;|
       20 = TEXT
-      20.value = --cmp-text:{$revealjs.color.text};
+      20.value = {$revealjs.color.text}
       20.if.isTrue = {$revealjs.color.text}
+      20.replacement.10.search = /[^#0-9a-zA-Z(),.%\s-]/
+      20.replacement.10.replace =
+      20.replacement.10.useRegExp = 1
+      20.noTrimWrap = |--cmp-text:|;|
       30 = TEXT
-      30.value = --cmp-accent:{$revealjs.color.accent};
+      30.value = {$revealjs.color.accent}
       30.if.isTrue = {$revealjs.color.accent}
+      30.replacement.10.search = /[^#0-9a-zA-Z(),.%\s-]/
+      30.replacement.10.replace =
+      30.replacement.10.useRegExp = 1
+      30.noTrimWrap = |--cmp-accent:|;|
       40 = TEXT
-      40.value = --cmp-muted:{$revealjs.color.muted};
+      40.value = {$revealjs.color.muted}
       40.if.isTrue = {$revealjs.color.muted}
+      40.replacement.10.search = /[^#0-9a-zA-Z(),.%\s-]/
+      40.replacement.10.replace =
+      40.replacement.10.useRegExp = 1
+      40.noTrimWrap = |--cmp-muted:|;|
       90 = TEXT
       90.value = ">
     }

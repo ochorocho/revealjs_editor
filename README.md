@@ -166,4 +166,14 @@ The reveal.js speaker view (`S`) and the visual_editor backend preview append
 query parameters to page URLs. The extension registers those as `cHash`-excluded
 (`FE.cacheHash.excludedParameters`, set in `ext_localconf.php`), so they work out
 of the box even with TYPO3 v14's strict `cacheHash.enforceValidation` — no site
-configuration required.
+configuration required. These parameters are read client-side only, so excluding
+them from the cache hash is safe (no cache poisoning).
+
+### Content Security Policy
+
+The deck uses a single inline module script, registered via `f:asset.script`, which
+receives a nonce automatically when you enable TYPO3's
+[Content Security Policy](https://docs.typo3.org/permalink/t3coreapi:content-security-policy)
+feature — so the extension is compatible with a strict CSP. Slide bodies rendered
+in `default-src 'self'` decks work as-is (all reveal.js / Monaco assets are
+same-origin, vendored).
