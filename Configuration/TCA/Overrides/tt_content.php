@@ -85,7 +85,7 @@ defined('TYPO3') or die();
             ['label' => $ll . ':tt_content.transition.concave', 'value' => 'concave'],
             ['label' => $ll . ':tt_content.transition.zoom', 'value' => 'zoom'],
         ]],
-        'bg_video_loop' => ['type' => 'check', 'default' => 1],
+        'bg_video_loop' => ['type' => 'check', 'default' => 0],
         'bg_video_muted' => ['type' => 'check', 'default' => 0],
         'bg_interactive' => ['type' => 'check', 'default' => 0],
 

@@ -72,7 +72,12 @@ final class SlideAttributesViewHelper extends AbstractViewHelper
         'tx_revealjseditor_bg_repeat' => ['attr' => 'data-background-repeat', 'cast' => 'string', 'default' => ''],
         'tx_revealjseditor_bg_opacity' => ['attr' => 'data-background-opacity', 'cast' => 'string', 'default' => ''],
         'tx_revealjseditor_bg_transition' => ['attr' => 'data-background-transition', 'cast' => 'string', 'default' => ''],
-        'tx_revealjseditor_bg_video_loop' => ['attr' => 'data-background-video-loop', 'cast' => 'bool', 'default' => true],
+        // reveal.js reads data-background-video-loop / -muted / -interactive by
+        // PRESENCE (hasAttribute), ignoring the value — so `="false"` still
+        // turns the feature ON. Their 'default' must therefore be false (=
+        // reveal's absent behaviour): the attribute is emitted only when the
+        // box is checked, never as an inverted `="false"`.
+        'tx_revealjseditor_bg_video_loop' => ['attr' => 'data-background-video-loop', 'cast' => 'bool', 'default' => false],
         'tx_revealjseditor_bg_video_muted' => ['attr' => 'data-background-video-muted', 'cast' => 'bool', 'default' => false],
         'tx_revealjseditor_bg_interactive' => ['attr' => 'data-background-interactive', 'cast' => 'bool', 'default' => false],
 
