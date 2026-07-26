@@ -301,7 +301,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['trustedHostsPattern'] = '.*';
 // every Playwright request (playwright.config.ts → use.extraHTTPHeaders);
 // the editor's browser doesn't send it, so the editor stays on `db`.
 // Don't deploy this file to production — it trusts an arbitrary HTTP header.
-if (($_SERVER['HTTP_X_TEST_RUN'] ?? '') === '1') {
+// Defence-in-depth: only ever honour the header outside a Production context,
+// so a leaked copy of this file cannot switch the datastore on a live site.
+if (!\TYPO3\CMS\Core\Core\Environment::getContext()->isProduction()
+    && ($_SERVER['HTTP_X_TEST_RUN'] ?? '') === '1'
+) {
     $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'] = 'test';
 }
 

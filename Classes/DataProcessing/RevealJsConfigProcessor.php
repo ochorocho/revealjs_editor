@@ -17,10 +17,9 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
  * omitted, so emitting the editor's chosen values for *every* known
  * option is harmless and keeps editor intent explicit.
  *
- * Edit-mode override: when the request has ?editMode=1 we force
- * `keyboard: false` regardless of what the page record says, because
- * reveal.js's keyboard handler swallows arrow-keys / backspace inside
- * CKEditor when visual_editor is rendering the FE in its iframe.
+ * The output is request-independent (no query-param reads), so it stays a
+ * cache-safe function of the page record. The edit-mode keyboard override is
+ * handled client-side in Pages/Revealjs.html.
  */
 final class RevealJsConfigProcessor implements DataProcessorInterface
 {
@@ -153,19 +152,24 @@ final class RevealJsConfigProcessor implements DataProcessorInterface
         // JSON has no Infinity. Convention: 0 stays 0 in JSON; reveal.js treats
         // 0 as "no per-slide cap" via its own fallback.
 
-        // Edit-mode safety: never let reveal.js intercept keyboard input
-        // inside the visual_editor iframe (CKEditor / form fields).
-        try {
-            $request = $cObj->getRequest();
-            if (($request->getQueryParams()['editMode'] ?? '') === '1') {
-                $config['keyboard'] = false;
-            }
-        } catch (\Throwable) {
-            // No request available in some BE contexts — leave config as-is.
-        }
+        // Edit-mode keyboard safety (protect CKEditor/form fields from reveal's
+        // key handler) is applied CLIENT-SIDE in Pages/Revealjs.html by reading
+        // `?editMode` from location.search — NOT here. Varying this cacheable
+        // server output on an unsigned, cHash-excluded query param would be a
+        // cache-poisoning vector (see TYPO3-PSA-2021-003); the processor reads
+        // no request data.
 
+        // Serialize for embedding in the single-quoted data-revealjs-options
+        // HTML attribute. JSON_HEX_APOS/QUOT/TAG/AMP encode ' " < > & as \uXXXX
+        // so no editor-controlled string value (e.g. the free-text
+        // autoAnimateEasing field) can break out of the attribute → XSS-safe in
+        // any quote style, and safe inside <script> too.
         $as = $processorConfiguration['as'] ?? 'revealjsConfig';
-        $processedData[$as] = json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $processedData[$as] = json_encode(
+            $config,
+            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+            | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP,
+        );
 
         return $processedData;
     }
