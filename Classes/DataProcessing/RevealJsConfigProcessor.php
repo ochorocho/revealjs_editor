@@ -61,7 +61,7 @@ final class RevealJsConfigProcessor implements DataProcessorInterface
 
         // Layout
         'tx_revealjseditor_center' => ['key' => 'center', 'cast' => 'bool', 'default' => true],
-        'tx_revealjseditor_viewdistance' => ['key' => 'viewDistance', 'cast' => 'int', 'default' => 3],
+        'tx_revealjseditor_viewdistance' => ['key' => 'viewDistance', 'cast' => 'int', 'default' => 3, 'zeroIsDefault' => true],
 
         // Auto-advance
         'tx_revealjseditor_autoslide' => ['key' => 'autoSlide', 'cast' => 'int', 'default' => 0],
@@ -98,7 +98,7 @@ final class RevealJsConfigProcessor implements DataProcessorInterface
         'tx_revealjseditor_scrolllayout' => ['key' => 'scrollLayout', 'cast' => 'string', 'default' => 'full'],
         'tx_revealjseditor_scrollsnap' => ['key' => 'scrollSnap', 'cast' => 'string', 'default' => 'mandatory'],
         'tx_revealjseditor_scrollprogress' => ['key' => 'scrollProgress', 'cast' => 'string', 'default' => 'auto'],
-        'tx_revealjseditor_scrollactivationwidth' => ['key' => 'scrollActivationWidth', 'cast' => 'int', 'default' => 435],
+        'tx_revealjseditor_scrollactivationwidth' => ['key' => 'scrollActivationWidth', 'cast' => 'int', 'default' => 435, 'zeroIsDefault' => true],
     ];
 
     /**
@@ -119,6 +119,16 @@ final class RevealJsConfigProcessor implements DataProcessorInterface
         foreach (self::OPTIONS as $column => $spec) {
             $rawValue = $row[$column] ?? null;
             $value = ($rawValue === null || $rawValue === '') ? $spec['default'] : $rawValue;
+
+            // `type=number` columns always get DB `DEFAULT 0` regardless of the
+            // TCA default (schema-analyser limitation), so a record created
+            // outside FormEngine reads 0. For options where 0 is not a
+            // meaningful authored value (viewDistance, scrollActivationWidth),
+            // treat 0 as "unset" and fall back to the reveal.js default —
+            // otherwise viewDistance:0 hides every slide and nothing renders.
+            if (($spec['zeroIsDefault'] ?? false) && (int)$value === 0) {
+                $value = $spec['default'];
+            }
 
             $config[$spec['key']] = match ($spec['cast']) {
                 'bool' => (bool)$value,

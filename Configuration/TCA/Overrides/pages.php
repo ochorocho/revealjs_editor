@@ -19,6 +19,23 @@ defined('TYPO3') or die();
     // -----------------------------------------------------------------
     // Theme — moved into the new Reveal Presentation tab below.
     // -----------------------------------------------------------------
+    // Only the bundled `the-caemp` theme ships. Other extensions can register
+    // additional themes (value => CSS path) in
+    // $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themes'] —
+    // resolved to their CSS by RevealJsThemeProcessor. Merge each registered
+    // value in here so it is also selectable in the backend form. EXTCONF is
+    // populated in ext_localconf.php, which runs before TCA overrides, so the
+    // registry is already available at this point.
+    $themeItems = [
+        ['label' => 'THE CÄMP', 'value' => 'the-caemp'],
+    ];
+    $registeredThemes = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themes'] ?? [];
+    if (is_array($registeredThemes)) {
+        foreach (array_keys($registeredThemes) as $themeValue) {
+            $themeItems[] = ['label' => (string)$themeValue, 'value' => (string)$themeValue];
+        }
+    }
+
     $GLOBALS['TCA']['pages']['columns']['tx_revealjseditor_theme'] = [
         'label' => $ll . ':pages.theme',
         'config' => [
@@ -26,9 +43,7 @@ defined('TYPO3') or die();
             'renderType' => 'selectSingle',
             'default' => 'the-caemp',
             'dbFieldLength' => 32,
-            'items' => [
-                ['label' => 'THE CÄMP', 'value' => 'the-caemp'],
-            ],
+            'items' => $themeItems,
         ],
     ];
 

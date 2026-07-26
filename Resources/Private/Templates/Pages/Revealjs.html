@@ -80,8 +80,14 @@
 </f:comment>
 <f:asset.script identifier="revealjs-init" type="module">
 	import Reveal from "{f:uri.resource(path: 'EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/reveal.mjs')}";
+	import RevealNotes from "{f:uri.resource(path: 'EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/plugin/notes.mjs')}";
 	const root = document.querySelector('.reveal');
 	const opts = root ? JSON.parse(root.dataset.revealjsOptions || '{}') : {};
+	// Register the Notes plugin so the speaker view (press `S`) surfaces each
+	// slide's data-notes (built from tx_revealjseditor_slide_notes by the
+	// SlideAttributesViewHelper). JSON config can't carry plugin functions, so
+	// they're wired here at initialize time.
+	opts.plugins = [RevealNotes, ...(opts.plugins || [])];
 	await Reveal.initialize(opts);
 
 	/*
