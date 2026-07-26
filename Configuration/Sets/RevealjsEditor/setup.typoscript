@@ -20,6 +20,7 @@
   tt_content.textmedia >
   tt_content.textmedia =< lib.contentElement
   tt_content.textmedia.templateName = Textmedia
+  tt_content.textmedia.templateRootPaths.20 = EXT:revealjs_editor/Resources/Private/Templates/Container/
   tt_content.textmedia.dataProcessing.10 = files
   tt_content.textmedia.dataProcessing.10.references.fieldName = assets
   tt_content.textmedia.dataProcessing.20 = gallery
@@ -60,8 +61,33 @@
   page = PAGE
   page {
     typeNum = 0
-    bodyTagCObject = TEXT
-    bodyTagCObject.value = <body class="revealjs-page">
+    # Brand color OVERRIDES from the site settings (revealjs.color.*, exposed as
+    # TypoScript constants) are stamped as --cmp-* custom properties on the body
+    # tag — but ONLY for the ones the site actually filled in. Body is reveal's
+    # .reveal-viewport, so a token inherits to both the viewport background and
+    # all .reveal content. An UNSET (empty) setting emits nothing, so the token
+    # falls through to the active theme's own :root default. Built as a COA with
+    # per-segment `if.isTrue` (no CSS braces in Fluid — the {…} parser would eat
+    # them). See settings.definitions.yaml for why these are `string`, not `color`.
+    bodyTagCObject = COA
+    bodyTagCObject {
+      5 = TEXT
+      5.value = <body class="revealjs-page" style="
+      10 = TEXT
+      10.value = --cmp-bg:{$revealjs.color.background};
+      10.if.isTrue = {$revealjs.color.background}
+      20 = TEXT
+      20.value = --cmp-text:{$revealjs.color.text};
+      20.if.isTrue = {$revealjs.color.text}
+      30 = TEXT
+      30.value = --cmp-accent:{$revealjs.color.accent};
+      30.if.isTrue = {$revealjs.color.accent}
+      40 = TEXT
+      40.value = --cmp-muted:{$revealjs.color.muted};
+      40.if.isTrue = {$revealjs.color.muted}
+      90 = TEXT
+      90.value = ">
+    }
 
     10 = PAGEVIEW
     10 {
@@ -69,10 +95,10 @@
 
       variables {
         # Per-presentation theme picked on the page record. Falls back to
-        # 'black' if the field is empty.
+        # 'the-caemp' if the field is empty.
         theme = TEXT
         theme.field = tx_revealjseditor_theme
-        theme.ifEmpty = black
+        theme.ifEmpty = the-caemp
 
         # Per-presentation author string — surfaced lower-left in the FE via
         # the `.reveal-author` div in Pages/Revealjs.html. Empty by default;
@@ -96,11 +122,9 @@
           as = pageLogos
         }
 
-        # Pick the correct theme CSS URL: stock reveal.js themes live in
-        # Resources/Public/Vendor/dist/theme/, custom ones in Resources/Public/Styles/revealjs-themes/.
-        # Output assigned to {themeUrl} for a single <f:asset.css> line in
-        # Pages/Revealjs.html (replaces the previous two unconditional CSS
-        # tags, one of which always 404'd).
+        # Resolve the theme CSS URL under Resources/Public/Styles/revealjs-themes/
+        # (only the-caemp ships today). Output assigned to {themeUrl} for a
+        # single <f:asset.css> line in Pages/Revealjs.html.
         30 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsThemeProcessor
 
         # Loads Monaco (the VS Code editor) as the single editor for code

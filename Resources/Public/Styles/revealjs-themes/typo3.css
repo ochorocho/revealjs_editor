@@ -1,0 +1,320 @@
+/* =========================================================================
+   TYPO3 theme for revealjs_editor — dark, TYPO3 brand colours.
+   Palette per the TYPO3 brand guidelines
+   (https://typo3.com/de/typo3-cms/die-marke/brand-guidelines):
+     Key Orange     #ff8700  (accent)
+     Anthracite     #313130  (background)
+     Super-l. grey  #f4f4f4  (text)
+     Mid grey       #8c8c8c  (muted)
+     Stage Orange L #fab85c  (link hover)
+
+   The four --cmp-* tokens declared in :root are this theme's DEFAULTS. They
+   respect the site's colour settings: setup.typoscript stamps --cmp-* on <body>
+   only for settings the site actually filled in, and an inline style beats a
+   :root rule — so a filled-in revealjs.color.* value overrides the default here,
+   while an empty one leaves the TYPO3 palette below intact. Every other colour
+   derives from these tokens (accent tints via color-mix).
+
+   Typography: TYPO3's brand typeface is proprietary/undistributable; this theme
+   ships Source Sans 3 (SIL OFL), the humanist sans of TYPO3's web presence,
+   self-hosted under ./typo3-fonts/. Headings are bold + uppercase.
+   ========================================================================= */
+
+@font-face {
+	font-family: 'Source Sans 3';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('./typo3-fonts/SourceSans3-Regular.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Source Sans 3';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('./typo3-fonts/SourceSans3-Bold.woff2') format('woff2');
+}
+
+:root {
+	--cmp-bg: #313130;
+	--cmp-text: #f4f4f4;
+	--cmp-muted: #8c8c8c;
+	--cmp-accent: #ff8700;
+
+	--r-background-color: var(--cmp-bg);
+	--r-main-color: var(--cmp-text);
+	--r-heading-color: var(--cmp-accent);
+	--r-link-color: var(--cmp-accent);
+	--r-link-color-hover: #fab85c;
+	--r-selection-background-color: color-mix(in srgb, var(--cmp-accent) 35%, transparent);
+	--r-selection-color: var(--cmp-bg);
+
+	--r-main-font: 'Source Sans 3', system-ui, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+	--r-main-font-size: 36px;
+	--r-heading-font: 'Source Sans 3', system-ui, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+	--r-heading-font-weight: 700;
+	--r-heading-text-transform: uppercase;
+	--r-heading-letter-spacing: 0.02em;
+	--r-code-font: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+}
+
+html,
+body,
+.reveal-viewport,
+.reveal,
+.reveal .backgrounds {
+	background: var(--cmp-bg);
+	color: var(--cmp-text);
+}
+
+/* ---------- Headings ---------- */
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+	color: var(--cmp-text);
+	font-family: var(--r-heading-font);
+	letter-spacing: 0.02em;
+}
+
+.reveal h1 {
+	color: var(--cmp-accent);
+	font-weight: 700;
+	font-size: 3.2em;
+	margin-bottom: 0.4em;
+	padding-bottom: 0.25em;
+	text-transform: uppercase;
+	border-bottom: 1px solid color-mix(in srgb, var(--cmp-muted) 70%, transparent);
+}
+
+.reveal h2 {
+	font-weight: 700;
+	font-size: 1.8em;
+	text-transform: uppercase;
+}
+
+.reveal h3 {
+	font-weight: 700;
+	font-size: 1.6em;
+	text-transform: none;
+	color: var(--cmp-text);
+}
+
+/* Slide-internal alignment */
+.reveal .slides section {
+	text-align: left;
+}
+
+.reveal .slides section h1,
+.reveal .slides section h2 {
+	text-align: left;
+}
+
+/* ---------- Body text & lists ---------- */
+
+.reveal {
+	font-family: var(--r-main-font);
+	color: var(--cmp-text);
+}
+
+.reveal p {
+	line-height: 1.3em;
+	font-size: 1.6em;
+}
+
+.reveal strong {
+	color: var(--cmp-accent);
+	font-weight: 700;
+}
+
+.reveal em {
+	color: var(--cmp-text);
+}
+
+.reveal .slides ul {
+	margin-left: 1em;
+}
+
+.reveal .slides ul li, .reveal .slides ol li {
+	line-height: 1.6em;
+	font-size: 1.8em;
+}
+
+/* Nested lists: keep the bullet + line-height, but stop the font-size
+   compounding so children render at the same visual size as their parent. */
+.reveal .slides ul ul li,
+.reveal .slides ul ol li,
+.reveal .slides ol ul li,
+.reveal .slides ol ol li {
+	font-size: 1em;
+}
+
+.reveal .slides ul li::marker {
+	color: var(--cmp-accent);
+}
+
+.reveal .slides ol {
+	padding-left: 1.9em;
+}
+
+.reveal .slides ol li::marker {
+	color: var(--cmp-accent);
+	font-weight: 700;
+}
+
+/* ---------- Links ---------- */
+
+.reveal a {
+	color: var(--cmp-accent);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.15em;
+}
+
+.reveal a:hover {
+	color: var(--r-link-color-hover);
+}
+
+/* ---------- Code ---------- */
+
+.reveal pre {
+	width: 100%;
+	font-size: 1.1em;
+	line-height: 1.4;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+	border-radius: 6px;
+	border: 1px solid color-mix(in srgb, var(--cmp-accent) 25%, transparent);
+}
+
+.reveal li pre {
+	font-size: unset;
+}
+
+.reveal pre code {
+	font-family: var(--r-code-font);
+	max-height: 600px;
+	border-radius: 6px;
+}
+
+.reveal p code,
+.reveal li code,
+.reveal td code {
+	background: color-mix(in srgb, var(--cmp-accent) 12%, transparent);
+	border: 1px solid var(--cmp-accent);
+	border-radius: 4px;
+	padding: 0.05em 0.2em;
+	color: var(--cmp-text);
+}
+
+/* ---------- Blockquote ---------- */
+
+.reveal blockquote {
+	border-left: 4px solid var(--cmp-accent);
+	background: color-mix(in srgb, var(--cmp-accent) 6%, transparent);
+	padding: 0.5em 1em;
+	border-radius: 0 6px 6px 0;
+	font-style: italic;
+}
+
+/* ---------- Reveal UI chrome ---------- */
+
+.reveal .progress span {
+	background: var(--cmp-accent);
+}
+
+.reveal .controls {
+	color: var(--cmp-accent);
+}
+
+.reveal .slide-number {
+	background: rgba(0, 0, 0, 0.5);
+	color: var(--cmp-accent);
+	font-family: var(--r-heading-font);
+	font-weight: 700;
+	font-size: 0.55em;
+	letter-spacing: 0.05em;
+	padding: 0.2em 0.5em;
+	border-radius: 3px;
+}
+
+/* ---------- Cover slide ---------- */
+
+.reveal .slides section.cover {
+	text-align: left;
+	height: 100%;
+}
+
+.reveal .slides section.cover .cover-grid {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.25em;
+	padding-left: 0.4em;
+}
+
+.reveal .slides section.cover .cover-typo3 {
+	display: block;
+	height: 10em;
+	width: auto;
+	margin: 0 0 0.1em -0.15em;
+	background: none;
+	border: 0;
+	box-shadow: none;
+}
+
+.reveal .slides section.cover .cover-wordmark {
+	font-family: var(--r-heading-font);
+	font-weight: 700;
+	font-size: 7em;
+	line-height: 0.95;
+	color: var(--cmp-accent);
+	text-transform: uppercase;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	letter-spacing: 0.01em;
+}
+
+.reveal .slides section.cover .cover-rule {
+	width: 75%;
+	border: 0;
+	border-top: 1px solid color-mix(in srgb, var(--cmp-muted) 70%, transparent);
+	margin: 0.4em 0;
+	padding: 0;
+	background: none;
+}
+
+.reveal .slides section.cover .cover-thema {
+	font-family: var(--r-main-font);
+	font-style: normal;
+	font-weight: 400;
+	font-size: 3.2em;
+	color: var(--cmp-text);
+	margin: 0;
+}
+
+.reveal .slides section.cover .cover-autor {
+	position: absolute;
+	bottom: 1em;
+	left: 0.2em;
+	font-family: var(--r-main-font);
+	font-style: normal;
+	font-weight: 400;
+	font-size: 1.4em;
+	color: var(--cmp-text);
+	margin: 0;
+}
+
+.reveal .slides section.cover .cover-b13 {
+	position: absolute;
+	bottom: 0.8em;
+	right: 1em;
+	width: 5em;
+	height: auto;
+	background: none;
+	border: 0;
+	box-shadow: none;
+	margin: 0;
+}

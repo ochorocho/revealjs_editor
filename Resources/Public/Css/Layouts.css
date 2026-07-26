@@ -35,6 +35,113 @@
 	text-transform: uppercase;
 }
 
+/* Textmedia slide — text + media (images, video, etc.) rendered from the
+   `assets` FAL field via FilesProcessor + GalleryProcessor. Position +
+   alignment driven by tt_content.imageorient via Container/Textmedia.html's
+   reveal-textmedia-{horizontal} / reveal-textmedia-{vertical} /
+   reveal-textmedia-nowrap modifier classes.
+
+   Template structure:
+     .reveal-textmedia
+       > h2                            (always own row, above content)
+       > .reveal-textmedia-row
+           > .reveal-textmedia-media   (image / video / gallery)
+           > .reveal-textmedia-body    (RTE bodytext)
+*/
+.reveal-textmedia h2 {
+    font-size: 2.5em;
+    margin: 0 0 0.5em;
+}
+
+.reveal-textmedia-row {
+    display: block;
+}
+
+.reveal-textmedia-media {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.reveal-textmedia-media img,
+.reveal-textmedia-media video {
+    max-width: 100%;
+    max-height: 50vh;
+    width: auto;
+    height: auto;
+}
+
+.reveal-textmedia-body {
+    font-size: 1.2em;
+}
+
+/* Horizontal alignment — drives where the media sits within its block
+   container. Applied to both the stacked layout (above/below) and the
+   beside-text layout (besidetext). */
+.reveal-textmedia-left .reveal-textmedia-media {
+    justify-content: flex-start;
+}
+
+.reveal-textmedia-center .reveal-textmedia-media {
+    justify-content: center;
+}
+
+.reveal-textmedia-right .reveal-textmedia-media {
+    justify-content: flex-end;
+}
+
+/* "In Text" — media floats and the body wraps around it.
+   imageorient 17 (right) / 18 (left). The float happens inside the
+   .reveal-textmedia-row container so the float context is scoped. */
+.reveal-textmedia-intext .reveal-textmedia-row::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.reveal-textmedia-intext .reveal-textmedia-media {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.reveal-textmedia-intext.reveal-textmedia-left .reveal-textmedia-media {
+    float: left;
+    margin-right: 1.5rem;
+}
+
+.reveal-textmedia-intext.reveal-textmedia-right .reveal-textmedia-media {
+    float: right;
+    margin-left: 1.5rem;
+}
+
+/* "Beside Text" — side-by-side columns, no wrap.
+   imageorient 25 (right) / 26 (left). The reveal-textmedia-nowrap modifier
+   carries the besidetext case (GalleryProcessor sets vertical=intext and
+   noWrap=true). Override the intext float layout: switch the .row to flex
+   so media + body sit on one line. */
+.reveal-textmedia-nowrap .reveal-textmedia-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.reveal-textmedia-nowrap.reveal-textmedia-right .reveal-textmedia-row {
+    flex-direction: row-reverse;
+}
+
+.reveal-textmedia-nowrap .reveal-textmedia-media {
+    float: none;
+    margin: 0;
+    flex: 0 0 auto;
+    max-width: 45%;
+}
+
+.reveal-textmedia-nowrap .reveal-textmedia-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
 /* Auto-fit wrapper injected by the deck init script (Pages/Revealjs.html)
    around each slide section's children. When the slide's content height
    exceeds reveal's logical canvas (default 700px), the script applies a
@@ -49,19 +156,45 @@
 	transform-origin: top center;
 }
 
-.reveal-logo {
+/* Overlay layer that tracks reveal.js's scaled slide canvas exactly. Reveal
+   publishes the logical canvas size (--slide-width / --slide-height) and the
+   fit scale (--slide-scale) on the viewport element and centres `.slides` at
+   50%/50%; we mirror that here so the layer's box is the on-screen slide
+   rectangle. Sizing the logo/author inside it with container-query units
+   (cqh/cqw) makes them a fixed fraction of the SLIDE rather than the browser
+   viewport — so they scale with the deck AND look identical in the speaker
+   view, whose iframes get the same reveal variables. Fallbacks (960/700/1)
+   cover the brief pre-initialize frame. */
+.reveal-overlay {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: calc(var(--slide-width, 960px) * var(--slide-scale, 1));
+	height: calc(var(--slide-height, 700px) * var(--slide-scale, 1));
+	transform: translate(-50%, -50%);
+	container-type: size;
 	z-index: 30;
 	pointer-events: none;
 	-webkit-user-select: none;
 	user-select: none;
+}
+
+.reveal-logo {
+	position: absolute;
+	top: 4cqh;
+	right: 4cqw;
+	height: 8cqh;
 	width: auto;
-	height: 6vh;
 	box-shadow: none;
 	background: 0 0;
 	border: 0;
-	position: fixed;
-	top: 4vh;
-	right: 0;
+}
+
+.reveal-logo img {
+	display: block;
+	height: 100%;
+	width: auto;
+	max-width: none;
 }
 
 /* Code-block shell — `<pre data-monaco>` wrappers emitted by
@@ -120,18 +253,16 @@
 }
 
 /* Author wordmark — mirrors .reveal-logo but anchored to the opposite
-   corner. pointer-events: none keeps it from intercepting clicks on
-   slide content (e.g. reveal's overview-mode hit targets). */
+   corner of the same .reveal-overlay slide-canvas layer, so it scales with
+   the deck and matches the speaker view. font-size in cqh keeps it a fixed
+   fraction of the slide height. */
 .reveal-author {
-	z-index: 30;
-	pointer-events: none;
-	-webkit-user-select: none;
-	user-select: none;
-	position: fixed;
-	bottom: 4vh;
-	left: 4vh;
+	position: absolute;
+	bottom: 4cqh;
+	left: 4cqw;
 	color: var(--cmp-accent, currentColor);
-	font-size: 0.8em;
+	font-size: 3.2cqh;
+	line-height: 1;
 	letter-spacing: 0.05em;
 	opacity: 0.7;
 }

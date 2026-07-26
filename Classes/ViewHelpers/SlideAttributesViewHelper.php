@@ -32,6 +32,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 final class SlideAttributesViewHelper extends AbstractViewHelper
 {
+    use RecordFieldTrait;
+
     /**
      * Output is HTML-attribute markup; do not let Fluid double-escape.
      */
@@ -70,7 +72,12 @@ final class SlideAttributesViewHelper extends AbstractViewHelper
         'tx_revealjseditor_bg_repeat' => ['attr' => 'data-background-repeat', 'cast' => 'string', 'default' => ''],
         'tx_revealjseditor_bg_opacity' => ['attr' => 'data-background-opacity', 'cast' => 'string', 'default' => ''],
         'tx_revealjseditor_bg_transition' => ['attr' => 'data-background-transition', 'cast' => 'string', 'default' => ''],
-        'tx_revealjseditor_bg_video_loop' => ['attr' => 'data-background-video-loop', 'cast' => 'bool', 'default' => true],
+        // reveal.js reads data-background-video-loop / -muted / -interactive by
+        // PRESENCE (hasAttribute), ignoring the value — so `="false"` still
+        // turns the feature ON. Their 'default' must therefore be false (=
+        // reveal's absent behaviour): the attribute is emitted only when the
+        // box is checked, never as an inverted `="false"`.
+        'tx_revealjseditor_bg_video_loop' => ['attr' => 'data-background-video-loop', 'cast' => 'bool', 'default' => false],
         'tx_revealjseditor_bg_video_muted' => ['attr' => 'data-background-video-muted', 'cast' => 'bool', 'default' => false],
         'tx_revealjseditor_bg_interactive' => ['attr' => 'data-background-interactive', 'cast' => 'bool', 'default' => false],
 
@@ -78,7 +85,10 @@ final class SlideAttributesViewHelper extends AbstractViewHelper
         'tx_revealjseditor_slide_autoslide' => ['attr' => 'data-autoslide', 'cast' => 'int', 'default' => 0],
         'tx_revealjseditor_slide_visibility' => ['attr' => 'data-visibility', 'cast' => 'string', 'default' => ''],
         'tx_revealjseditor_slide_prevent_swipe' => ['attr' => 'data-prevent-swipe', 'cast' => 'bool', 'default' => false],
-        'tx_revealjseditor_slide_notes' => ['attr' => 'data-notes', 'cast' => 'string', 'default' => ''],
+        // NB: slide_notes is intentionally NOT here. It is a rich-text (RTE)
+        // field rendered as an <aside class="notes"> element by the
+        // SlideNotesViewHelper — reveal.js's data-notes attribute is plain-text
+        // only, so HTML notes must go through the aside path instead.
 
         // Auto-animate (per slide)
         'tx_revealjseditor_anim_enabled' => ['attr' => 'data-auto-animate', 'cast' => 'bool', 'default' => false],
@@ -147,27 +157,6 @@ final class SlideAttributesViewHelper extends AbstractViewHelper
         }
 
         return implode(' ', $attributes);
-    }
-
-    /**
-     * Read a column from either a TCA array or a Domain\Record (PSR-11).
-     */
-    private function readField(mixed $record, string $field): mixed
-    {
-        if (is_array($record)) {
-            return $record[$field] ?? null;
-        }
-        if ($record instanceof ContainerInterface) {
-            return $record->has($field) ? $record->get($field) : null;
-        }
-        if (is_object($record) && method_exists($record, 'get')) {
-            try {
-                return $record->get($field);
-            } catch (\Throwable) {
-                return null;
-            }
-        }
-        return null;
     }
 
     /**

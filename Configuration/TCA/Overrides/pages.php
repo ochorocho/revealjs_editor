@@ -19,30 +19,32 @@ defined('TYPO3') or die();
     // -----------------------------------------------------------------
     // Theme — moved into the new Reveal Presentation tab below.
     // -----------------------------------------------------------------
+    // Only the bundled `the-caemp` theme ships. Other extensions can register
+    // additional themes (value => CSS path) in
+    // $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themes'] —
+    // resolved to their CSS by RevealJsThemeProcessor. Merge each registered
+    // value in here so it is also selectable in the backend form. EXTCONF is
+    // populated in ext_localconf.php, which runs before TCA overrides, so the
+    // registry is already available at this point.
+    $themeItems = [
+        ['label' => 'THE CÄMP', 'value' => 'the-caemp'],
+        ['label' => 'TYPO3', 'value' => 'typo3'],
+    ];
+    $registeredThemes = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themes'] ?? [];
+    if (is_array($registeredThemes)) {
+        foreach (array_keys($registeredThemes) as $themeValue) {
+            $themeItems[] = ['label' => (string)$themeValue, 'value' => (string)$themeValue];
+        }
+    }
+
     $GLOBALS['TCA']['pages']['columns']['tx_revealjseditor_theme'] = [
         'label' => $ll . ':pages.theme',
         'config' => [
             'type' => 'select',
             'renderType' => 'selectSingle',
-            'default' => 'black',
+            'default' => 'the-caemp',
             'dbFieldLength' => 32,
-            'items' => [
-                ['label' => 'THE CÄMP', 'value' => 'the-caemp'],
-                ['label' => 'Black', 'value' => 'black'],
-                ['label' => 'White', 'value' => 'white'],
-                ['label' => 'Beige', 'value' => 'beige'],
-                ['label' => 'Blood', 'value' => 'blood'],
-                ['label' => 'Dracula', 'value' => 'dracula'],
-                ['label' => 'League', 'value' => 'league'],
-                ['label' => 'Moon', 'value' => 'moon'],
-                ['label' => 'Night', 'value' => 'night'],
-                ['label' => 'Serif', 'value' => 'serif'],
-                ['label' => 'Simple', 'value' => 'simple'],
-                ['label' => 'Sky', 'value' => 'sky'],
-                ['label' => 'Solarized', 'value' => 'solarized'],
-                ['label' => 'Black (high contrast)', 'value' => 'black-contrast'],
-                ['label' => 'White (high contrast)', 'value' => 'white-contrast'],
-            ],
+            'items' => $themeItems,
         ],
     ];
 

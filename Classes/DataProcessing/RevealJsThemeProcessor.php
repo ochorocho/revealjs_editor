@@ -8,43 +8,37 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
 /**
- * Picks the correct theme CSS URL based on whether the page's selected theme
- * is one of the 14 reveal.js stock themes (shipped under
- * `Resources/Public/Vendor/revealjs/dist/theme/`) or a custom theme provided
- * by the extension under `Resources/Public/Styles/revealjs-themes/`.
+ * Resolves the page's selected theme to its CSS URL.
  *
- * Without this processor, the page template was forced to emit BOTH paths
- * unconditionally — one always 404'd for any given theme value, generating
- * a `ResourceHashCollection` log entry per request.
+ * The bundled `the-caemp` theme lives under the extension's
+ * `Resources/Public/Styles/revealjs-themes/` folder and is the default (an
+ * empty value falls back to it too). Other extensions — e.g. a sitepackage —
+ * can register their own themes without patching this extension by mapping a
+ * theme value to a CSS path in
+ * `$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themes']`
+ * (typically from their `ext_localconf.php`); the registry is consulted first
+ * and wins over the bundled folder.
  *
- * Output: a single `{themeUrl}` template variable (default `as`) that the
- * page template passes straight to `<f:asset.css href="{themeUrl}">`.
+ * Output: a `{themeUrl}` template variable (default `as`) that the page template
+ * passes to `<f:asset.css href="{themeUrl}">`, plus a fixed `{themeLogo}` variable
+ * (the theme's default corner-logo path) — used as the last fallback in the
+ * `.reveal-logo` chain: per-page FAL logo → `revealjs.defaultLogo` setting (if
+ * non-empty) → `{themeLogo}`.
  */
 final class RevealJsThemeProcessor implements DataProcessorInterface
 {
-    /**
-     * The 14 themes shipped in reveal.js v6's `dist/theme/` folder.
-     * Anything outside this list is treated as a local custom theme.
-     */
-    private const array STOCK_THEMES = [
-        'black',
-        'white',
-        'beige',
-        'blood',
-        'dracula',
-        'league',
-        'moon',
-        'night',
-        'serif',
-        'simple',
-        'sky',
-        'solarized',
-        'black-contrast',
-        'white-contrast',
-    ];
+    private const string DEFAULT_THEME = 'the-caemp';
+    private const string THEME_PATH = 'EXT:revealjs_editor/Resources/Public/Styles/revealjs-themes/';
 
-    private const string STOCK_PATH = 'EXT:revealjs_editor/Resources/Public/Vendor/revealjs/dist/theme/';
-    private const string CUSTOM_PATH = 'EXT:revealjs_editor/Resources/Public/Styles/revealjs-themes/';
+    /**
+     * Per-theme default corner logo. Falls back to the DEFAULT_THEME entry for
+     * unknown themes; overridable per theme via
+     * `$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themeLogos']`.
+     */
+    private const array THEME_LOGOS = [
+        'the-caemp' => 'EXT:revealjs_editor/Resources/Public/Images/the-camp.png',
+        'typo3' => 'EXT:revealjs_editor/Resources/Public/Images/typo3-logo.svg',
+    ];
 
     /**
      * @param array<string, mixed> $contentObjectConfiguration
@@ -59,16 +53,43 @@ final class RevealJsThemeProcessor implements DataProcessorInterface
         array $processedData,
     ): array {
         $row = $cObj->data;
-        $theme = (string)($row['tx_revealjseditor_theme'] ?? 'black');
+        $theme = (string)($row['tx_revealjseditor_theme'] ?? self::DEFAULT_THEME);
         if ($theme === '') {
-            $theme = 'black';
+            $theme = self::DEFAULT_THEME;
         }
 
-        $base = in_array($theme, self::STOCK_THEMES, true) ? self::STOCK_PATH : self::CUSTOM_PATH;
-
         $as = $processorConfiguration['as'] ?? 'themeUrl';
-        $processedData[$as] = $base . $theme . '.css';
+        $processedData[$as] = $this->resolveThemeUrl($theme);
+        $processedData['themeLogo'] = $this->resolveThemeLogo($theme);
 
         return $processedData;
+    }
+
+    /**
+     * Registered themes (value => CSS path) win over the bundled folder,
+     * letting external extensions ship their own themes.
+     */
+    private function resolveThemeUrl(string $theme): string
+    {
+        $registry = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themes'] ?? [];
+        if (is_array($registry) && is_string($registry[$theme] ?? null) && $registry[$theme] !== '') {
+            return $registry[$theme];
+        }
+
+        return self::THEME_PATH . $theme . '.css';
+    }
+
+    /**
+     * Registered theme logos (value => image path) win over the bundled map,
+     * so an externally-registered theme can ship its own default logo.
+     */
+    private function resolveThemeLogo(string $theme): string
+    {
+        $registry = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themeLogos'] ?? [];
+        if (is_array($registry) && is_string($registry[$theme] ?? null) && $registry[$theme] !== '') {
+            return $registry[$theme];
+        }
+
+        return self::THEME_LOGOS[$theme] ?? self::THEME_LOGOS[self::DEFAULT_THEME];
     }
 }

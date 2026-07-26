@@ -12,7 +12,7 @@ import type { Page } from '@playwright/test';
  * for both the admin and editor seed users.
  *
  * Targets the seeded "Lets Present This" page (uid 11) which carries the
- * doktype=1731 reveal.js subschema, the `the-caemp` theme value, and three
+ * doktype=1731 reveal.js subschema, the `the-caemp` theme value, and five
  * tt_content slide rows — so the BE assertions exercise the full
  * extension-managed surface: page subschema TCA, the Reveal Presentation
  * tab, the theme dropdown, and the slide list in the page module.
@@ -116,22 +116,26 @@ test.describe('TYPO3 backend', () => {
             name: /\[tx_revealjseditor_theme\]/,
         });
         await expect(themeSelect).toHaveValue('the-caemp');
-        // 14 stock + 1 custom (`the-caemp`) = 15 themes registered.
-        await expect(themeSelect.getByRole('option')).toHaveCount(15);
+        // Two bundled themes ship: the-caemp (default) and typo3.
+        await expect(themeSelect.getByRole('option')).toHaveCount(2);
+        await expect(
+            themeSelect.locator('option[value="typo3"]'),
+        ).toHaveCount(1);
     });
 
-    test('the page module shows the four seeded tt_content slides', async ({ page }) => {
+    test('the page module shows the five seeded tt_content slides', async ({ page }) => {
         await login(page);
         await page.goto(`/typo3/module/web/layout?id=${PRESENTATION_PAGE_UID}`);
 
         // The page-content iframe renders each tt_content row as a
         // <fieldset role="group"> with an `id=<uid> - <title> - <CType>`
-        // accessible name. Seed has four rows in colPos 0: cover (115),
-        // two text slides (105, 112), and one code slide (116) — see
+        // accessible name. Seed has five rows in colPos 0: cover (115),
+        // two text slides (105, 112), one textmedia slide (117), and
+        // one code slide (116) — see
         // Tests/playwright/fixtures/csv/tt_content.csv.
         const moduleFrame = page.frameLocator('iframe').first();
         const slides = moduleFrame.getByRole('group', { name: /^id=\d+/ });
-        await expect(slides).toHaveCount(4, { timeout: 15_000 });
+        await expect(slides).toHaveCount(5, { timeout: 15_000 });
     });
 });
 
@@ -177,7 +181,7 @@ test.describe('TYPO3 backend — slide editor', () => {
         await expect(backgroundTab).toBeVisible();
         await expect(animateTab).toBeVisible();
 
-        // ----- Slide tab: transition select + speaker notes textarea ------
+        // ----- Slide tab: transition select + speaker notes RTE ------
         await slideTab.click();
         // The transition combobox carries the column name in its accessible
         // name (FormEngine convention: "Label [column]"). The seeded value
@@ -189,10 +193,14 @@ test.describe('TYPO3 backend — slide editor', () => {
         await expect(transitionSelect).toBeVisible();
         // 6 reveal.js values + the inherit-empty entry = 7 options.
         await expect(transitionSelect.getByRole('option')).toHaveCount(7);
-        // Speaker notes — type=text in TCA → <textarea> with column-named id.
-        await expect(
-            formFrame.locator('textarea[data-formengine-input-name*="tx_revealjseditor_slide_notes"]'),
-        ).toBeAttached();
+        // Speaker notes is an RTE field (richtextConfiguration='revealjs'):
+        // FormEngine renders a source <textarea> keyed to the column and mounts
+        // a CKEditor 5 `.ck.ck-editor` beside it. Scope to the notes field
+        // wrapper so we don't match the bodytext RTE elsewhere on the form.
+        const notesField = formFrame
+            .locator('.t3js-formengine-field-item')
+            .filter({ has: formFrame.locator('[id*="tx_revealjseditor_slide_notes"]') });
+        await expect(notesField.locator('.ck.ck-editor')).toBeVisible({ timeout: 20_000 });
 
         // ----- Background tab: bg_color input + bg_image FAL picker -------
         await backgroundTab.click();
