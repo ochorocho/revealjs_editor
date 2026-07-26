@@ -156,19 +156,45 @@
 	transform-origin: top center;
 }
 
-.reveal-logo {
+/* Overlay layer that tracks reveal.js's scaled slide canvas exactly. Reveal
+   publishes the logical canvas size (--slide-width / --slide-height) and the
+   fit scale (--slide-scale) on the viewport element and centres `.slides` at
+   50%/50%; we mirror that here so the layer's box is the on-screen slide
+   rectangle. Sizing the logo/author inside it with container-query units
+   (cqh/cqw) makes them a fixed fraction of the SLIDE rather than the browser
+   viewport — so they scale with the deck AND look identical in the speaker
+   view, whose iframes get the same reveal variables. Fallbacks (960/700/1)
+   cover the brief pre-initialize frame. */
+.reveal-overlay {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: calc(var(--slide-width, 960px) * var(--slide-scale, 1));
+	height: calc(var(--slide-height, 700px) * var(--slide-scale, 1));
+	transform: translate(-50%, -50%);
+	container-type: size;
 	z-index: 30;
 	pointer-events: none;
 	-webkit-user-select: none;
 	user-select: none;
+}
+
+.reveal-logo {
+	position: absolute;
+	top: 4cqh;
+	right: 4cqw;
+	height: 8cqh;
 	width: auto;
-	height: 6vh;
 	box-shadow: none;
 	background: 0 0;
 	border: 0;
-	position: fixed;
-	top: 4vh;
-	right: 0;
+}
+
+.reveal-logo img {
+	display: block;
+	height: 100%;
+	width: auto;
+	max-width: none;
 }
 
 /* Code-block shell — `<pre data-monaco>` wrappers emitted by
@@ -227,18 +253,16 @@
 }
 
 /* Author wordmark — mirrors .reveal-logo but anchored to the opposite
-   corner. pointer-events: none keeps it from intercepting clicks on
-   slide content (e.g. reveal's overview-mode hit targets). */
+   corner of the same .reveal-overlay slide-canvas layer, so it scales with
+   the deck and matches the speaker view. font-size in cqh keeps it a fixed
+   fraction of the slide height. */
 .reveal-author {
-	z-index: 30;
-	pointer-events: none;
-	-webkit-user-select: none;
-	user-select: none;
-	position: fixed;
-	bottom: 4vh;
-	left: 4vh;
+	position: absolute;
+	bottom: 4cqh;
+	left: 4cqw;
 	color: var(--cmp-accent, currentColor);
-	font-size: 0.8em;
+	font-size: 3.2cqh;
+	line-height: 1;
 	letter-spacing: 0.05em;
 	opacity: 0.7;
 }

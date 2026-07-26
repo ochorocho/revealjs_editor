@@ -97,7 +97,10 @@ defined('TYPO3') or die();
             ['label' => $ll . ':tt_content.slide.visibility.uncounted', 'value' => 'uncounted'],
         ]],
         'slide_prevent_swipe' => ['type' => 'check', 'default' => 0],
-        'slide_notes' => ['type' => 'text', 'default' => '', 'rows' => 4, 'cols' => 60],
+        // Rich-text speaker notes — rendered as <aside class="notes"> in
+        // Pages/Revealjs.html (reveal.js's Notes plugin reads that element as
+        // HTML), NOT as a data-notes attribute (which is plain-text only).
+        'slide_notes' => ['type' => 'rte', 'default' => ''],
 
         // Auto-animate
         'anim_enabled' => ['type' => 'check', 'default' => 0],
@@ -130,10 +133,10 @@ defined('TYPO3') or die();
                 'size' => 10,
                 'default' => (int)$spec['default'],
             ],
-            'text' => [
+            'rte' => [
                 'type' => 'text',
-                'rows' => $spec['rows'],
-                'cols' => $spec['cols'],
+                'enableRichtext' => true,
+                'richtextConfiguration' => 'revealjs',
                 'default' => (string)$spec['default'],
             ],
             'select' => [

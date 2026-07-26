@@ -102,8 +102,8 @@ body,
 .reveal-viewport,
 .reveal,
 .reveal .backgrounds {
-	background: #2a2623;
-	color: #ffffff;
+	background: var(--cmp-bg);
+	color: var(--cmp-text);
 }
 
 :root {
@@ -116,8 +116,8 @@ body,
 	--r-main-color: var(--cmp-text);
 	--r-heading-color: var(--cmp-accent);
 	--r-link-color: var(--cmp-accent);
-	--r-link-color-hover: #fff04a;
-	--r-selection-background-color: rgba(255, 252, 0, 0.35);
+	--r-link-color-hover: color-mix(in srgb, var(--cmp-accent), white 25%);
+	--r-selection-background-color: color-mix(in srgb, var(--cmp-accent) 35%, transparent);
 	--r-selection-color: var(--cmp-bg);
 
 	--r-main-font: 'EB Garamond', Georgia, 'Times New Roman', serif;
@@ -145,7 +145,7 @@ body,
 	font-size: 3.2em;
 	margin-bottom: 0.4em;
 	padding-bottom: 0.25em;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+	border-bottom: 1px solid color-mix(in srgb, var(--cmp-muted) 70%, transparent);
 }
 
 .reveal h2 {
@@ -234,7 +234,7 @@ body,
 }
 
 .reveal a:hover {
-	color: #fff04a;
+	color: color-mix(in srgb, var(--cmp-accent), white 25%);
 }
 
 /* ---------- Code ---------- */
@@ -245,7 +245,7 @@ body,
 	line-height: 1.4;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 	border-radius: 6px;
-	border: 1px solid rgba(255, 252, 0, 0.25);
+	border: 1px solid color-mix(in srgb, var(--cmp-accent) 25%, transparent);
 }
 
 .reveal li pre {
@@ -261,7 +261,7 @@ body,
 .reveal p code,
 .reveal li code,
 .reveal td code {
-	background: rgba(255, 252, 0, 0.12);
+	background: color-mix(in srgb, var(--cmp-accent) 12%, transparent);
 	border: 1px solid var(--cmp-accent);
 	border-radius: 4px;
 	padding: 0.05em 0.2em;
@@ -272,7 +272,7 @@ body,
 
 .reveal blockquote {
 	border-left: 4px solid var(--cmp-accent);
-	background: rgba(255, 252, 0, 0.06);
+	background: color-mix(in srgb, var(--cmp-accent) 6%, transparent);
 	padding: 0.5em 1em;
 	border-radius: 0 6px 6px 0;
 	font-family: 'EB Garamond', serif;
@@ -357,7 +357,7 @@ body,
 .reveal .slides section.cover .cover-rule {
 	width: 75%;
 	border: 0;
-	border-top: 1px solid rgba(255, 255, 255, 0.7);
+	border-top: 1px solid color-mix(in srgb, var(--cmp-muted) 70%, transparent);
 	margin: 0.4em 0;
 	padding: 0;
 	background: none;

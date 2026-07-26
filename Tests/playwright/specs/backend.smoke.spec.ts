@@ -178,7 +178,7 @@ test.describe('TYPO3 backend — slide editor', () => {
         await expect(backgroundTab).toBeVisible();
         await expect(animateTab).toBeVisible();
 
-        // ----- Slide tab: transition select + speaker notes textarea ------
+        // ----- Slide tab: transition select + speaker notes RTE ------
         await slideTab.click();
         // The transition combobox carries the column name in its accessible
         // name (FormEngine convention: "Label [column]"). The seeded value
@@ -190,10 +190,14 @@ test.describe('TYPO3 backend — slide editor', () => {
         await expect(transitionSelect).toBeVisible();
         // 6 reveal.js values + the inherit-empty entry = 7 options.
         await expect(transitionSelect.getByRole('option')).toHaveCount(7);
-        // Speaker notes — type=text in TCA → <textarea> with column-named id.
-        await expect(
-            formFrame.locator('textarea[data-formengine-input-name*="tx_revealjseditor_slide_notes"]'),
-        ).toBeAttached();
+        // Speaker notes is an RTE field (richtextConfiguration='revealjs'):
+        // FormEngine renders a source <textarea> keyed to the column and mounts
+        // a CKEditor 5 `.ck.ck-editor` beside it. Scope to the notes field
+        // wrapper so we don't match the bodytext RTE elsewhere on the form.
+        const notesField = formFrame
+            .locator('.t3js-formengine-field-item')
+            .filter({ has: formFrame.locator('[id*="tx_revealjseditor_slide_notes"]') });
+        await expect(notesField.locator('.ck.ck-editor')).toBeVisible({ timeout: 20_000 });
 
         // ----- Background tab: bg_color input + bg_image FAL picker -------
         await backgroundTab.click();

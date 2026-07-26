@@ -305,13 +305,9 @@ if (($_SERVER['HTTP_X_TEST_RUN'] ?? '') === '1') {
     $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'] = 'test';
 }
 
-// Whitelist visual_editor's `editMode` query param so TYPO3's strict
-// cacheHash validation (FE.cacheHash.enforceValidation = true, set by
-// `typo3 setup` in v14) doesn't 404 the request. visual_editor ships
-// `config.linkVars = editMode(1)` in its TypoScript so the BE preview
-// iframe URLs already carry the param; we just need TYPO3 to treat it as
-// non-significant for cache key computation.
-$GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'][] = 'editMode';
+// The cacheHash whitelist (visual_editor's `editMode` + the reveal.js Notes
+// speaker-view params) now ships with the extension in ext_localconf.php, so
+// nothing cacheHash-related needs to be written here anymore.
 PHP
 
 echo "[revealjs-editor] TYPO3 is ready."

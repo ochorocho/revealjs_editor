@@ -54,6 +54,15 @@ AddType text/javascript .mjs
 This is a server-configuration concern, not an extension setting; DDEV's
 bundled nginx already serves `.mjs` correctly.
 
+### Speaker notes / preview (cHash)
+
+Press `S` on a deck to open the reveal.js speaker view (shows each slide's
+notes). The extension registers the query parameters its speaker view — and the
+visual_editor backend preview — append to page URLs as `cHash`-excluded
+(`FE.cacheHash.excludedParameters`, set in `ext_localconf.php`), so they work
+out of the box even with TYPO3 v14's strict `cacheHash.enforceValidation`. No
+site configuration required.
+
 ## Themes
 
 The bundled **THE CÄMP** theme (`the-caemp`) is the default and only shipped

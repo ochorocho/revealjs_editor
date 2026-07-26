@@ -9,3 +9,32 @@ settings:
     category: revealjs
     label: 'Default presentation logo'
     description: 'Path or EXT:… URL to the logo shown on every reveal.js presentation. Per-page logo (page.tx_revealjseditor_logo) takes precedence; this setting is the site-wide fallback.'
+
+  # Brand colors. Each drives one --cmp-* custom property (pushed onto the body
+  # tag in setup.typoscript); the-caemp.css derives every shade from these
+  # tokens (accent tints via color-mix), so overriding one recolors the whole
+  # deck consistently. Defaults reproduce the shipped THE CÄMP look.
+  revealjs.color.background:
+    default: '#2a2623'
+    type: color
+    category: revealjs
+    label: 'Deck background color'
+    description: 'Slide/deck background behind all content.'
+  revealjs.color.text:
+    default: '#ffffff'
+    type: color
+    category: revealjs
+    label: 'Body text color'
+    description: 'Main paragraph and list text (also the text-selection foreground).'
+  revealjs.color.accent:
+    default: '#fffc00'
+    type: color
+    category: revealjs
+    label: 'Accent color'
+    description: 'Headings, links, list markers, borders, progress bar, controls, slide number and the cover/author wordmark — plus the tints derived from it.'
+  revealjs.color.muted:
+    default: '#d9d9d9'
+    type: color
+    category: revealjs
+    label: 'Muted / secondary color'
+    description: 'Subdued secondary color used for divider rules under headings and on the cover slide.'

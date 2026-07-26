@@ -62,7 +62,13 @@
   page {
     typeNum = 0
     bodyTagCObject = TEXT
-    bodyTagCObject.value = <body class="revealjs-page">
+    # Brand colors from the site settings (revealjs.color.*) are exposed as
+    # TypoScript constants and stamped as --cmp-* custom properties on the body
+    # tag. Body is reveal's .reveal-viewport, so the tokens inherit to both the
+    # viewport background and all .reveal content, overriding the-caemp.css's
+    # :root defaults. Set on the body tag (no CSS braces) so Fluid's {…} parser
+    # can't eat it.
+    bodyTagCObject.value = <body class="revealjs-page" style="--cmp-bg:{$revealjs.color.background};--cmp-text:{$revealjs.color.text};--cmp-accent:{$revealjs.color.accent};--cmp-muted:{$revealjs.color.muted}">
 
     10 = PAGEVIEW
     10 {

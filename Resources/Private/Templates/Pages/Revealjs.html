@@ -20,45 +20,62 @@
 	(keyboard=false) is applied inside the processor.
 </f:comment>
 <div class="reveal" data-revealjs-options='{revealjsConfig -> f:format.raw()}'>
-	<div class="reveal-logo">
-		<f:if condition="{pageLogos}">
-			<f:then>
-				<f:comment>Per-presentation logo (page TCA tx_revealjseditor_logo).</f:comment>
-				<f:for each="{pageLogos}" as="logo">
-					<f:image image="{logo}" alt="{logo.alternative}" maxWidth="200px"/>
-				</f:for>
-			</f:then>
-			<f:else>
-				<f:comment>Site-wide default (Site Set setting revealjs.defaultLogo).</f:comment>
-				<f:image src="{settings.revealjs.defaultLogo}" alt="" maxWidth="200px"/>
-			</f:else>
+	<f:comment>
+		Overlay layer pinned to reveal's scaled slide canvas (see .reveal-overlay
+		in Layouts.css). Keeps the logo + author a fixed fraction of the SLIDE so
+		they scale with the deck and render identically in the speaker view.
+	</f:comment>
+	<div class="reveal-overlay">
+		<div class="reveal-logo">
+			<f:if condition="{pageLogos}">
+				<f:then>
+					<f:comment>Per-presentation logo (page TCA tx_revealjseditor_logo).</f:comment>
+					<f:for each="{pageLogos}" as="logo">
+						<f:image image="{logo}" alt="{logo.alternative}" maxWidth="200px"/>
+					</f:for>
+				</f:then>
+				<f:else>
+					<f:comment>Site-wide default (Site Set setting revealjs.defaultLogo).</f:comment>
+					<f:image src="{settings.revealjs.defaultLogo}" alt="" maxWidth="200px"/>
+				</f:else>
+			</f:if>
+		</div>
+
+		<f:comment>
+			Per-presentation author (page TCA tx_revealjseditor_author). Surfaced
+			lower-left via the `.reveal-author` rules in Layouts.css. Element is
+			only emitted when the field is set, so unauthored decks render no
+			extra markup.
+		</f:comment>
+		<f:if condition="{revealjsAuthor}">
+			<div class="reveal-author">{revealjsAuthor}</div>
 		</f:if>
 	</div>
-
-	<f:comment>
-		Per-presentation author (page TCA tx_revealjseditor_author). Surfaced
-		lower-left via the `.reveal-author` rules in Layouts.css. Element is
-		only emitted when the field is set, so unauthored decks render no
-		extra markup.
-	</f:comment>
-	<f:if condition="{revealjsAuthor}">
-		<div class="reveal-author">{revealjsAuthor}</div>
-	</f:if>
 
 	<div class="slides">
 		<f:for each="{content.main}" as="slide">
 			<f:comment>
 				The reveal:slideAttributes ViewHelper builds the per-slide data-*
 				attribute string (data-transition, data-state, class, all data-background-*,
-				data-autoslide, data-visibility, data-prevent-swipe, data-notes, the
+				data-autoslide, data-visibility, data-prevent-swipe, the
 				data-auto-animate-* group) from the slide row's tx_revealjseditor_*
 				fields. Empty values and values matching the column default are skipped
 				so the rendered <section> markup stays minimal — reveal.js falls
 				through to the page-level config in data-revealjs-options for any
 				attribute not present here.
+
+				Speaker notes are rich-text (RTE), so they render as an
+				<aside class="notes"> child (reveal.js reads that element as HTML;
+				the data-notes attribute is plain-text only). reveal.js hides the
+				aside on the main deck and shows it only in the speaker view (S).
+				f:format.html runs the stored RTE markup through lib.parseFunc_RTE.
 			</f:comment>
 			<section {reveal:slideAttributes(record: slide) -> f:format.raw()}>
 				<f:render.record record="{slide}"/>
+				<f:variable name="slideNotes">{reveal:slideNotes(record: slide)}</f:variable>
+				<f:if condition="{slideNotes}">
+					<aside class="notes"><f:format.html>{slideNotes}</f:format.html></aside>
+				</f:if>
 			</section>
 		</f:for>
 	</div>
