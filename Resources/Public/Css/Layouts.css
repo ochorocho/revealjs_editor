@@ -234,6 +234,39 @@
 	overflow: hidden;
 }
 
+/* Mermaid diagram slide (Container/Mermaid.html). RevealMermaidMount.js
+   replaces the `<pre class="mermaid" data-mermaid>` source with an <svg> on
+   the reveal `ready`/`slidechanged` events; the per-slide ResizeObserver in
+   Pages/Revealjs.html then re-scales the slide to fit the injected SVG. We
+   center the diagram and cap its rendered SVG to the slide box. `white-space`
+   is reset so the un-rendered source (visible for the brief pre-render frame)
+   doesn't force a horizontal scrollbar. */
+.reveal .mermaid[data-mermaid] {
+	display: block;
+	margin: var(--r-block-margin) auto;
+	text-align: center;
+	background: none;
+	box-shadow: none;
+	white-space: normal;
+	color: var(--cmp-muted, #8c8c8c);
+}
+
+.reveal .mermaid[data-mermaid] svg {
+	max-width: 100%;
+	height: auto;
+}
+
+.reveal .mermaid[data-mermaid] .mermaid-error {
+	color: #ff6b6b;
+	text-align: left;
+	white-space: pre-wrap;
+	font-size: 0.6em;
+}
+
+.reveal-mermaid .reveal-mermaid-title {
+	margin-bottom: 0.4em;
+}
+
 /* Inline `<code>` emitted by CKEditor's Code plugin (Revealjs.yaml's
    `code` toolbar button). Reveal.js stock themes mostly leave inline
    <code> at the browser default (monospace, no chrome) which reads as

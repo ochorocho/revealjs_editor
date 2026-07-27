@@ -13,16 +13,16 @@ import { expect, test } from '@ochorocho/playwright-db-connector';
 test.describe('reveal.js page rendering', () => {
     const PRESENTATION_URL = '/subpage-germany/lets-present-this';
 
-    test('the deck wrapper renders five sections inside .reveal .slides', async ({ page }) => {
+    test('the deck wrapper renders six sections inside .reveal .slides', async ({ page }) => {
         const response = await page.goto(PRESENTATION_URL);
         expect(response?.status()).toBe(200);
 
         await expect(page).toHaveTitle(/RevealJS/i);
         await expect(page.locator('div.reveal')).toHaveCount(1);
-        // Seed has 5 rows in colPos 0 on pid=11: cover (115), two text
-        // slides (112, 105), one textmedia slide (117), and one code
-        // slide (116) — see Tests/playwright/fixtures/csv/tt_content.csv.
-        await expect(page.locator('.reveal .slides > section')).toHaveCount(5);
+        // Seed has 6 rows in colPos 0 on pid=11: cover (115), two text
+        // slides (112, 105), one textmedia slide (117), one code slide (116)
+        // and one mermaid slide (118) — see Tests/playwright/fixtures/csv/tt_content.csv.
+        await expect(page.locator('.reveal .slides > section')).toHaveCount(6);
     });
 
     test('reveal.js initialises in the browser (body gets reveal-viewport class)', async ({ page }) => {
@@ -154,6 +154,33 @@ test.describe('reveal.js page rendering', () => {
 
         const hydratedCount = await blocks.count();
         expect(hydratedCount).toBeGreaterThanOrEqual(2);
+    });
+
+    test('mermaid slide renders an SVG diagram (client-side, strict)', async ({ page }) => {
+        // Architecture: the server emits `<pre class="mermaid" data-mermaid>`
+        // with the diagram source escaped as entities; the init script lazily
+        // imports RevealMermaidMount.js (only because a [data-mermaid] block
+        // exists) and renders each block to an SVG on reveal's ready/
+        // slidechanged events (securityLevel: strict).
+
+        // ----- (a) raw response -----
+        const response = await page.goto(PRESENTATION_URL);
+        const html = await response!.text();
+        expect(html).toContain('<pre class="mermaid" data-mermaid>');
+        // Arrow source round-trips as entities so pre.textContent decodes back.
+        expect(html).toContain('--&gt;');
+        expect(html).toContain('RevealMermaidMount.js');
+
+        // ----- (b) rendered SVG -----
+        // The mermaid slide is the last (6th) slide — beyond viewDistance, so
+        // it renders only once shown. Jump to the last slide (End) and wait for
+        // mermaid to inject the <svg>.
+        await expect(page.locator('body.reveal-viewport')).toBeVisible();
+        await page.waitForLoadState('networkidle');
+        await page.keyboard.press('End');
+        await expect(
+            page.locator('.reveal [data-mermaid] svg').first(),
+        ).toBeAttached({ timeout: 20_000 });
     });
 
     test('keyboard ArrowRight advances reveal.js to the next slide', async ({ page }) => {

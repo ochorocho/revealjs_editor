@@ -37,6 +37,9 @@ const COVER_SLIDE_UID = 115;
  */
 const CODE_SLIDE_UID = 116;
 
+/** Seeded mermaid slide (CType=revealjs_slide_mermaid) — see tt_content.csv. */
+const MERMAID_SLIDE_UID = 118;
+
 /**
  * Log into the TYPO3 v14 backend. The form uses three fields: `username`,
  * `p_field` (cleartext password — captured client-side and hashed into
@@ -123,19 +126,19 @@ test.describe('TYPO3 backend', () => {
         ).toHaveCount(1);
     });
 
-    test('the page module shows the five seeded tt_content slides', async ({ page }) => {
+    test('the page module shows the six seeded tt_content slides', async ({ page }) => {
         await login(page);
         await page.goto(`/typo3/module/web/layout?id=${PRESENTATION_PAGE_UID}`);
 
         // The page-content iframe renders each tt_content row as a
         // <fieldset role="group"> with an `id=<uid> - <title> - <CType>`
-        // accessible name. Seed has five rows in colPos 0: cover (115),
-        // two text slides (105, 112), one textmedia slide (117), and
-        // one code slide (116) — see
+        // accessible name. Seed has six rows in colPos 0: cover (115),
+        // two text slides (105, 112), one textmedia slide (117), one code
+        // slide (116) and one mermaid slide (118) — see
         // Tests/playwright/fixtures/csv/tt_content.csv.
         const moduleFrame = page.frameLocator('iframe').first();
         const slides = moduleFrame.getByRole('group', { name: /^id=\d+/ });
-        await expect(slides).toHaveCount(5, { timeout: 15_000 });
+        await expect(slides).toHaveCount(6, { timeout: 15_000 });
     });
 });
 
@@ -287,6 +290,44 @@ test.describe('TYPO3 backend — slide editor', () => {
         await expect(
             formFrame.locator('typo3-t3editor-codemirror'),
         ).toHaveCount(0);
+    });
+
+    test('mermaid slide source field mounts the live-preview editor in the BE FormEngine', async ({ page }) => {
+        // The `tx_revealjseditor_mermaid` column uses renderType=mermaidEditor
+        // (ext_localconf.php → Classes/Form/Element/MermaidEditorElement.php).
+        // The BE form emits `<typo3-mermaid-editor>` wrapping a hidden
+        // `<textarea name="data[…][tx_revealjseditor_mermaid]">`; the JS module
+        // mounts Monaco (edit) + a live mermaid preview inside it.
+        await login(page);
+
+        const editUrl = `/typo3/record/edit?edit[tt_content][${MERMAID_SLIDE_UID}]=edit&returnUrl=/typo3/module/web/layout`;
+        await page.goto(editUrl);
+
+        const formFrame = page.frameLocator('iframe').first();
+
+        // The custom element wraps the hidden POST-carrier textarea.
+        await expect(
+            formFrame.locator('typo3-mermaid-editor').first(),
+        ).toBeAttached({ timeout: 20_000 });
+        await expect(
+            formFrame.locator('typo3-mermaid-editor textarea[name$="[tx_revealjseditor_mermaid]"]').first(),
+        ).toBeAttached();
+
+        // Monaco mounts inside the editor pane, and mermaid renders an <svg>
+        // into the preview pane, after the vendored bundles load.
+        await page.waitForLoadState('networkidle');
+        await expect(
+            formFrame.locator('typo3-mermaid-editor .monaco-editor').first(),
+        ).toBeAttached({ timeout: 30_000 });
+        await expect(
+            formFrame.locator('typo3-mermaid-editor .typo3-mermaid-editor-preview svg').first(),
+        ).toBeAttached({ timeout: 30_000 });
+
+        // The "Insert example" picker (Mermaid Live Editor "Sample Diagrams"
+        // equivalent) is present with several sample options.
+        const examples = formFrame.locator('typo3-mermaid-editor select.typo3-mermaid-editor-examples');
+        await expect(examples).toBeAttached();
+        expect(await examples.locator('option').count()).toBeGreaterThan(5);
     });
 
     test('visual_editor preview iframe mounts Monaco editors (editable mode) per inline-IRRE code block', async ({ page }) => {

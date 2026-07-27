@@ -125,6 +125,16 @@
 	opts.plugins = [RevealNotes, ...(opts.plugins || [])];
 	await Reveal.initialize(opts);
 
+	// Mermaid diagram slides: mount lazily so mermaid's bundle only loads on
+	// decks that actually use it. The mount needs the Reveal instance (it
+	// renders each diagram when its slide becomes visible — see
+	// RevealMermaidMount.js), which is why it's wired here rather than in a
+	// standalone asset processor like the Monaco FE mount.
+	if (document.querySelector('.reveal [data-mermaid]')) {
+		const { mountMermaid } = await import("{f:uri.resource(path: 'EXT:revealjs_editor/Resources/Public/JavaScript/RevealMermaidMount.js')}");
+		mountMermaid(Reveal);
+	}
+
 	/*
 	 * Auto-fit wrapper. Reveal.js scales the whole `.reveal .slides`
 	 * container via transform: scale() to fit the viewport, but CSS

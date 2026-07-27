@@ -8,12 +8,14 @@
         "node": ">=20"
     },
     "scripts": {
-        "build:monaco": "node Build/build-monaco.mjs"
+        "build:monaco": "node Build/build-monaco.mjs",
+        "build:mermaid": "node build-mermaid.mjs"
     },
     "devDependencies": {
         "@ochorocho/playwright-db-connector": "^0.0.2",
         "@playwright/test": "1.59.0",
         "esbuild": "^0.28.0",
+        "mermaid": "^11.12.0",
         "monaco-editor": "^0.54.0",
         "mysql2": "^3.22.3"
     }

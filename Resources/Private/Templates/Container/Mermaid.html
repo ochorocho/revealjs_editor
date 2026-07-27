@@ -1,0 +1,40 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    The mermaid diagram slide template.
+
+    Title (header) and optional prose (bodytext) use the editable
+    `{record -> f:render.text(field: '...')}` pattern (visual_editor inline
+    editing + TCA-type-aware escaping), exactly like Cover.html.
+
+    The diagram source is emitted RAW-but-escaped via `{data.tx_revealjseditor_mermaid}`
+    (the legacy row array, default Fluid htmlspecialchars) — NOT f:render.text:
+    for a plain `text` field f:render.text applies nl2br, which would inject
+    <br> tags and lose the real newlines that RevealMermaidMount.js needs when
+    it reads `pre.textContent`. Default escaping keeps < > & as entities (so
+    textContent round-trips) while preserving newlines. There is no inline
+    editing of the source on the slide — it renders to an SVG; editors author it
+    in the BE mermaid editor (renderType=mermaidEditor).
+
+    RevealMermaidMount.js walks `.reveal [data-mermaid]` and replaces each
+    block's content with the rendered (securityLevel:strict) SVG on the reveal
+    `ready` / `slidechanged` events.
+</f:comment>
+
+<div class="reveal-mermaid">
+    <f:variable name="renderedHeader" value="{record -> f:render.text(field: 'header')}"/>
+    <f:if condition="{renderedHeader}">
+        <h2 class="reveal-mermaid-title">{renderedHeader -> f:format.raw()}</h2>
+    </f:if>
+
+    <f:if condition="{data.tx_revealjseditor_mermaid}">
+        <pre class="mermaid" data-mermaid>{data.tx_revealjseditor_mermaid}</pre>
+    </f:if>
+
+    <f:variable name="renderedBodytext" value="{record -> f:render.text(field: 'bodytext')}"/>
+    <f:if condition="{renderedBodytext}">
+        <div class="reveal-mermaid-body">{renderedBodytext -> f:format.raw()}</div>
+    </f:if>
+</div>
+</html>

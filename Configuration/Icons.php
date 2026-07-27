@@ -13,4 +13,5 @@ return [
     'apps-pagetree-revealjs' => $icon('doktype-revealjs.svg'),
     'content-revealjs-slide-cover' => $icon('doktype-revealjs.svg'),
     'content-revealjs-slide-code' => $icon('doktype-revealjs.svg'),
+    'content-revealjs-slide-mermaid' => $icon('content-mermaid.svg'),
 ];
