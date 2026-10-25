@@ -4,7 +4,7 @@
    surface of the site's header, hero and footer):
      Neutral 100    #131313  (background)
      Neutral 0      #ffffff  (text)
-     Brand yellow   #f8ab1f  (accent — b13's interactive colour on dark)
+     Brand red      #d3414b  (accent — progress, controls, highlights)
      Neutral 30     #c4c4c4  (muted — the inverted secondary text colour)
 
    The four --cmp-* tokens declared in :root are this theme's DEFAULTS. They
@@ -40,7 +40,7 @@
 	--cmp-bg: #131313;
 	--cmp-text: #ffffff;
 	--cmp-muted: #c4c4c4;
-	--cmp-accent: #f8ab1f;
+	--cmp-accent: #d3414b;
 
 	--r-background-color: var(--cmp-bg);
 	--r-main-color: var(--cmp-text);

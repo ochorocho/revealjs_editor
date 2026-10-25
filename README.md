@@ -78,7 +78,7 @@ Three themes ship and are selectable in the page's **Theme** field:
 
 - **`the-caemp`** (default) — dark, brand yellow.
 - **`typo3`** — anthracite background, TYPO3 Key Orange accents, Source Sans 3.
-- **`b13`** — dark (`#131313`), b13 brand yellow accents, Barlow Semi Condensed (stand-in for
+- **`b13`** — dark (`#131313`), b13 brand red accents, Barlow Semi Condensed (stand-in for
   b13's commercial Pluto Sans Condensed).
 
 Each theme defines its own default palette and default logo; the per-site
