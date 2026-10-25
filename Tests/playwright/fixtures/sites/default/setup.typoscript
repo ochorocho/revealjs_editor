@@ -1,0 +1,7 @@
+# Regression guard: a sitepackage's PAGEVIEW keys must not clobber the
+# deck's data processors (boombox's `30 = boombox-brand` + `30.as = brand`
+# once emptied {themeUrl}). The FE smoke tests fail if this collides.
+page.10.dataProcessing {
+  30 = site
+  30.as = brand
+}

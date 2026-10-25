@@ -174,6 +174,14 @@ test.describe('reveal.js page rendering', () => {
         await expect(sections.nth(0)).toHaveClass(/\bpast\b/);
     });
 
+    test('the page theme stylesheet is linked', async ({ page }) => {
+        // The site fixture's setup.typoscript sets a colliding
+        // page.10.dataProcessing.30 — the theme must still resolve.
+        await page.goto(PRESENTATION_URL);
+
+        await expect(page.locator('link[rel="stylesheet"][href*="/revealjs-themes/"]')).toHaveCount(1);
+    });
+
     test('the theme default logo loads from a site-relative URL', async ({ page }) => {
         await page.goto(PRESENTATION_URL);
 

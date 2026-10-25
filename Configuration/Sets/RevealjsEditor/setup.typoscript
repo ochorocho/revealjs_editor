@@ -114,7 +114,7 @@
 
     10 = PAGEVIEW
     10 {
-      paths.10 = EXT:revealjs_editor/Resources/Private/Templates/
+      paths.1731 = EXT:revealjs_editor/Resources/Private/Templates/
 
       variables {
         # Per-presentation theme picked on the page record. Falls back to
@@ -130,16 +130,19 @@
         revealjsAuthor.field = tx_revealjseditor_author
       }
 
+      # Unique keys (17310xx, paths.1731) so a sitepackage's page.10 keys
+      # (e.g. `30 = menu` + `30.as = …`) can't replace or reconfigure ours:
+      # assigning a key merges with the sub-properties already there.
       dataProcessing {
         # Build the reveal.js JSON config object from all tx_revealjseditor_*
         # page-record fields. Output assigned to {revealjsConfig} (default `as`).
-        10 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsConfigProcessor
+        1731010 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsConfigProcessor
 
         # Resolve the page's logo FAL reference into {pageLogos}.
         # Empty when the editor hasn't picked a logo — the template falls
         # back to `{settings.revealjs.defaultLogo}` in that case.
-        20 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
-        20 {
+        1731020 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
+        1731020 {
           references.fieldName = tx_revealjseditor_logo
           references.table = pages
           as = pageLogos
@@ -148,7 +151,7 @@
         # Resolve the theme CSS URL under Resources/Public/Styles/revealjs-themes/
         # (or an EXTCONF-registered path). Output assigned to {themeUrl} for a
         # single <f:asset.css> line in Pages/Revealjs.html.
-        30 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsThemeProcessor
+        1731030 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsThemeProcessor
 
         # Loads Monaco (the VS Code editor) as the single editor for code
         # blocks on the deck — anonymous viewers get it in read-only mode,
@@ -157,7 +160,7 @@
         # `data-editable="1"` on blocks rendered in edit mode; the mount
         # module reads that flag per-block to decide read-only vs editable.
         # Side-effect-only processor; no template variables produced.
-        40 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsMonacoAssetsProcessor
+        1731040 = Ochorocho\RevealJsEditor\DataProcessing\RevealJsMonacoAssetsProcessor
       }
     }
   }
