@@ -337,12 +337,16 @@ defined('TYPO3') or die();
                 --palette--;;visibility,
                 --palette--;;access,
         ',
+        // A deck always uses the `revealjs` layout (issue #1): read-only so it
+        // can't be changed, but kept in the form so the default still lands
+        // on new pages. The frontend enforces it regardless of the stored
+        // value — see Classes/EventListener/ForceDeckPageLayout.php.
         'columnsOverrides' => [
             'backend_layout' => [
-                'config' => ['default' => 'pagets__revealjs'],
+                'config' => ['default' => 'pagets__revealjs', 'readOnly' => true],
             ],
             'backend_layout_next_level' => [
-                'config' => ['default' => 'pagets__revealjs'],
+                'config' => ['default' => 'pagets__revealjs', 'readOnly' => true],
             ],
         ],
     ];
