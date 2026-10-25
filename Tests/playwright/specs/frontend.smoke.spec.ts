@@ -197,3 +197,22 @@ test.describe('reveal.js page rendering', () => {
         ).toBeAttached({ timeout: 15_000 });
     });
 });
+
+/**
+ * Issue #1: a deck page always renders Pages/Revealjs.html with its slides,
+ * whatever backend layout it ends up with. Seeded page 12 has an empty
+ * backend_layout, so it inherits the site root's backend_layout_next_level
+ * (pagets__CaminoContentpage). Without the hardcoded layout PAGEVIEW looks
+ * for a "CaminoContentpage" template and the page fails.
+ */
+test.describe('deck page layout', () => {
+    test('a deck page with an inherited foreign backend layout still renders the deck', async ({ page }) => {
+        const response = await page.goto('/inherited-layout-deck');
+        expect(response?.status()).toBe(200);
+
+        await expect(page.locator('div.reveal')).toHaveCount(1);
+        // Slide 201 lives in colPos 0 — proves {content.main} resolves too.
+        await expect(page.locator('.reveal .slides > section')).toHaveCount(1);
+        await expect(page.locator('.reveal .slides > section h1')).toContainText('Slide on a deck without its own layout');
+    });
+});
