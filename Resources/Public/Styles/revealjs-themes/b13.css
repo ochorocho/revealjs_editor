@@ -68,6 +68,23 @@ body,
 	color: var(--cmp-text);
 }
 
+/* ---------- Wave ---------- */
+
+/* b13.com's warm section wave along the bottom of every slide. Drawn as the
+   last child of .backgrounds, so it sits above per-slide backgrounds and
+   below the slide content. Brand artwork like the logo, so its colours are
+   baked into the SVG and don't follow the revealjs.color.* settings. */
+.reveal .backgrounds::after {
+	content: '';
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	aspect-ratio: 12 / 1;
+	background: url('./b13-wave.svg') center / 100% 100% no-repeat;
+	pointer-events: none;
+}
+
 /* ---------- Headings ---------- */
 
 .reveal h1,
