@@ -40,14 +40,20 @@
 						the theme default only when set; otherwise fall back to the active
 						theme's own logo ({themeLogo}, from RevealJsThemeProcessor).
 					</f:comment>
-					<f:if condition="{settings.revealjs.defaultLogo}">
+					<f:variable name="logoSrc" value="{f:if(condition: settings.revealjs.defaultLogo, then: settings.revealjs.defaultLogo, else: themeLogo)}"/>
+					<f:comment>
+						EXT: assets go through f:uri.resource: FAL's fallback storage
+						(f:image src="EXT:…") can yield a host-less //_assets URL.
+						FAL identifiers and file paths keep f:image.
+					</f:comment>
+					<f:startsWith search="EXT:" subject="{logoSrc}">
 						<f:then>
-							<f:image src="{settings.revealjs.defaultLogo}" alt="" maxWidth="200px"/>
+							<img src="{f:uri.resource(path: logoSrc)}" alt=""/>
 						</f:then>
 						<f:else>
-							<f:image src="{themeLogo}" alt="" maxWidth="200px"/>
+							<f:image src="{logoSrc}" alt="" maxWidth="200px"/>
 						</f:else>
-					</f:if>
+					</f:startsWith>
 				</f:else>
 			</f:if>
 		</div>

@@ -174,6 +174,16 @@ test.describe('reveal.js page rendering', () => {
         await expect(sections.nth(0)).toHaveClass(/\bpast\b/);
     });
 
+    test('the theme default logo loads from a site-relative URL', async ({ page }) => {
+        await page.goto(PRESENTATION_URL);
+
+        const logo = page.locator('.reveal-logo img');
+        await expect(logo).toHaveAttribute('src', /^\/_assets\/[^/]/);
+        // naturalWidth stays 0 when the browser couldn't fetch the image
+        // (e.g. a host-less `//_assets/…` URL).
+        await expect.poll(() => logo.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
+    });
+
     test('pressing S opens the speaker view with the slide notes', async ({ page, context }) => {
         // Contract: the Notes plugin is registered in Pages/Revealjs.html,
         // the speaker view's iframe URLs pass the cHash whitelist in
