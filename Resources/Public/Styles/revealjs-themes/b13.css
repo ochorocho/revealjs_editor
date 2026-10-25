@@ -1,0 +1,262 @@
+/* =========================================================================
+   b13 theme for revealjs_editor — light, b13 brand colours.
+   Palette taken from the design tokens of https://b13.com (the "neutral"
+   surface the site's content sections use):
+     Neutral 0      #ffffff  (background)
+     Neutral 100    #131313  (text, dark surfaces)
+     Brand red      #d3414b  (accent — b13's interactive colour on light)
+     Brand red hov. #b62a34  (link hover)
+     Neutral 70     #5e5e5e  (muted)
+
+   The four --cmp-* tokens declared in :root are this theme's DEFAULTS. They
+   respect the site's colour settings: setup.typoscript stamps --cmp-* on <body>
+   only for settings the site actually filled in, and an inline style beats a
+   :root rule — so a filled-in revealjs.color.* value overrides the default here,
+   while an empty one leaves the b13 palette below intact. Every other colour
+   derives from these tokens (accent tints via color-mix).
+
+   Typography: b13's typeface (Pluto Sans Condensed) is commercial and
+   undistributable; this theme ships Barlow Semi Condensed (SIL OFL), a close
+   condensed grotesque, self-hosted under ./b13-fonts/. Headings are bold and
+   sentence case, as on b13.com.
+   ========================================================================= */
+
+@font-face {
+	font-family: 'Barlow Semi Condensed';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('./b13-fonts/BarlowSemiCondensed-400.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Barlow Semi Condensed';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('./b13-fonts/BarlowSemiCondensed-700.woff2') format('woff2');
+}
+
+:root {
+	--cmp-bg: #ffffff;
+	--cmp-text: #131313;
+	--cmp-muted: #5e5e5e;
+	--cmp-accent: #d3414b;
+
+	--r-background-color: var(--cmp-bg);
+	--r-main-color: var(--cmp-text);
+	--r-heading-color: var(--cmp-text);
+	--r-link-color: var(--cmp-accent);
+	--r-link-color-hover: color-mix(in srgb, var(--cmp-accent), black 15%);
+	--r-selection-background-color: color-mix(in srgb, var(--cmp-accent) 25%, transparent);
+	--r-selection-color: var(--cmp-text);
+
+	--r-main-font: 'Barlow Semi Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+	--r-main-font-size: 36px;
+	--r-heading-font: 'Barlow Semi Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+	--r-heading-font-weight: 700;
+	--r-heading-text-transform: none;
+	--r-heading-letter-spacing: 0;
+	--r-code-font: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+}
+
+html,
+body,
+.reveal-viewport,
+.reveal,
+.reveal .backgrounds {
+	background: var(--cmp-bg);
+	color: var(--cmp-text);
+}
+
+/* ---------- Headings ---------- */
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+	color: var(--cmp-text);
+	font-family: var(--r-heading-font);
+	font-weight: 700;
+	line-height: 1.2;
+	letter-spacing: 0;
+	text-transform: none;
+}
+
+/* Short brand-red bar under the slide title — b13.com marks emphasis with a
+   red underline rather than a full-width rule. */
+.reveal h1 {
+	font-size: 3.2em;
+	margin-bottom: 0.5em;
+}
+
+.reveal h1::after {
+	content: '';
+	display: block;
+	width: 1.6em;
+	height: 0.1em;
+	margin-top: 0.25em;
+	background: var(--cmp-accent);
+}
+
+.reveal h2 {
+	font-size: 2.2em;
+}
+
+.reveal h3 {
+	font-size: 1.6em;
+}
+
+/* Slide-internal alignment */
+.reveal .slides section {
+	text-align: left;
+}
+
+.reveal .slides section h1,
+.reveal .slides section h2 {
+	text-align: left;
+}
+
+/* ---------- Body text & lists ---------- */
+
+.reveal {
+	font-family: var(--r-main-font);
+	color: var(--cmp-text);
+}
+
+.reveal p {
+	line-height: 1.4em;
+	font-size: 1.6em;
+}
+
+.reveal strong {
+	color: var(--cmp-text);
+	font-weight: 700;
+}
+
+.reveal em {
+	color: var(--cmp-text);
+}
+
+.reveal .slides ul {
+	margin-left: 1em;
+}
+
+.reveal .slides ul li, .reveal .slides ol li {
+	line-height: 1.5em;
+	font-size: 1.8em;
+}
+
+/* Nested lists: keep the bullet + line-height, but stop the font-size
+   compounding so children render at the same visual size as their parent. */
+.reveal .slides ul ul li,
+.reveal .slides ul ol li,
+.reveal .slides ol ul li,
+.reveal .slides ol ol li {
+	font-size: 1em;
+}
+
+.reveal .slides ul li::marker {
+	color: var(--cmp-accent);
+}
+
+.reveal .slides ol {
+	padding-left: 1.9em;
+}
+
+.reveal .slides ol li::marker {
+	color: var(--cmp-accent);
+	font-weight: 700;
+}
+
+/* ---------- Links ---------- */
+
+.reveal a {
+	color: var(--cmp-accent);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.15em;
+}
+
+.reveal a:hover {
+	color: var(--r-link-color-hover);
+}
+
+/* ---------- Code ---------- */
+
+.reveal pre {
+	width: 100%;
+	font-size: 1.1em;
+	line-height: 1.4;
+	box-shadow: 0 4px 20px color-mix(in srgb, var(--cmp-text) 15%, transparent);
+	border-radius: 6px;
+	border: 1px solid color-mix(in srgb, var(--cmp-muted) 30%, transparent);
+}
+
+.reveal li pre {
+	font-size: unset;
+}
+
+.reveal pre code {
+	font-family: var(--r-code-font);
+	max-height: 600px;
+	border-radius: 6px;
+}
+
+.reveal p code,
+.reveal li code,
+.reveal td code {
+	background: color-mix(in srgb, var(--cmp-muted) 12%, transparent);
+	border-radius: 4px;
+	padding: 0.05em 0.2em;
+	color: var(--cmp-text);
+}
+
+/* ---------- Blockquote ---------- */
+
+.reveal blockquote {
+	border-left: 4px solid var(--cmp-accent);
+	background: color-mix(in srgb, var(--cmp-muted) 8%, transparent);
+	padding: 0.5em 1em;
+	border-radius: 0 6px 6px 0;
+	box-shadow: none;
+	font-style: italic;
+}
+
+/* ---------- Reveal UI chrome ---------- */
+
+.reveal .progress span {
+	background: var(--cmp-accent);
+}
+
+.reveal .controls {
+	color: var(--cmp-accent);
+}
+
+.reveal .slide-number {
+	background: var(--cmp-text);
+	color: var(--cmp-bg);
+	font-family: var(--r-heading-font);
+	font-weight: 700;
+	font-size: 0.55em;
+	letter-spacing: 0.05em;
+	padding: 0.2em 0.5em;
+	border-radius: 3px;
+}
+
+/* ---------- Cover slide ---------- */
+
+/* Overrides Layouts.css's Montserrat/uppercase wordmark (0,2,0) with
+   b13's bold sentence-case headline. */
+.reveal .reveal-cover .cover-wordmark {
+	font-family: var(--r-heading-font);
+	font-weight: 700;
+	color: var(--cmp-text);
+	text-transform: none;
+	line-height: 1.05;
+}
+
+.reveal .reveal-cover h3 {
+	color: var(--cmp-muted);
+	font-weight: 400;
+}

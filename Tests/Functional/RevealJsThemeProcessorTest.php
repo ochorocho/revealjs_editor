@@ -54,6 +54,10 @@ final class RevealJsThemeProcessorTest extends FunctionalTestCase
         $typo3 = $this->runProcessor(['tx_revealjseditor_theme' => 'typo3']);
         self::assertStringEndsWith('revealjs-themes/typo3.css', $typo3['themeUrl']);
         self::assertStringEndsWith('Images/typo3-logo.svg', $typo3['themeLogo']);
+
+        $b13 = $this->runProcessor(['tx_revealjseditor_theme' => 'b13']);
+        self::assertStringEndsWith('revealjs-themes/b13.css', $b13['themeUrl']);
+        self::assertStringEndsWith('Images/b13-logo.svg', $b13['themeLogo']);
     }
 
     public function testThemeLogoFallsBackToDefaultThemeForEmptyOrUnknown(): void

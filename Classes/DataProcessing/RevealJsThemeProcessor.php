@@ -38,6 +38,7 @@ final class RevealJsThemeProcessor implements DataProcessorInterface
     private const array THEME_LOGOS = [
         'the-caemp' => 'EXT:revealjs_editor/Resources/Public/Images/the-camp.png',
         'typo3' => 'EXT:revealjs_editor/Resources/Public/Images/typo3-logo.svg',
+        'b13' => 'EXT:revealjs_editor/Resources/Public/Images/b13-logo.svg',
     ];
 
     /**

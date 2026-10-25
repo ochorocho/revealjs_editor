@@ -119,10 +119,13 @@ test.describe('TYPO3 backend', () => {
             name: /\[tx_revealjseditor_theme\]/,
         });
         await expect(themeSelect).toHaveValue('the-caemp');
-        // Two bundled themes ship: the-caemp (default) and typo3.
-        await expect(themeSelect.getByRole('option')).toHaveCount(2);
+        // Three bundled themes ship: the-caemp (default), typo3 and b13.
+        await expect(themeSelect.getByRole('option')).toHaveCount(3);
         await expect(
             themeSelect.locator('option[value="typo3"]'),
+        ).toHaveCount(1);
+        await expect(
+            themeSelect.locator('option[value="b13"]'),
         ).toHaveCount(1);
     });
 

@@ -69,9 +69,9 @@ final class ExtensionLoadsTest extends FunctionalTestCase
         self::assertSame('select', $config['type'] ?? null);
         self::assertSame('the-caemp', $config['default'] ?? null);
 
-        // Two bundled themes ship: the-caemp (default) and typo3.
+        // Three bundled themes ship: the-caemp (default), typo3 and b13.
         $values = array_column($config['items'] ?? [], 'value');
-        self::assertSame(['the-caemp', 'typo3'], $values, 'the-caemp and typo3 must be the bundled themes.');
+        self::assertSame(['the-caemp', 'typo3', 'b13'], $values, 'the-caemp, typo3 and b13 must be the bundled themes.');
     }
 
     public function testSpeakerViewCacheHashParamsAreWhitelisted(): void

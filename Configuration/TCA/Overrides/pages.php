@@ -29,6 +29,7 @@ defined('TYPO3') or die();
     $themeItems = [
         ['label' => 'THE CÄMP', 'value' => 'the-caemp'],
         ['label' => 'TYPO3', 'value' => 'typo3'],
+        ['label' => 'b13', 'value' => 'b13'],
     ];
     $registeredThemes = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themes'] ?? [];
     if (is_array($registeredThemes)) {
