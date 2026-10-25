@@ -3,8 +3,8 @@
 Create [reveal.js](https://revealjs.com/) presentations as TYPO3 pages. One
 TYPO3 page (doktype **1731**) becomes one reveal.js deck, edited entirely in the
 TYPO3 backend — with a Monaco (VS Code) editor for code slides, a rich-text
-editor for prose and speaker notes, and the
-[visual_editor](https://extensions.typo3.org/extension/visual_editor) preview
+editor for prose and speaker notes, and optional
+[visual_editor](https://extensions.typo3.org/extension/visual_editor) support
 for click-to-edit slides.
 
 - Composer package: `ochorocho/revealjs-editor`
@@ -31,6 +31,14 @@ for click-to-edit slides.
 
 ```bash
 composer require ochorocho/revealjs-editor
+```
+
+For click-to-edit slides in the frontend preview, also install the suggested
+[visual_editor](https://extensions.typo3.org/extension/visual_editor). Without
+it, decks render read-only and are edited through the regular backend forms.
+
+```bash
+composer require friendsoftypo3/visual-editor
 ```
 
 Run the extension setup and flush caches so the schema analyser creates the

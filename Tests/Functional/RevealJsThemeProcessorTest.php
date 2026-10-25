@@ -30,7 +30,6 @@ final class RevealJsThemeProcessorTest extends FunctionalTestCase
      * @var list<non-empty-string>
      */
     protected array $testExtensionsToLoad = [
-        'friendsoftypo3/visual-editor',
         'ochorocho/revealjs-editor',
     ];
 

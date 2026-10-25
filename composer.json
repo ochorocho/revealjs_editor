@@ -15,11 +15,13 @@
 	},
 	"require": {
 		"php": "^8.3",
-		"friendsoftypo3/visual-editor": "^1.4",
 		"typo3/cms-core": "^13 || ^14",
 		"typo3/cms-fluid-styled-content": "^13 || ^14",
 		"typo3/cms-info": "^13 || ^14",
 		"typo3/cms-seo": "^13 || ^14"
+	},
+	"suggest": {
+		"friendsoftypo3/visual-editor": "Inline editing of slides, including the Monaco code blocks, in the frontend preview (^1.4)"
 	},
 	"require-dev": {
 		"typo3/coding-standards": "^v0.8",

@@ -70,7 +70,7 @@
         </f:comment>
         <f:if condition="{block.data.headline}">
             <h3>
-                <f:if condition="{f:editMode()}">
+                <f:if condition="{reveal:editMode()}">
                     <f:then>
                         <ve-editable-text
                             table="tx_revealjseditor_codeblock"
@@ -101,7 +101,7 @@
 							 data-table="tx_revealjseditor_codeblock"
 							 data-uid="{block.data.uid}"
 							 data-field="code"
-							 data-editable="{f:if(condition: '{f:editMode()}', then: '1', else: '0')}">{block.data.code}</pre>
+							 data-editable="{reveal:editMode(then: '1', else: '0')}">{block.data.code}</pre>
 			</f:if>
     </f:for>
 </div>
