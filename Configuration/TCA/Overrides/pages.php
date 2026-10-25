@@ -8,10 +8,12 @@ defined('TYPO3') or die();
     $doktype = 1731;
     $ll = 'LLL:EXT:revealjs_editor/Resources/Private/Language/locallang_db.xlf';
 
-    // Add doktype option to the pages.doktype select dropdown
+    // Add doktype option to the pages.doktype select dropdown. The value is a
+    // string like core's: the page wizard strictly compares it with the
+    // (stringified) doktype dragged from the page tree toolbar.
     $GLOBALS['TCA']['pages']['columns']['doktype']['config']['items'][] = [
         'label' => $ll . ':pages.doktype.revealjs',
-        'value' => $doktype,
+        'value' => (string)$doktype,
         'icon' => 'apps-pagetree-revealjs',
         'group' => 'default',
     ];

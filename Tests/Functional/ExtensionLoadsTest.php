@@ -58,7 +58,9 @@ final class ExtensionLoadsTest extends FunctionalTestCase
         $items = $GLOBALS['TCA']['pages']['columns']['doktype']['config']['items'] ?? [];
         $values = array_column($items, 'value');
 
-        self::assertContains(1731, $values, 'Doktype 1731 must be selectable in pages.doktype.');
+        // A string like core's doktype values: the v14 page wizard compares the
+        // doktype dragged from the page tree (stringified) strictly.
+        self::assertContains('1731', $values, 'Doktype 1731 must be selectable in pages.doktype.');
     }
 
     public function testThemeColumnIsRegisteredWithBundledThemes(): void
