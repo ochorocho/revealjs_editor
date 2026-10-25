@@ -1,12 +1,11 @@
 /* =========================================================================
-   b13 theme for revealjs_editor — light, b13 brand colours.
-   Palette taken from the design tokens of https://b13.com (the "neutral"
-   surface the site's content sections use):
-     Neutral 0      #ffffff  (background)
-     Neutral 100    #131313  (text, dark surfaces)
-     Brand red      #d3414b  (accent — b13's interactive colour on light)
-     Brand red hov. #b62a34  (link hover)
-     Neutral 70     #5e5e5e  (muted)
+   b13 theme for revealjs_editor — dark, b13 brand colours.
+   Palette taken from the design tokens of https://b13.com (the "inverted"
+   surface of the site's header, hero and footer):
+     Neutral 100    #131313  (background)
+     Neutral 0      #ffffff  (text)
+     Brand yellow   #f8ab1f  (accent — b13's interactive colour on dark)
+     Neutral 30     #c4c4c4  (muted — the inverted secondary text colour)
 
    The four --cmp-* tokens declared in :root are this theme's DEFAULTS. They
    respect the site's colour settings: setup.typoscript stamps --cmp-* on <body>
@@ -38,18 +37,18 @@
 }
 
 :root {
-	--cmp-bg: #ffffff;
-	--cmp-text: #131313;
-	--cmp-muted: #5e5e5e;
-	--cmp-accent: #d3414b;
+	--cmp-bg: #131313;
+	--cmp-text: #ffffff;
+	--cmp-muted: #c4c4c4;
+	--cmp-accent: #f8ab1f;
 
 	--r-background-color: var(--cmp-bg);
 	--r-main-color: var(--cmp-text);
 	--r-heading-color: var(--cmp-text);
 	--r-link-color: var(--cmp-accent);
-	--r-link-color-hover: color-mix(in srgb, var(--cmp-accent), black 15%);
-	--r-selection-background-color: color-mix(in srgb, var(--cmp-accent) 25%, transparent);
-	--r-selection-color: var(--cmp-text);
+	--r-link-color-hover: color-mix(in srgb, var(--cmp-accent), white 25%);
+	--r-selection-background-color: color-mix(in srgb, var(--cmp-accent) 35%, transparent);
+	--r-selection-color: var(--cmp-bg);
 
 	--r-main-font: 'Barlow Semi Condensed', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
 	--r-main-font-size: 36px;
@@ -83,8 +82,8 @@ body,
 	text-transform: none;
 }
 
-/* Short brand-red bar under the slide title — b13.com marks emphasis with a
-   red underline rather than a full-width rule. */
+/* Short brand-colour bar under the slide title — b13.com marks emphasis with
+   a coloured underline rather than a full-width rule. */
 .reveal h1 {
 	font-size: 3.2em;
 	margin-bottom: 0.5em;
@@ -188,9 +187,9 @@ body,
 	width: 100%;
 	font-size: 1.1em;
 	line-height: 1.4;
-	box-shadow: 0 4px 20px color-mix(in srgb, var(--cmp-text) 15%, transparent);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 	border-radius: 6px;
-	border: 1px solid color-mix(in srgb, var(--cmp-muted) 30%, transparent);
+	border: 1px solid color-mix(in srgb, var(--cmp-accent) 25%, transparent);
 }
 
 .reveal li pre {
@@ -206,7 +205,8 @@ body,
 .reveal p code,
 .reveal li code,
 .reveal td code {
-	background: color-mix(in srgb, var(--cmp-muted) 12%, transparent);
+	background: color-mix(in srgb, var(--cmp-accent) 12%, transparent);
+	border: 1px solid color-mix(in srgb, var(--cmp-accent) 50%, transparent);
 	border-radius: 4px;
 	padding: 0.05em 0.2em;
 	color: var(--cmp-text);
@@ -216,7 +216,7 @@ body,
 
 .reveal blockquote {
 	border-left: 4px solid var(--cmp-accent);
-	background: color-mix(in srgb, var(--cmp-muted) 8%, transparent);
+	background: color-mix(in srgb, var(--cmp-accent) 6%, transparent);
 	padding: 0.5em 1em;
 	border-radius: 0 6px 6px 0;
 	box-shadow: none;
@@ -234,8 +234,8 @@ body,
 }
 
 .reveal .slide-number {
-	background: var(--cmp-text);
-	color: var(--cmp-bg);
+	background: rgba(0, 0, 0, 0.5);
+	color: var(--cmp-accent);
 	font-family: var(--r-heading-font);
 	font-weight: 700;
 	font-size: 0.55em;
