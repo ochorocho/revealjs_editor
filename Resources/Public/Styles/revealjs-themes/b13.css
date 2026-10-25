@@ -71,28 +71,23 @@ body,
 /* ---------- Wave ---------- */
 
 /* b13.com's warm section wave, full-bleed along the bottom of every slide.
-   Like the logo it's an overlay at .reveal-overlay's z-index, so slides with
-   their own background image/colour don't cover it. On .reveal rather than
-   the slide-sized .reveal-overlay so it spans the whole viewport, as on
-   b13.com (::before, since reveal.js uses .reveal:after itself). Brand
-   artwork like the logo, so its colours are baked into the SVG and don't
-   follow the revealjs.color.* settings. */
-.reveal::before {
+   It decorates the background only: .backgrounds is its own stacking context
+   (reveal.js gives it `perspective`) painted below .slides (z-index 1), and
+   inside it z-index 3 lifts the wave above the present slide's background
+   (z-index 2) — so a slide's own background image/colour doesn't cover the
+   wave, and the wave never covers slide content. Brand artwork like the
+   logo, so its colours are baked into the SVG and don't follow the
+   revealjs.color.* settings. */
+.reveal .backgrounds::after {
 	content: '';
 	position: absolute;
 	right: 0;
 	bottom: 0;
 	left: 0;
-	z-index: 30;
+	z-index: 3;
 	aspect-ratio: 12 / 1;
 	background: url('./b13-wave.svg') center / 100% 100% no-repeat;
 	pointer-events: none;
-}
-
-/* Keep the progress bar and controls above the wave. */
-.reveal .progress,
-.reveal .controls {
-	z-index: 32;
 }
 
 /* ---------- Headings ---------- */
