@@ -142,6 +142,25 @@ test.describe('TYPO3 backend', () => {
         const slides = moduleFrame.getByRole('group', { name: /^id=\d+/ });
         await expect(slides).toHaveCount(5, { timeout: 15_000 });
     });
+
+    test('dragging a reveal.js page into the page tree opens the page wizard without "Invalid page type"', async ({ page }) => {
+        // The tree passes the dragged doktype to the v14 page wizard as a
+        // string, and the wizard compares it strictly with the pages.doktype
+        // select values — so the deck doktype must be registered as '1731',
+        // not the int 1731. With an accepted type the wizard auto-advances
+        // past its page-type step to the required fields.
+        await login(page);
+        await page.goto('/typo3/module/web/layout?id=1');
+
+        const deckType = page.locator('.tree-toolbar__drag-node[data-node-type="1731"]');
+        await expect(deckType).toBeVisible({ timeout: 15_000 });
+        await deckType.dragTo(page.locator('.node[data-id="1"]'));
+
+        const wizard = page.getByRole('dialog', { name: 'Create new page' });
+        await expect(wizard).toBeVisible({ timeout: 15_000 });
+        await expect(wizard.getByText('Required fields')).toBeVisible();
+        await expect(wizard.locator('typo3-backend-alert[heading="Invalid page type"]')).toHaveCount(0);
+    });
 });
 
 /**
