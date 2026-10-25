@@ -200,4 +200,27 @@ test.describe('reveal.js page rendering', () => {
         await expect(sections.nth(1)).toHaveClass(/\bpresent\b/);
         await expect(sections.nth(0)).toHaveClass(/\bpast\b/);
     });
+
+    test('pressing S opens the speaker view with the slide notes', async ({ page, context }) => {
+        // Contract: the Notes plugin is registered in Pages/Revealjs.html,
+        // the speaker view's iframe URLs pass the cHash whitelist in
+        // ext_localconf.php, and the RTE notes field reaches the view via
+        // <aside class="notes">. Seeded cover slide 115 carries a note.
+        await page.goto(PRESENTATION_URL);
+        await expect(page.locator('body.reveal-viewport')).toBeVisible();
+
+        const popupPromise = context.waitForEvent('page');
+        await page.locator('.reveal').click();
+        await page.keyboard.press('s');
+        const speakerView = await popupPromise;
+
+        await expect(
+            speakerView.locator('.speaker-controls-notes'),
+        ).toContainText('Welcome everyone to the speaker view.', { timeout: 15_000 });
+        // Current-slide preview loaded (would be a 404 page without the
+        // cHash whitelist for the reveal.js receiver params).
+        await expect(
+            speakerView.frameLocator('#current-slide iframe').locator('.reveal .slides > section').first(),
+        ).toBeAttached({ timeout: 15_000 });
+    });
 });
