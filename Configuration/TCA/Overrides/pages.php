@@ -19,7 +19,7 @@ defined('TYPO3') or die();
     // -----------------------------------------------------------------
     // Theme — moved into the new Reveal Presentation tab below.
     // -----------------------------------------------------------------
-    // Only the bundled `the-caemp` theme ships. Other extensions can register
+    // Bundled themes; `typo3` is the default and listed first. Other extensions can register
     // additional themes (value => CSS path) in
     // $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themes'] —
     // resolved to their CSS by RevealJsThemeProcessor. Merge each registered
@@ -27,8 +27,8 @@ defined('TYPO3') or die();
     // populated in ext_localconf.php, which runs before TCA overrides, so the
     // registry is already available at this point.
     $themeItems = [
-        ['label' => 'THE CÄMP', 'value' => 'the-caemp'],
         ['label' => 'TYPO3', 'value' => 'typo3'],
+        ['label' => 'THE CÄMP', 'value' => 'the-caemp'],
         ['label' => 'b13', 'value' => 'b13'],
     ];
     $registeredThemes = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['revealjs_editor']['themes'] ?? [];
@@ -43,7 +43,7 @@ defined('TYPO3') or die();
         'config' => [
             'type' => 'select',
             'renderType' => 'selectSingle',
-            'default' => 'the-caemp',
+            'default' => 'typo3',
             'dbFieldLength' => 32,
             'items' => $themeItems,
         ],

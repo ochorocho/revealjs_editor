@@ -62,12 +62,13 @@ final class RevealJsThemeProcessorTest extends FunctionalTestCase
 
     public function testThemeLogoFallsBackToDefaultThemeForEmptyOrUnknown(): void
     {
-        // Empty theme value → DEFAULT_THEME (the-caemp).
+        // Empty theme value → DEFAULT_THEME (typo3).
         $empty = $this->runProcessor(['tx_revealjseditor_theme' => '']);
-        self::assertStringEndsWith('Images/the-camp.png', $empty['themeLogo']);
+        self::assertStringEndsWith('revealjs-themes/typo3.css', $empty['themeUrl']);
+        self::assertStringEndsWith('Images/typo3-logo.svg', $empty['themeLogo']);
 
-        // Unknown theme value → the-caemp logo (map fallback), not a broken path.
+        // Unknown theme value → the typo3 logo (map fallback), not a broken path.
         $unknown = $this->runProcessor(['tx_revealjseditor_theme' => 'does-not-exist']);
-        self::assertStringEndsWith('Images/the-camp.png', $unknown['themeLogo']);
+        self::assertStringEndsWith('Images/typo3-logo.svg', $unknown['themeLogo']);
     }
 }

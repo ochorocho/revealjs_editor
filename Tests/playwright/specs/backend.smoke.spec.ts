@@ -119,7 +119,8 @@ test.describe('TYPO3 backend', () => {
             name: /\[tx_revealjseditor_theme\]/,
         });
         await expect(themeSelect).toHaveValue('the-caemp');
-        // Three bundled themes ship: the-caemp (default), typo3 and b13.
+        // Three bundled themes ship: typo3 (default), the-caemp and b13. The
+        // seeded page stores the-caemp explicitly.
         await expect(themeSelect.getByRole('option')).toHaveCount(3);
         await expect(
             themeSelect.locator('option[value="typo3"]'),

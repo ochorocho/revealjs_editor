@@ -67,11 +67,11 @@ final class ExtensionLoadsTest extends FunctionalTestCase
 
         self::assertIsArray($config, 'tx_revealjseditor_theme column must be registered on pages.');
         self::assertSame('select', $config['type'] ?? null);
-        self::assertSame('the-caemp', $config['default'] ?? null);
+        self::assertSame('typo3', $config['default'] ?? null);
 
-        // Three bundled themes ship: the-caemp (default), typo3 and b13.
+        // Three bundled themes ship: typo3 (default, listed first), the-caemp and b13.
         $values = array_column($config['items'] ?? [], 'value');
-        self::assertSame(['the-caemp', 'typo3', 'b13'], $values, 'the-caemp, typo3 and b13 must be the bundled themes.');
+        self::assertSame(['typo3', 'the-caemp', 'b13'], $values, 'typo3 (first), the-caemp and b13 must be the bundled themes.');
     }
 
     public function testSpeakerViewCacheHashParamsAreWhitelisted(): void

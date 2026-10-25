@@ -24,7 +24,7 @@ for click-to-edit slides.
   authored in a live-preview [mermaid](https://mermaid.js.org) editor.
 - **Speaker notes** are a rich-text field per slide; press `S` on a deck to open
   the reveal.js speaker view.
-- **Three bundled themes** — `the-caemp` (default), `typo3` and `b13` — plus a per-site
+- **Three bundled themes** — `typo3` (default), `the-caemp` and `b13` — plus a per-site
   color and logo configuration that any theme inherits (see *Configuration*).
 
 ## Installation
@@ -76,10 +76,11 @@ deck itself.
 
 Three themes ship and are selectable in the page's **Theme** field:
 
-- **`the-caemp`** (default) — dark, brand yellow.
-- **`typo3`** — anthracite background, TYPO3 Key Orange accents, Source Sans 3.
-- **`b13`** — dark grey (`#2b2b2b`), b13 brand red accents, Barlow Semi Condensed (stand-in for
-  b13's commercial Pluto Sans Condensed).
+- **`typo3`** (default) — anthracite background, TYPO3 Key Orange accents, Source Sans 3.
+- **`the-caemp`** — dark, brand yellow.
+- **`b13`** — dark grey (`#2b2b2b`), b13 brand red accents, the b13.com wave along
+  the bottom of every slide, Barlow Semi Condensed (stand-in for b13's commercial
+  Pluto Sans Condensed).
 
 Each theme defines its own default palette and default logo; the per-site
 settings below override them when set (see *Configuration*).
@@ -140,7 +141,7 @@ revealjs:
 1. **Per-page logo** — the page field *Logo* (`tx_revealjseditor_logo`, a FAL
    image). Set it to give a single presentation its own logo.
 2. **`revealjs.defaultLogo`** site setting — used only when non-empty.
-3. **Theme default logo** — `the-caemp` → its logo, `typo3` → the TYPO3 mark, `b13` → the b13 mark.
+3. **Theme default logo** — `typo3` → the TYPO3 mark, `the-caemp` → its logo, `b13` → the b13 mark.
 
 ### Colour resolution (highest → lowest)
 

@@ -10,8 +10,8 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 /**
  * Resolves the page's selected theme to its CSS URL.
  *
- * The bundled `the-caemp` theme lives under the extension's
- * `Resources/Public/Styles/revealjs-themes/` folder and is the default (an
+ * The bundled themes live under the extension's
+ * `Resources/Public/Styles/revealjs-themes/` folder; `typo3` is the default (an
  * empty value falls back to it too). Other extensions — e.g. a sitepackage —
  * can register their own themes without patching this extension by mapping a
  * theme value to a CSS path in
@@ -27,7 +27,7 @@ use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
  */
 final class RevealJsThemeProcessor implements DataProcessorInterface
 {
-    private const string DEFAULT_THEME = 'the-caemp';
+    private const string DEFAULT_THEME = 'typo3';
     private const string THEME_PATH = 'EXT:revealjs_editor/Resources/Public/Styles/revealjs-themes/';
 
     /**
