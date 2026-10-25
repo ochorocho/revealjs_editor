@@ -46,14 +46,6 @@
     as = codeblocks
   }
 
-  # Mermaid diagram slide — single source field, rendered client-side. No
-  # dataProcessing: the template reads the record's tx_revealjseditor_mermaid
-  # field directly (like cover's header/bodytext).
-  tt_content.revealjs_slide_mermaid >
-  tt_content.revealjs_slide_mermaid =< lib.contentElement
-  tt_content.revealjs_slide_mermaid.templateName = Mermaid
-  tt_content.revealjs_slide_mermaid.templateRootPaths.20 = EXT:revealjs_editor/Resources/Private/Templates/Container/
-
   # theme-camino (and similar theme sets) leaves tt_content as a CASE with
   # no `key`, so f:render.record's cObjGetSingle('tt_content', …) falls
   # through to tt_content.default for every CType. Point CASE at the CType
@@ -196,10 +188,4 @@ tt_content.revealjs_slide_code {
         orderBy = sorting
         as = codeblocks
     }
-}
-
-tt_content.revealjs_slide_mermaid =< lib.contentElement
-tt_content.revealjs_slide_mermaid {
-    templateName = Mermaid
-    templateRootPaths.20 = EXT:revealjs_editor/Resources/Private/Templates/Container/
 }

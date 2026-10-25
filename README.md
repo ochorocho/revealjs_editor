@@ -18,10 +18,9 @@ for click-to-edit slides.
 - **47 deck options** (transitions, controls, auto-advance, navigation, scroll
   view, …) as page fields, plus **~26 per-slide options** (per-slide transition,
   background image/video/color/iframe, auto-animate, visibility, …).
-- **Five slide content types**: `text` and `textmedia` (TYPO3 core), a **cover**
-  slide (`revealjs_slide_cover`), a **code** slide (`revealjs_slide_code`) with one
-  Monaco editor per code block, and a **diagram** slide (`revealjs_slide_mermaid`)
-  authored in a live-preview [mermaid](https://mermaid.js.org) editor.
+- **Four slide content types**: `text` and `textmedia` (TYPO3 core), a **cover**
+  slide (`revealjs_slide_cover`) and a **code** slide (`revealjs_slide_code`) with
+  one Monaco editor per code block.
 - **Speaker notes** are a rich-text field per slide; press `S` on a deck to open
   the reveal.js speaker view.
 - **Three bundled themes** — `typo3` (default), `the-caemp` and `b13` — plus a per-site
@@ -61,10 +60,6 @@ the new-content wizard is restricted to the four supported types:
 - **Cover** (`revealjs_slide_cover`) — title / subtitle / rich-text body / image.
 - **Code** (`revealjs_slide_code`) — a title plus any number of code blocks,
   each with its own language and Monaco editor; prose around them is rich text.
-- **Diagram** (`revealjs_slide_mermaid`) — a [mermaid](https://mermaid.js.org)
-  diagram edited in a split live-preview editor (code on the left, the rendered
-  diagram on the right, updating as you type) and rendered on the slide. Diagram
-  source is rendered with mermaid's strict security level.
 - **Text** / **Textmedia** — the TYPO3 core elements.
 
 Every slide also gets **Slide**, **Background** and **Auto-animate** option tabs

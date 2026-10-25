@@ -17,12 +17,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1779100000] = [
     'class' => \Ochorocho\RevealJsEditor\Form\Element\MonacoEditorElement::class,
 ];
 
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1779100001] = [
-    'nodeName' => 'mermaidEditor',
-    'priority' => 70,
-    'class' => \Ochorocho\RevealJsEditor\Form\Element\MermaidEditorElement::class,
-];
-
 // cacheHash whitelist. TYPO3 v14's `typo3 setup` sets
 // FE.cacheHash.enforceValidation=true, which 404s ("&cHash empty") any FE URL
 // carrying a query param that is neither cHash-signed nor whitelisted. Two of

@@ -298,37 +298,6 @@ defined('TYPO3') or die();
         . 'tx_revealjseditor_codeblocks'
         . $slideTabs;
 
-    // ----- Register the revealjs_slide_mermaid CType ------------------------------
-    // A slide holding one mermaid.js diagram. The diagram source is edited in a
-    // live-preview editor (renderType=mermaidEditor: Monaco + a rendered preview)
-    // and rendered client-side on the deck (RevealMermaidMount.js). Single field
-    // on tt_content — mirrors the cover CType shape, not the code inline collection.
-
-    $GLOBALS['TCA']['tt_content']['columns']['tx_revealjseditor_mermaid'] = [
-        'label' => $ll . ':tt_content.mermaid',
-        'description' => $ll . ':tt_content.mermaid.description',
-        'config' => [
-            'type' => 'text',
-            'renderType' => 'mermaidEditor',
-        ],
-    ];
-
-    $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'][] = [
-        'label' => $ll . ':ctype.revealjs_slide_mermaid',
-        'value' => 'revealjs_slide_mermaid',
-        'icon' => 'content-revealjs-slide-mermaid',
-        'group' => 'default',
-    ];
-    $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['revealjs_slide_mermaid'] = 'content-revealjs-slide-mermaid';
-
-    // Inherit text's ORIGINAL showitem (captured above, pre-mutation), add a
-    // Diagram tab with the mermaid source field, then the shared slide tabs.
-    $GLOBALS['TCA']['tt_content']['types']['revealjs_slide_mermaid']['showitem'] =
-        $textShowitem
-        . ',--div--;' . $ll . ':tt_content.tab.diagram,'
-        . 'tx_revealjseditor_mermaid'
-        . $slideTabs;
-
     // RTE on bodytext, scoped to the trimmed `revealjs` preset
     // (Configuration/RTE/Revealjs.yaml — registered globally in
     // ext_localconf.php). Pattern mirrors core's sys_news.php
@@ -339,7 +308,7 @@ defined('TYPO3') or die();
     // same preset via PageTSconfig (Configuration/Sets/RevealjsEditor/
     // page.tsconfig) — scoped to the page branch so non-deck contexts
     // keep using whatever site-default preset they had.
-    foreach (['revealjs_slide_cover', 'revealjs_slide_code', 'revealjs_slide_mermaid'] as $cType) {
+    foreach (['revealjs_slide_cover', 'revealjs_slide_code'] as $cType) {
         $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides']['bodytext']['config']['enableRichtext'] = true;
         $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides']['bodytext']['config']['richtextConfiguration'] = 'revealjs';
     }

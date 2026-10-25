@@ -363,22 +363,6 @@
 			<trans-unit id="ctype.revealjs_slide_code.description" resname="ctype.revealjs_slide_code.description">
 				<source>Slide with one or more headlined code blocks. Syntax highlighting via reveal.js / highlight.js.</source>
 			</trans-unit>
-			<trans-unit id="ctype.revealjs_slide_mermaid" resname="ctype.revealjs_slide_mermaid">
-				<source>Slide: Diagram (Mermaid)</source>
-			</trans-unit>
-			<trans-unit id="ctype.revealjs_slide_mermaid.description" resname="ctype.revealjs_slide_mermaid.description">
-				<source>Slide with a Mermaid diagram, authored in a live-preview editor and rendered on the deck.</source>
-			</trans-unit>
-			<trans-unit id="tt_content.tab.diagram" resname="tt_content.tab.diagram">
-				<source>Diagram</source>
-			</trans-unit>
-			<trans-unit id="tt_content.mermaid" resname="tt_content.mermaid">
-				<source>Mermaid diagram source</source>
-			</trans-unit>
-			<trans-unit id="tt_content.mermaid.description" resname="tt_content.mermaid.description">
-				<source>Write Mermaid syntax (e.g. "graph TD; A--&gt;B"). The live preview renders as you type; the diagram appears on the slide.</source>
-			</trans-unit>
-
 			<trans-unit id="tt_content.tab.codeblocks" resname="tt_content.tab.codeblocks">
 				<source>Code Blocks</source>
 			</trans-unit>

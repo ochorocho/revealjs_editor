@@ -115,7 +115,6 @@ final class ExtensionLoadsTest extends FunctionalTestCase
     {
         return [
             ['revealjs_slide_cover'],
-            ['revealjs_slide_mermaid'],
             ['text'],
             ['textmedia'],
         ];
