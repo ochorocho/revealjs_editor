@@ -2,7 +2,7 @@
    b13 theme for revealjs_editor — dark, b13 brand colours.
    Palette taken from the design tokens of https://b13.com (the "inverted"
    surface of the site's header, hero and footer):
-     Neutral 100    #131313  (background)
+     Neutral 90     #2b2b2b  (background — the "tinted dark" surface)
      Neutral 0      #ffffff  (text)
      Brand red      #d3414b  (accent — progress, controls, highlights)
      Neutral 30     #c4c4c4  (muted — the inverted secondary text colour)
@@ -37,7 +37,7 @@
 }
 
 :root {
-	--cmp-bg: #131313;
+	--cmp-bg: #2b2b2b;
 	--cmp-text: #ffffff;
 	--cmp-muted: #c4c4c4;
 	--cmp-accent: #d3414b;
