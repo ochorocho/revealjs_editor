@@ -15,10 +15,33 @@
    while an empty one leaves the TYPO3 palette below intact. Every other colour
    derives from these tokens (accent tints via color-mix).
 
-   Typography: TYPO3's brand typeface is proprietary/undistributable; this theme
-   ships Source Sans 3 (SIL OFL), the humanist sans of TYPO3's web presence,
-   self-hosted under ./typo3-fonts/. Headings are bold + uppercase.
+   Typography: the two typefaces of the official TYPO3 font package
+   (TYPO3_Fonts.zip on the brand guidelines page), both SIL OFL and
+   self-hosted under ./typo3-fonts/:
+     Share          headings, slide number, cover wordmark
+     Source Sans 3  body text (successor of the package's Source Sans Pro)
+   Headings are bold, in normal case.
+
+   Logo: the official full TYPO3 logo (wordmark + "Soul") in the guidelines'
+   mixed form for dark backgrounds (orange Soul, white wordmark) — the
+   guidelines don't allow the Soul alone to replace the logo.
    ========================================================================= */
+
+@font-face {
+	font-family: 'Share';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('./typo3-fonts/Share-Regular.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Share';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('./typo3-fonts/Share-Bold.woff2') format('woff2');
+}
 
 @font-face {
 	font-family: 'Source Sans 3';
@@ -52,10 +75,10 @@
 
 	--r-main-font: 'Source Sans 3', system-ui, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 	--r-main-font-size: 36px;
-	--r-heading-font: 'Source Sans 3', system-ui, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+	--r-heading-font: 'Share', 'Source Sans 3', system-ui, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 	--r-heading-font-weight: 700;
-	--r-heading-text-transform: uppercase;
-	--r-heading-letter-spacing: 0.02em;
+	--r-heading-text-transform: none;
+	--r-heading-letter-spacing: 0;
 	--r-code-font: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
 }
 
@@ -76,7 +99,8 @@ body,
 .reveal h4 {
 	color: var(--cmp-text);
 	font-family: var(--r-heading-font);
-	letter-spacing: 0.02em;
+	letter-spacing: 0;
+	text-transform: none;
 }
 
 .reveal h1 {
@@ -85,20 +109,17 @@ body,
 	font-size: 3.2em;
 	margin-bottom: 0.4em;
 	padding-bottom: 0.25em;
-	text-transform: uppercase;
 	border-bottom: 1px solid color-mix(in srgb, var(--cmp-muted) 70%, transparent);
 }
 
 .reveal h2 {
 	font-weight: 700;
 	font-size: 1.8em;
-	text-transform: uppercase;
 }
 
 .reveal h3 {
 	font-weight: 700;
 	font-size: 1.6em;
-	text-transform: none;
 	color: var(--cmp-text);
 }
 
@@ -241,80 +262,10 @@ body,
 
 /* ---------- Cover slide ---------- */
 
-.reveal .slides section.cover {
-	text-align: left;
-	height: 100%;
-}
-
-.reveal .slides section.cover .cover-grid {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 0.25em;
-	padding-left: 0.4em;
-}
-
-.reveal .slides section.cover .cover-typo3 {
-	display: block;
-	height: 10em;
-	width: auto;
-	margin: 0 0 0.1em -0.15em;
-	background: none;
-	border: 0;
-	box-shadow: none;
-}
-
-.reveal .slides section.cover .cover-wordmark {
+/* Overrides Layouts.css's Montserrat/uppercase wordmark (0,2,0) with Share in
+   normal case; the colour stays Layouts.css's --cmp-accent. */
+.reveal .reveal-cover .cover-wordmark {
 	font-family: var(--r-heading-font);
 	font-weight: 700;
-	font-size: 7em;
-	line-height: 0.95;
-	color: var(--cmp-accent);
-	text-transform: uppercase;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	letter-spacing: 0.01em;
-}
-
-.reveal .slides section.cover .cover-rule {
-	width: 75%;
-	border: 0;
-	border-top: 1px solid color-mix(in srgb, var(--cmp-muted) 70%, transparent);
-	margin: 0.4em 0;
-	padding: 0;
-	background: none;
-}
-
-.reveal .slides section.cover .cover-thema {
-	font-family: var(--r-main-font);
-	font-style: normal;
-	font-weight: 400;
-	font-size: 3.2em;
-	color: var(--cmp-text);
-	margin: 0;
-}
-
-.reveal .slides section.cover .cover-autor {
-	position: absolute;
-	bottom: 1em;
-	left: 0.2em;
-	font-family: var(--r-main-font);
-	font-style: normal;
-	font-weight: 400;
-	font-size: 1.4em;
-	color: var(--cmp-text);
-	margin: 0;
-}
-
-.reveal .slides section.cover .cover-b13 {
-	position: absolute;
-	bottom: 0.8em;
-	right: 1em;
-	width: 5em;
-	height: auto;
-	background: none;
-	border: 0;
-	box-shadow: none;
-	margin: 0;
+	text-transform: none;
 }

@@ -76,7 +76,9 @@ deck itself.
 
 Three themes ship and are selectable in the page's **Theme** field:
 
-- **`typo3`** (default) — anthracite background, TYPO3 Key Orange accents, Source Sans 3.
+- **`typo3`** (default) — follows the TYPO3 brand guidelines: anthracite background,
+  Key Orange accents, Share headings + Source Sans 3 body (the official TYPO3
+  fonts) and the full TYPO3 logo (orange Soul, white wordmark).
 - **`the-caemp`** — dark, brand yellow.
 - **`b13`** — dark grey (`#2b2b2b`), b13 brand red accents, the b13.com wave along
   the bottom of every slide, Barlow Semi Condensed (stand-in for b13's commercial
