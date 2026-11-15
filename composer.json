@@ -10,7 +10,11 @@
 	},
 	"extra": {
 		"typo3/cms": {
-			"extension-key": "revealjs_editor"
+			"extension-key": "revealjs_editor",
+			"version": "0.0.9",
+			"Package": {
+				"providesPackages": {}
+			}
 		}
 	},
 	"require": {

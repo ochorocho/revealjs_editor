@@ -9,7 +9,11 @@ defined('TYPO3') or die();
 $GLOBALS['TYPO3_CONF_VARS']['RTE']['Presets']['revealjs']
     = 'EXT:revealjs_editor/Configuration/RTE/Revealjs.yaml';
 
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['reveal'][] = 'Ochorocho\\RevealJsEditor\\ViewHelpers';
+// TYPO3 >= 14.1 reads Configuration/Fluid/Namespaces.php; the CONF_VARS
+// fallback is deprecated there and removed in v15.
+if (version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch(), '14.1', '<')) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['reveal'][] = 'Ochorocho\\RevealJsEditor\\ViewHelpers';
+}
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1779100000] = [
     'nodeName' => 'monacoEditor',
