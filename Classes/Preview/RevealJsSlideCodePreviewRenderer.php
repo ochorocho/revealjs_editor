@@ -5,34 +5,51 @@ declare(strict_types=1);
 namespace Ochorocho\RevealJsEditor\Preview;
 
 use Doctrine\DBAL\ParameterType;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use TYPO3\CMS\Backend\Preview\PreviewRendererInterface;
 use TYPO3\CMS\Backend\Preview\StandardContentPreviewRenderer;
 use TYPO3\CMS\Backend\View\BackendLayout\Grid\GridColumnItem;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Page-module preview renderer for the `revealjs_slide_code` CType.
  *
- * Extends the standard preview (which shows the slide's header + bodytext
- * lede the same way `text`'s default preview does) by appending a list
- * of the slide's child code-block headlines — one `<li>` per inline-IRRE
- * row in `tx_revealjseditor_codeblock`, ordered by `sorting`. Empty
- * `headline` values render as the TYPO3-standard "[No title]" label
+ * Shows the standard preview (the slide's header + bodytext lede, the
+ * same way `text`'s default preview does) followed by a list of the
+ * slide's child code-block headlines — one `<li>` per inline-IRRE row in
+ * `tx_revealjseditor_codeblock`, ordered by `sorting`. Empty `headline`
+ * values render as the TYPO3-standard "[No title]" label
  * (`LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.no_title`,
  * matching how core's BackendUtility::getRecordTitle() handles empty
  * record titles).
+ *
+ * The standard renderer is composed, not extended: TYPO3 v15 declares it
+ * final (Breaking #110027). Public, because StandardPreviewRendererResolver
+ * fetches renderers with GeneralUtility::makeInstance(), which only gets
+ * the injected instance of a public service.
  *
  * Registered in Configuration/TCA/Overrides/tt_content.php under
  * `$GLOBALS['TCA']['tt_content']['types']['revealjs_slide_code']['previewRenderer']`.
  * TYPO3's `StandardPreviewRendererResolver` resolves the per-type slot
  * before the table-level default, so this renderer wins for code slides
- * and the parent class's standard preview applies to every other CType.
+ * and the standard preview applies to every other CType.
  */
-class RevealJsSlideCodePreviewRenderer extends StandardContentPreviewRenderer
+#[Autoconfigure(public: true)]
+final readonly class RevealJsSlideCodePreviewRenderer implements PreviewRendererInterface
 {
+    public function __construct(
+        private StandardContentPreviewRenderer $standardContentPreviewRenderer,
+        private ConnectionPool $connectionPool,
+    ) {}
+
+    public function renderPageModulePreviewHeader(GridColumnItem $item): string
+    {
+        return $this->standardContentPreviewRenderer->renderPageModulePreviewHeader($item);
+    }
+
     public function renderPageModulePreviewContent(GridColumnItem $item): string
     {
-        $standard = parent::renderPageModulePreviewContent($item);
+        $standard = $this->standardContentPreviewRenderer->renderPageModulePreviewContent($item);
 
         $parentUid = (int)($item->getRecord()->getRawRecord()?->toArray()['uid'] ?? 0);
         if ($parentUid === 0) {
@@ -44,7 +61,6 @@ class RevealJsSlideCodePreviewRenderer extends StandardContentPreviewRenderer
             return $standard;
         }
 
-        // The parent's protected getLanguageService() returns $GLOBALS['LANG'].
         // Same LLL key TYPO3 core uses (BackendUtility::getRecordTitle()
         // falls back to it for label-less records).
         $noTitle = $GLOBALS['LANG']->sL(
@@ -60,6 +76,16 @@ class RevealJsSlideCodePreviewRenderer extends StandardContentPreviewRenderer
         }
 
         return $standard . '<ul class="list-unstyled">' . $listItems . '</ul>';
+    }
+
+    public function renderPageModulePreviewFooter(GridColumnItem $item): string
+    {
+        return $this->standardContentPreviewRenderer->renderPageModulePreviewFooter($item);
+    }
+
+    public function wrapPageModulePreview(string $previewHeader, string $previewContent, GridColumnItem $item): string
+    {
+        return $this->standardContentPreviewRenderer->wrapPageModulePreview($previewHeader, $previewContent, $item);
     }
 
     /**
@@ -78,8 +104,7 @@ class RevealJsSlideCodePreviewRenderer extends StandardContentPreviewRenderer
      */
     private function fetchCodeblocks(int $parentUid): array
     {
-        $qb = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_revealjseditor_codeblock');
+        $qb = $this->connectionPool->getQueryBuilderForTable('tx_revealjseditor_codeblock');
         // DefaultRestrictionContainer (applied automatically) already
         // hides deleted + disabled rows the same way the FE pipeline does.
         /** @var list<array{uid: int, headline: string|null}> $rows */
